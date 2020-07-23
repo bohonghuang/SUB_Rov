@@ -10,6 +10,8 @@
 
 gstreamer 1.0 (请将其安装于C:/gstreamer  下)
 
+</br>
+</br>
 
 
 >  如果出现vc++ runtime 错误，请尝试通过安装vc运行库以修复该问题。
