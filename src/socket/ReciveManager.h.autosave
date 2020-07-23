@@ -1,0 +1,19 @@
+#ifndef RECIVEMANAGER_H
+#define RECIVEMANAGER_H
+
+#include <QObject>
+#include "ReceiveCommand.h"
+
+class ReciveManager : public QObject
+{
+    Q_OBJECT
+public:
+    Recive
+public:
+    explicit ReciveManager(QObject *parent = nullptr);
+
+signals:
+
+};
+
+#endif // RECIVEMANAGER_H
