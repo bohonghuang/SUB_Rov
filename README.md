@@ -8,7 +8,7 @@
 
 依赖的库有：
 
-gstreamer 1.0 (请将其安装于C:/gstreamer  下)
+- gstreamer 1.0 (请将其安装于C:/gstreamer  下)
 
 </br>
 </br>
@@ -20,9 +20,9 @@ gstreamer 1.0 (请将其安装于C:/gstreamer  下)
 
 项目的参考对象有：
 
-[QGroundControl][1] 
+- [QGroundControl][1] 
 
-[QJoysticks][2]
+- [QJoysticks][2]
 
 
 
