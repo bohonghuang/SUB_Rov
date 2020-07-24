@@ -20,7 +20,6 @@ gstreamer 1.0 (请将其安装于C:/gstreamer  下)
 
 [QGroundControl][1] 
 
-[QJoysticks][2]
 
 
 
