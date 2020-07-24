@@ -9,15 +9,12 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QThread>
-#include "RovBase.h"
 #include "RovApplication.h"
 #include "RovToolBox.h"
 
 class SocketManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool isAccept NOTIFY onAccepteChanged)
-    Q_PROPERTY(ReceiveManager* receivemanager READ getReceiveManager )
 
 
 public:

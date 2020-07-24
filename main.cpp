@@ -3,12 +3,7 @@
 #include <QtQml>
 #include <QIODevice>
 #include <QFile>
-#include "SocketManager.h"
-#include "JoyManager.h"
 #include "RovApplication.h"
-#include "VideoManager.h"
-#include "VideoReceiver.h"
-#include <QMainWindow>
 
 //这是一个自定的日志详细输出 Handler
 void MessageOutput(QtMsgType type, const QMessageLogContext & context, const QString& msg);
@@ -16,6 +11,7 @@ void MessageOutput(QtMsgType type, const QMessageLogContext & context, const QSt
 
 int main(int argc, char *argv[])
 {
+    //check_log_file();
     qInstallMessageHandler(MessageOutput);
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -70,29 +66,22 @@ void MessageOutput(QtMsgType type, const QMessageLogContext & context, const QSt
     QString current_time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
 
 
-    QString message = QString("%1 [____Time:%2] [____Function:(%4)] [____Line:%5] [____%3]")
+    QString message = QString("%1 [__Time:%2__] [__Function:(%4)__] [__Line:%5__] [__%3__]")
             .arg(text).arg(current_time).arg(localMsg.constData())
             .arg(context.function).arg(context.line);
 
     //输出信息至文件，（读写、追加模式）
     QDir dir;
     QString appPath = dir.currentPath();
-    QString resourcePath = appPath += "/resource";
-    QString logPath =  resourcePath += "/log.txt";
+    QString resourcePath = appPath + "/tmp";
+    QString logPath =  resourcePath + "/log.txt";
 
-    if( ! dir.exists(resourcePath)){
+    if( !dir.exists(resourcePath)){
         dir.mkpath(resourcePath);
     }
-
-
-    QFile file(logPath);
-
-    if(file.exists()){
-        file.open(QIODevice::WriteOnly | QIODevice::Append );
-    }
-    else{
-        file.open(QIODevice::WriteOnly |  QIODevice::Text);
-    }
+    QFile file;
+    file.setFileName("./tmp/log.txt");
+    file.open(QIODevice::WriteOnly |  QIODevice::Append);
 
     QTextStream textstream(&file) ;
     textstream << message << "\r\n";
@@ -103,5 +92,3 @@ void MessageOutput(QtMsgType type, const QMessageLogContext & context, const QSt
     mutex.unlock();
 
 }
-
-

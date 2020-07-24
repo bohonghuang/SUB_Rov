@@ -143,8 +143,11 @@ void RovControlCore::doCameraFocusing(double axit)
     if(axit > 0){
         doCameraFocusingToLarge();
     }
-    else{
+    else if(axit < 0){
         doCameraFocusingToSmall();
+    }
+    else{
+        doCameraNormal();
     }
 }
 
@@ -153,8 +156,11 @@ void RovControlCore::doCameraZooming(double axit)
     if(axit > 0){
         doCameraZoomingToLarge();
     }
-    else{
+    else if(axit < 0){
         doCameraZoomingToSmall();
+    }
+    else{
+        doCameraNormal();
     }
 }
 

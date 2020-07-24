@@ -7,7 +7,6 @@
 class ReceiveManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(ReceiveCommand receive NOTIFY onCommandChanged )
 private:
     ReceiveCommand receive;
 

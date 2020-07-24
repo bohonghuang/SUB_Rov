@@ -4,7 +4,7 @@
 
 ReceiveManager::ReceiveManager(QObject *parent) : QObject(parent)
 {
-    this->receive = ReceiveCommand();
+    //this->receive = ReceiveCommand();
 }
 
 ///

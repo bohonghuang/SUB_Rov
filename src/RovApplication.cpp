@@ -13,7 +13,6 @@
 #include "VideoManager.h"
 #include "VideoStreaming.h"
 #include "SocketManager.h"
-#include "JoyManager.h"
 #include <KeyManager.h>
 
 RovApplication* RovApplication::_app = nullptr;
@@ -39,7 +38,7 @@ RovApplication::RovApplication(int& argc, char*argv[])
     QCoreApplication::setOrganizationName("Rocael");
     QCoreApplication::setOrganizationDomain("Rocael.xyz");
     QCoreApplication::setApplicationName("Rov");
-    QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setApplicationVersion("1.0");
 
     qDebug() << "RovApplication::RovApplication()";
     _app = this;
@@ -82,17 +81,14 @@ bool RovApplication::initAppBoot()
     qDebug("RovApplication::initAppBoot()");
     QQmlApplicationEngine* pEngine = new QQmlApplicationEngine(this);
     pEngine->addImportPath("qrc:/");
-    pEngine->rootContext()->setContextProperty("joyManager", toolbox->getJoyManager());
-    pEngine->rootContext()->setContextProperty("QJoysticks", toolbox->getJoyManager()->getJoysticks());
     pEngine->rootContext()->setContextProperty("socketManager", toolbox->getSocketManager());
     pEngine->rootContext()->setContextProperty("sendManager", toolbox->getSocketManager()->getSendManager());
     pEngine->rootContext()->setContextProperty("videoManager", toolbox->getVideoManager());
     pEngine->rootContext()->setContextProperty("receiveManager", toolbox->getSocketManager()->getReceiveManager());
-    pEngine->rootContext()->setContextProperty("rovControl", toolbox->getRovControlCore());
+    pEngine->rootContext()->setContextProperty("rovControl", toolbox->getRovControlCore() );
     pEngine->rootContext()->setContextProperty("keyManager", toolbox->getKeyManager());
     pEngine->rootContext()->setContextProperty("settingsMaanger", toolbox->getSettingManager());
 
-    qmlRegisterUncreatableType<JoyManager>("Rov.JoyManager"    ,1, 0, "JoyManager", "Reference only");
     qmlRegisterUncreatableType<VideoManager>("Rov.VideoManager",1, 0, "VideoManager", "Reference only");
     qmlRegisterUncreatableType<SocketManager>("Rov.SocketManager",1, 0, "SocketManager", "Reference only");
     qmlRegisterUncreatableType<ReceiveManager>("Rov.ReceiveManager",1, 0, "ReceiveManager", "Reference only");

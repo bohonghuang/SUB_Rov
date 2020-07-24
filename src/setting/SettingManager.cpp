@@ -1,4 +1,5 @@
 ﻿#include "SettingManager.h"
+#include <QDir>
 
 SettingManager::SettingManager(){
     this->read_write = new QSettings("./conf/setting.ini", QSettings::IniFormat);
@@ -10,6 +11,14 @@ SettingManager::SettingManager(){
 
     this->videoSavePath = localPath + "/resource/videos";
     this->grapImageSavePath = localPath + "/resource/images";
+
+    QDir dir;
+    if( !dir.exists(this->videoSavePath) ){
+        dir.mkpath(this->videoSavePath);
+    }
+    if( !dir.exists(this->grapImageSavePath)){
+        dir.mkpath(this->grapImageSavePath);
+    }
 
 
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);

@@ -2,15 +2,14 @@
 #define ROVTOOLBOX_H
 
 #include <QObject>
+#include <RovControlCore.h>
 
 class RovApplication;
-class JoyManager;
 class VideoManager;
 class SocketManager;
 class SettingManager;
 class KeyManager;
 class VideoReceiver;
-class RovControlCore;
 
 class RovToolBox : public QObject
 {
@@ -21,7 +20,6 @@ public:
     RovToolBox();
     void setInit();
 
-    JoyManager*     getJoyManager() {return joyManager; }
     SocketManager*  getSocketManager() ;
     KeyManager*     getKeyManager() {return keyManager;}
     VideoManager*   getVideoManager() {return videoManager;}
@@ -34,12 +32,9 @@ public:
     QString getPort_1(){return this->udp_port_1;}
     QString getPort_2(){return this->udp_port_2;}
     QString getMpegts_uri(){return this->mpegts_uri;}
-    QString getVideoFilePath(){return this->videoFilePath; }
-    QString getImageFilePath(){return this->imageFilePath; }
 
 private:
     SettingManager* settingManager;
-    JoyManager* joyManager;
     SocketManager* socketManager;
     KeyManager* keyManager;
     VideoManager* videoManager;
@@ -48,9 +43,6 @@ private:
     QString mpegts_uri;
     QString udp_port_1;
     QString udp_port_2;
-
-    QString videoFilePath = "/video/";
-    QString imageFilePath = "/image/";
 
     friend class RovApplication;
 signals:

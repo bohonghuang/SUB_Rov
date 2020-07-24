@@ -94,9 +94,6 @@ installer {
 }
 
 
-include ($$PWD/libs/QJoysticks/QJoysticks.pri)
-
-
 AndroidBuild || iOSBuild {
     # Android and iOS don't unclude these
 } else {
@@ -125,12 +122,8 @@ SOURCES += \
         main.cpp \
         src/RovControlCore.cpp \
         src/RovApplication.cpp \
-        src/RovBase.cpp \
         src/RovToolBox.cpp \
         src/keyboard/KeyManager.cpp \
-        src/keyboard/keyflag.cpp \
-        src/joystick/JoyManager.cpp \
-        src/joystick/JoyStick.cpp \
         src/robot/Oilvalve.cpp \
         src/setting/SettingManager.cpp \
         src/socket/ReceiveCommand.cpp \
@@ -162,12 +155,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     src/RovControlCore.h \
     src/RovApplication.h \
-    src/RovBase.h \
     src/RovToolBox.h \
     src/keyboard/KeyManager.h \
-    src/keyboard/keyflag.h \
-    src/joystick/JoyManager.h \
-    src/joystick/JoyStick.h \
     src/robot/Oilvalve.h \
     src/setting/SettingManager.h \
     src/socket/ReceiveCommand.h \

@@ -2,10 +2,10 @@
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import QtGamepad 1.12
 //import QtQuick.Controls.Styles 1.3
 import org.freedesktop.gstreamer.GLVideoItem 1.0
 
-import Rov.JoyManager 1.0
 import Rov.VideoManager 1.0
 import Rov.SocketManager 1.0
 import Rov.ReceiveManager 1.0
@@ -40,11 +40,6 @@ Window {
             }
         }
     }
-
-    Joysticks{
-        visible: false
-    }
-
 
 
     Page{
@@ -280,6 +275,11 @@ Window {
             }
 
         }
+    }
+
+    MyGamePad{
+        id: mygame
+
     }
 
     Item{
