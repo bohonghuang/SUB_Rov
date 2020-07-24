@@ -1,5 +1,6 @@
 ﻿#include "SettingManager.h"
 #include <QDir>
+#include <QMutex>
 
 SettingManager::SettingManager(){
     this->read_write = new QSettings("./conf/setting.ini", QSettings::IniFormat);
@@ -162,6 +163,8 @@ QString SettingManager::getImagePath()
 
 void SettingManager::udpSettings()
 {
+    static QMutex mx;
+    mx.lock();
     qDebug("SettingManager::udpSettings in") ;
     read_write->setValue("server/ip", this->uri);
     read_write->setValue("server/port", this->port);
@@ -174,6 +177,8 @@ void SettingManager::udpSettings()
     read_write->setValue("audio/uri", this->audio_uri);
     read_write->setValue("audio/port", this->audio_port);
     qDebug("SettingManager::udpSettings out") ;
+
+    mx.unlock();
 }
 
 void SettingManager::setServerUri(QString u)

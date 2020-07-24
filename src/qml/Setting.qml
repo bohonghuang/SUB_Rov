@@ -14,7 +14,11 @@ Rectangle {
     width: 400
     height: 800
 
-
+    ListView{
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
         GroupBox {
             id: serverbox
             width: 400
@@ -97,6 +101,7 @@ Rectangle {
             id: videobox
             width: 400
             height: 180
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: serverbox.bottom
             anchors.topMargin: 30
             Layout.fillHeight: true
@@ -240,6 +245,7 @@ Rectangle {
             id: videobox_2
             width: 400
             height: 180
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: videobox.bottom
             anchors.topMargin: 30
             Layout.fillHeight: true
@@ -384,6 +390,7 @@ Rectangle {
                 id: audiobox
                 width: 400
                 height: 150
+                anchors.horizontalCenter: parent.horizontalCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 font.family: "Tahoma"
@@ -462,6 +469,9 @@ Rectangle {
                 }
 
         }
+
+
+    }
 
 
 }

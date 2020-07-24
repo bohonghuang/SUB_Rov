@@ -8,6 +8,7 @@ Rectangle {
     color: "#6179e3"
     radius: 20
     border.width: 0
+    opacity: 0.5
 
     property alias btn_animation_toDown: animation_toDown.running
     property alias btn_animation_toUp: animation_toUp.running
@@ -37,7 +38,7 @@ Rectangle {
         id: updown_animation_enter
         target: info_updown_btn
         property: "opacity"
-        to: 0.5
+        to: 1
         duration: 100
     }
 
@@ -45,7 +46,7 @@ Rectangle {
         id: updown_animation_exit
         target: info_updown_btn
         property: "opacity"
-        to: 1
+        to: 0.5
         duration: 100
     }
 

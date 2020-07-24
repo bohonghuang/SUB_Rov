@@ -243,6 +243,8 @@ int ReceiveManager::getRovDeviceStatus()
     default:
         break;
     }
+
+    return 1;
 }
 
 ///

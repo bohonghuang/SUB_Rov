@@ -14,6 +14,8 @@ CONFIG += qt \
     c++11
 
 
+
+
 win32 {
     contains(QMAKE_TARGET.arch, x86_64) {
         message("Windows build")
@@ -30,6 +32,12 @@ LANGUAGE = C++
 TEMPLATE = app
 ROVRoot = $$PWD
 
+iOSBuild{
+    ICON = logo.ico
+}
+WindowsBuild{
+    RC_ICONS = "./resource/sys/favicon_1.ico"
+}
 DebugBuild{
     DESTDIR  = $${OUT_PWD}/debug
     CONFIG += DebugBuild

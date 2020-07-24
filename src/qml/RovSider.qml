@@ -14,7 +14,18 @@ Item {
         Rectangle{
             width: parent.width
             height: 66
-            color: "black"
+            color: "#434343"
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#434343"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#000000"
+                }
+            }
         }
         RowLayout{
             MyButton{
@@ -79,6 +90,18 @@ Item {
 
             MyButton{
                 id: btn_recording_stop
+                color: "#434343"
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0
+                        color: "#434343"
+                    }
+
+                    GradientStop {
+                        position: 1
+                        color: "#000000"
+                    }
+                }
                 btnstr: qsTr("停止录制")
                 btnimgSource:"../../resource/icon/video_off.png"
 
@@ -101,7 +124,7 @@ Item {
     function openSettingsPage(){
         btnSettingsClicked = !btnSettingsClicked;
 
-        settingsMaanger.udpSettings();
+
     }
 
     function connectSocket(){
@@ -122,3 +145,9 @@ Item {
 
 
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/

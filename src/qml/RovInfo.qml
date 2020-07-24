@@ -27,21 +27,23 @@ Item {
     Rectangle {
         id: rectangle
         height: parent.height
+        color: "#434343"
         width: parent.width
         radius: 10
-        opacity: 0.838
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: "#dee1ea"
+                color: "#434343"
             }
 
             GradientStop {
                 position: 1
-                color: "#0a52b0"
+                color: "#000000"
             }
         }
-        border.color: "#94baeb"
+        opacity: 0.838
+
+        border.color: "#bcd2ee"
         border.width: 0
 
 
@@ -52,7 +54,7 @@ Item {
     Grid {
         id: grid
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 76
+        anchors.bottomMargin: 163
         anchors.right: parent.right
         anchors.rightMargin: 9
         anchors.left: parent.left
@@ -65,7 +67,7 @@ Item {
 
         Text {
             id: deepTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("深度：")
             font.bold: false
             font.family: "Tahoma"
@@ -76,7 +78,7 @@ Item {
 
         Text {
             id: innerTemTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("内温：")
             font.bold: false
             font.family: "Tahoma"
@@ -87,7 +89,7 @@ Item {
 
         Text {
             id: waterTemTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("外温:")
             font.bold: false
             font.family: "Tahoma"
@@ -98,7 +100,7 @@ Item {
 
         Text {
             id: toUpTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("俯仰：")
             font.bold: false
             font.family: "Tahoma"
@@ -109,7 +111,7 @@ Item {
 
         Text {
             id: toLeftRightTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("横滚：")
             font.bold: false
             font.family: "Tahoma"
@@ -120,7 +122,7 @@ Item {
 
         Text {
             id: speedTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("航速：")
             font.bold: false
             font.family: "Tahoma"
@@ -131,7 +133,7 @@ Item {
 
         Text {
             id: elecUTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("电压：")
             font.bold: false
             font.family: "Tahoma"
@@ -142,7 +144,7 @@ Item {
 
         Text {
             id: elecATxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("电流：")
             font.bold: false
             font.family: "Tahoma"
@@ -153,7 +155,7 @@ Item {
 
         Text {
             id: elecPTxt
-            color: "#404040"
+            color: "#ffffff"
             text: qsTr("功率：")
             font.bold: false
             font.family: "Tahoma"

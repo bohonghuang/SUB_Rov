@@ -11,6 +11,6 @@
         <file>src/qml/SecondToolbar.qml</file>
         <file>src/qml/Setting.qml</file>
         <file>src/qml/VideoBackground.qml</file>
-        <file>src/qml/VideoPage.qml</file>
+        <file>src/qml/AboutPage.qml</file>
     </qresource>
 </RCC>

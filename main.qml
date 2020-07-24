@@ -3,8 +3,6 @@ import QtQuick.Window 2.3
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 import QtGamepad 1.12
-//import QtQuick.Controls.Styles 1.3
-import org.freedesktop.gstreamer.GLVideoItem 1.0
 
 import Rov.VideoManager 1.0
 import Rov.SocketManager 1.0
@@ -20,6 +18,7 @@ Window {
     width: 1600
     height: 900 + 66
     title: qsTr("Rov Controller")
+
 
     RovSider{
         id: rov_sider
@@ -37,8 +36,37 @@ Window {
             else{
                 page_close.running = true;
                 mainPage.focus = true;
+
+                settingsMaanger.udpSettings();
             }
         }
+
+        Image {
+            id: image
+            x: 1420
+            width: 180
+            height: 66
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            source: "resource/img/Logo.png"
+            fillMode: Image.PreserveAspectFit
+
+            MouseArea{
+                anchors.fill: parent
+                cursorShape: "PointingHandCursor"
+                onClicked: {
+                    about_page.visible = true
+                }
+            }
+        }
+    }
+
+    AboutPage{
+        id: about_page
+        visible: false
+
     }
 
 
@@ -79,7 +107,7 @@ Window {
     }
     Setting {
         id: settingsPage
-        height: parent.height
+        anchors.top: rov_sider.bottom
         width: 0;
         visible: false
 
@@ -361,10 +389,4 @@ Window {
 
 
 
-/*##^##
-Designer {
-    D{i:11;anchors_height:900;anchors_width:1600;anchors_x:0;anchors_y:66}D{i:12;anchors_y:88}
-D{i:23;anchors_height:225;anchors_width:400}D{i:22;anchors_height:225;anchors_width:400;anchors_y:66}
-D{i:24;anchors_height:225;anchors_width:400}D{i:25;anchors_width:1621}
-}
-##^##*/
+

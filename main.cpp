@@ -3,10 +3,13 @@
 #include <QtQml>
 #include <QIODevice>
 #include <QFile>
+#include <QIcon>
+#include <QMessageBox>
 #include "RovApplication.h"
 
 //这是一个自定的日志详细输出 Handler
 void MessageOutput(QtMsgType type, const QMessageLogContext & context, const QString& msg);
+
 
 
 int main(int argc, char *argv[])
@@ -14,9 +17,26 @@ int main(int argc, char *argv[])
     //check_log_file();
     qInstallMessageHandler(MessageOutput);
 
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     RovApplication* app = new RovApplication(argc, argv);
+
+    QSystemSemaphore sema("HRov", 1, QSystemSemaphore::Open);
+    sema.acquire();
+
+    QSharedMemory mem("System_Sub");
+    if( !mem.create(1)){
+        QMessageBox::information(0,"MESSAGEBOXTXT" ,"An already been running");
+
+        sema.release();
+
+
+        return 0;
+    }
+
+    sema.release();
+
 
     int exitCode = 0;
     if(!app->initAppBoot()){

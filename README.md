@@ -1,4 +1,4 @@
-# JMU ROV
+# SUB ROV
 
 这是一个校园项目
 
@@ -20,6 +20,7 @@ gstreamer 1.0 (请将其安装于C:/gstreamer  下)
 
 [QGroundControl][1] 
 
+[QJoysticks][2]
 
 
 
