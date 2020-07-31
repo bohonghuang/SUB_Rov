@@ -272,6 +272,22 @@ void RovControlCore::doTurnMachineNormal()
             ->TurnMachineNormal();
 }
 
+void RovControlCore::doStart()
+{
+    rovApp()->getToolbox()
+            ->getSocketManager()
+            ->getSendManager()
+            ->TurnStart();
+}
+
+void RovControlCore::doStop()
+{
+    rovApp()->getToolbox()
+            ->getSocketManager()
+            ->getSendManager()
+            ->TurnStop();
+}
+
 
 
 

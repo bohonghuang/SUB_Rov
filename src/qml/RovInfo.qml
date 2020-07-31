@@ -1,4 +1,6 @@
 ﻿import QtQuick 2.0
+import QtQuick.Controls 2.5
+
 
 Item {
     id: element
@@ -45,6 +47,71 @@ Item {
 
         border.color: "#bcd2ee"
         border.width: 0
+
+
+        MyFlag{
+            id: flag_deep
+            x: 8
+            y: 365
+            img_source: "../../resource/icon/flag/白字_深.png"
+        }
+
+        MyFlag {
+            id: flag_zoom
+            x: 8
+            y: 417
+            img_source: "../../resource/icon/flag/白字_变.png"
+        }
+
+        MyFlag {
+            id: flag_focus
+            x: 60
+            y: 417
+            img_source: "../../resource/icon/flag/白字_聚.png"
+        }
+
+        MyFlag {
+            id: flag_power
+            x: 112
+            y: 417
+            img_source: "../../resource/icon/flag/白字_电.png"
+        }
+
+        MyFlag {
+            id: flag_cloud
+            x: 8
+            y: 472
+            img_source: "../../resource/icon/flag/白字_云.png"
+        }
+
+        MyFlag {
+            id: flag_point
+            x: 60
+            y: 365
+            img_source: "../../resource/icon/flag/白字_指.png"
+        }
+
+        MyFlag {
+            id: flag_machine
+            x: 112
+            y: 365
+            img_source: "../../resource/icon/flag/白字_机.png"
+        }
+
+        MyFlag {
+            id: flag_com
+            x: 60
+            y: 472
+            img_source: "../../resource/icon/flag/白字_串.png"
+        }
+
+        MyFlag {
+            id: flag_p
+            x: 112
+            y: 472
+            img_source: "../../resource/icon/flag/白字_P.png"
+        }
+
 
 
     }
@@ -260,6 +327,105 @@ Item {
             source: "../../resource/icon/the_point.png"
             fillMode: Image.PreserveAspectFit
         }
+    }
+
+
+    Connections {
+        target: receiveManager
+        onRecvCommandChanged: {
+            info_refresh();
+            flag_refresh();
+        }
+    }
+
+    function info_refresh () {
+        deepTxtText = "深度：" + socketManager.getDeepText();
+        innerTemTxtText = "内温：" + socketManager.getTemperatureInsideText();
+        waterTemTxtText = "外温：" + socketManager.getTemperatureOutsideText();
+        toUpTxtText = "俯仰：" + socketManager.getPitchText();
+        toLeftRightTxtText = qsTr("横滚：") + socketManager.getRollText();
+        speedTxtText = "航速：" + socketManager.getSpeedText();
+        elecATxtText = "电流：" + socketManager.getCurrentText();
+        elecUTxtText = "电压：" + socketManager.getVoltageText();
+        elecPTxtText = "功率：" + socketManager.getPowerText();
+
+        pointAngle = socketManager.getAngle();
+
+    }
+
+    function flag_refresh(){
+        flag_machine_refresh();
+        flag_cloud_refresh();
+        flag_zoom_refresh();
+        flag_focus_refresh();
+        flag_point_refresh();
+        flag_power_refresh();
+        flag_com_refresh();
+        flag_deep_refresh();
+        flag_p_refresh();
+    }
+
+    function flag_machine_refresh(){
+        if(receiveManager.getRovDeviceStatus(1) === true)
+            flag_machine.light_running = true;
+        else
+            flag_machine.dark_running = true;
+    }
+
+    function flag_cloud_refresh(){
+        if(receiveManager.getRovDeviceStatus(2) === true)
+            flag_cloud.light_running = true;
+        else
+            flag_cloud.dark_running = true;
+    }
+
+    function flag_zoom_refresh(){
+        if(receiveManager.getRovDeviceStatus(3) === true)
+            flag_zoom.light_running = true;
+        else
+            flag_zoom.dark_running = true;
+    }
+
+    function flag_focus_refresh(){
+        if(receiveManager.getRovDeviceStatus(4) === true)
+            flag_focus.light_running = true;
+        else
+            flag_focus.dark_running = true;
+    }
+
+    function flag_point_refresh(){
+        if(receiveManager.getRovDeviceStatus(5) === true)
+            flag_point.light_running = true;
+        else
+            flag_point.dark_running = true;
+    }
+
+    function flag_power_refresh(){
+        if(receiveManager.getRovDeviceStatus(6) === true)
+            flag_power.light_running = true;
+        else
+            flag_power.dark_running = true;
+    }
+
+    function flag_com_refresh(){
+        if(receiveManager.getRovDeviceStatus(7) === true)
+            flag_com.light_running = true;
+        else
+            flag_com.dark_running = true;
+    }
+
+    function flag_deep_refresh(){
+        if(receiveManager.getRovDeviceStatus(8) === true)
+            flag_deep.light_running = true;
+        else
+            flag_deep.dark_running = true;
+    }
+
+    function flag_p_refresh(){
+        if(receiveManager.getRovStatus() === true)
+            flag_p.light_running = true;
+        else
+            flag_p.dark_running = true;
     }
 }
 

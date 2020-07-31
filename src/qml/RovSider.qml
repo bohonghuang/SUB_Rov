@@ -8,6 +8,9 @@ Item {
     property bool btnSocketSuccess: false
     property bool btnRecordingSuccess: false
 
+    property bool socketSuccess: false
+    property bool recordSucess: false
+
     ToolBar{
         id: toolBar
         width: parent.width
@@ -41,25 +44,13 @@ Item {
 
             MyButton{
                 id: btn_socket_start
-                btnstr: qsTr("数据连接")
-                visible: btnSocketSuccess ? false:true
-                btnimgSource: "../../resource/icon/connect.png"
+                btnstr: socketSuccess ? qsTr("数据断开") : qsTr("数据连接")
+                //visible: btnSocketSuccess ? false:true
+                btnimgSource: socketSuccess ? "../../resource/icon/close.png" : "../../resource/icon/connect.png"
                 MouseArea{
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: connectSocket();
-                }
-            }
-
-            MyButton{
-                id: btn_socket_stop
-                visible: btnSocketSuccess ? true:false
-                btnstr: qsTr("中断连接")
-                btnimgSource:"../../resource/icon/close.png"
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: disConnect()
+                    onClicked: socketSuccess ? disConnect() : connectSocket();
                 }
             }
 
@@ -74,45 +65,40 @@ Item {
                 }
             }
 
+//            MyButton {
+//                id: btn_status_control
+//                btnstr: socketSuccess ? qsTr("停止") : qsTr( "启动")
+//                btnimgSource:
+//            }
+
             MyButton{
                 id: btn_recording_content
-                btnstr:  qsTr("开始录像")  //
-                btnimgSource: "../../resource/icon/video_on.png" //
-                visible: btnRecordingSuccess ? false : true
+                btnstr: recordSucess ? qsTr("结束录像") : qsTr("开始录像")  //
+                btnimgSource: recordSucess ? "../../resource/icon/video_off.png" : "../../resource/icon/video_on.png" //
+
 
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: startRecording()
+                    onClicked: recordSucess ? stopRecording() : startRecording()
                 }
 
             }
 
-            MyButton{
-                id: btn_recording_stop
-                color: "#434343"
-                gradient: Gradient {
-                    GradientStop {
-                        position: 0
-                        color: "#434343"
-                    }
+        }
+    }
 
-                    GradientStop {
-                        position: 1
-                        color: "#000000"
-                    }
-                }
-                btnstr: qsTr("停止录制")
-                btnimgSource:"../../resource/icon/video_off.png"
+    Connections{
+        target: socketManager
+        onEnableChanged: {
+            socketSuccess = socketManager.isEnable();
+        }
+    }
 
-                visible: btnRecordingSuccess ? true:false
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: stopRecording()
-                }
-            }
-
+    Connections{
+        target: videoManager
+        onRecordingChanged: {
+            recordSucess = videoManager.isRecording()
         }
     }
 
@@ -128,11 +114,14 @@ Item {
     }
 
     function connectSocket(){
-        socketManager.connectServer();
+        socketManager.enableSocket(true)
+        socketManager.connectServer()
+
     }
 
     function disConnect(){
         socketManager.disConnectServer();
+
     }
 
     function startRecording(){

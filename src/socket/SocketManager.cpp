@@ -8,7 +8,11 @@ SocketManager::SocketManager(){
 
     sendmanager = new SendManager();
     receivemanager = new ReceiveManager();
-    InitSocket();
+
+    myThread = new SocketThread(tSocket);
+    myThread->start();
+
+
     qDebug("SocketManager: create complete");
 }
 SocketManager::~SocketManager(){
@@ -17,11 +21,57 @@ SocketManager::~SocketManager(){
 
 void SocketManager::updateSettings()
 {
-    qDebug() << "SocketManager::updateSettings() in";
     this->uri = rovApp()->getToolbox()->getSettingManager()->getServerUri();
     this->port = rovApp()->getToolbox()->getSettingManager()->getServerPort();
-    qDebug() << "SocketManager::updateSettings() out";
 }
+
+void SocketManager::disConnectServer()
+{
+    myThread->disconnectServer();
+}
+
+void SocketManager::connectServer(){
+    myThread->connectServer();
+}
+
+void SocketManager::enableSocket(bool enable)
+{
+    myThread->EnableSocket(enable);
+
+    emit enableChanged();
+}
+
+bool SocketManager::isEnable()
+{
+    return myThread->isEnableSocket();
+}
+
+void SocketManager::ReadError(QAbstractSocket::SocketError)
+{
+    qDebug() << "SocketManager::ReadError";
+}
+
+
+
+QString SocketManager::getStringByQByteArray(QByteArray qb)
+{
+    int t;
+    QString str = "";
+    int length = qb.size();
+    for( int i=0; i< length; i++){
+        t = qb[i];
+        str = str + t + "_";
+    }
+
+    return str;
+}
+
+
+SendManager* SocketManager::getSendManager()
+{
+    return this->sendmanager;
+}
+
 
 QString SocketManager::getSpeedText()
 {
@@ -115,115 +165,3 @@ float SocketManager::getAngle()
 
 
 
-///
-/// \brief SocketManager::InitSocket
-/// 初始化udpsocket， 并建立一个槽信号连接
-void SocketManager::InitSocket(){
-    qDebug("SocketManager::InitSocket() in");
-    tSocket = new QTcpSocket(this);
-
-    connect(tSocket, &QTcpSocket::readyRead, this, &SocketManager::receive);
-    connect(tSocket, &QTcpSocket::connected, this, [=](){
-        this->isAccept = true;
-        qDebug() << "connected";
-    });
-
-    QTimer *timer = new QTimer();
-    connect(timer, &QTimer::timeout, this, [=](){
-        if(this->isAccept == true){
-            this->receive();
-            this->send();
-        }
-    });
-    timer->start(200);
-
-    qDebug("SocketManager::InitSocket() out");
-
-}
-
-void SocketManager::disConnectServer()
-{
-    qDebug("SocketManager::disConnectServer() in") ;
-    if(tSocket!=nullptr){
-        tSocket->disconnectFromHost();
-        //tSocket->close();
-        qDebug() << "connect is close" ;
-    }
-    qDebug("SocketManager::disConnectServer() in") ;
-}
-
-void SocketManager::connectServer(){
-    qDebug("SocketManager::connectServer() in") ;
-    updateSettings();
-    tSocket->abort();
-    QString uri = this->uri;
-    qint16 p = port.toUInt() ;
-    tSocket->connectToHost( uri , p);
-
-    qDebug() << "connect to "<< uri << " - " << p ;
-    qDebug("SocketManager::connectServer() out") ;
-}
-
-void SocketManager::ReadError(QAbstractSocket::SocketError)
-{
-    qDebug() << "SocketManager::ReadError";
-}
-
-
-///
-/// \brief SocketManager::Send
-/// \return
-/// 向对向udp发送数据
-bool SocketManager::send(){
-
-    QByteArray senddata = sendmanager->getBytearrayCommand();
-
-    tSocket->write(senddata);
-
-    return true;
-}
-
-
-///
-/// \brief SocketManager::Receive
-/// \return
-/// 接收来自对方的数据内容, 是否运行取决于
-///  udpsocket 监听端口的情况
-bool SocketManager::receive(){
-    // 接收 bytearray数据 --> 转换为 tmp数据 ---> 交给 receivemanager 处理
-    QByteArray data;
-    QByteArray tdata;
-
-    data = tSocket->readAll();
-    memcpy(data.data(), data.data(), 26);
-    if(!data.isEmpty()){
-        receivemanager->updateCommand(data);
-        qDebug() << "Receive the data: " + getStringByQByteArray(data);
-        qDebug() << "Receive the tdata: " + getStringByQByteArray(tdata);
-    }
-    else
-        return false;
-
-    return true;
-}
-
-
-
-QString SocketManager::getStringByQByteArray(QByteArray qb)
-{
-    int t;
-    QString str = "";
-    int length = qb.size();
-    for( int i=0; i< length; i++){
-        t = qb[i];
-        str = str + t + "_";
-    }
-
-    return str;
-}
-
-
-SendManager* SocketManager::getSendManager()
-{
-    return this->sendmanager;
-}

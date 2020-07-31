@@ -14,45 +14,50 @@
 class SettingManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString uri READ getServerUri WRITE setServerUri NOTIFY onServerUriChanged)
-    Q_PROPERTY(QString port READ getServerPort WRITE setServerPort NOTIFY onServerPortChanged)
-    Q_PROPERTY(QString video_uri READ getVideoPort WRITE setVideoUrl NOTIFY onVideoUriChanged)
-    Q_PROPERTY(QString video_port READ getVideoUrl WRITE setVideoPort NOTIFY onVideoPortChanged())
+    Q_PROPERTY(QString uri READ getServerUri WRITE setServerUri NOTIFY serverUriChanged)
+    Q_PROPERTY(QString port READ getServerPort WRITE setServerPort NOTIFY serverPortChanged)
+    Q_PROPERTY(QString video_uri READ getVideoPort WRITE setVideoUrl NOTIFY videoUriChanged)
+    Q_PROPERTY(QString video_port READ getVideoUrl WRITE setVideoPort NOTIFY videoPortChanged())
 public:
     SettingManager();
     ~SettingManager();
     void InitSettings();
 
-    Q_INVOKABLE QString getServerUri()  {return uri;}
-    Q_INVOKABLE QString getServerPort() {return port;}
-    Q_INVOKABLE QString getVideoPort()  {return this->video_port;  };
-    Q_INVOKABLE QString getVideoUrl()   {return this->video_uri;   };
-    Q_INVOKABLE QString getThermalVideoPort()  {return this->thermal_video_port;  };
-    Q_INVOKABLE QString getThermalVideoUrl()   {return this->thermal_video_uri;   };
-    Q_INVOKABLE QString getAudioPort()  {return this->audio_port;  };
-    Q_INVOKABLE QString getAudioUrl()   {return this->audio_uri;   };
-    Q_INVOKABLE int     getStreamType() {return this->stream_type; };
-    Q_INVOKABLE int     getStreamType_2() {return this->stream_type_2; };
-    Q_INVOKABLE QString getVideoPath()  {return this->videoSavePath; };
-    Q_INVOKABLE QString getImagePath();
+
 
     typedef enum {
         UDP265,
         UDP264,
         TCP
     } STREAMING_TYPE;
-public :
-    Q_INVOKABLE void setServerUri(QString u);
-    Q_INVOKABLE void setServerPort(QString p);
-    Q_INVOKABLE void setVideoUrl(const QString u);
-    Q_INVOKABLE void setVideoPort(const QString p);
-    Q_INVOKABLE void setThermalVideoUrl(const QString u);
-    Q_INVOKABLE void setThermalVideoPort(const QString p);
-    Q_INVOKABLE void setAudioUrl(const QString u);
-    Q_INVOKABLE void setAudioPort(const QString p);
-    Q_INVOKABLE void setStreamType(const int t = STREAMING_TYPE::UDP265);
-    Q_INVOKABLE void setStreamType_2(const int t = STREAMING_TYPE::UDP265);
-    Q_INVOKABLE void udpSettings();
+
+
+public slots:
+    void setServerUri(QString u);
+    void setServerPort(QString p);
+    void setVideoUrl(const QString u);
+    void setVideoPort(const QString p);
+    void setThermalVideoUrl(const QString u);
+    void setThermalVideoPort(const QString p);
+    void setAudioUrl(const QString u);
+    void setAudioPort(const QString p);
+    void setStreamType(const int t = STREAMING_TYPE::UDP265);
+    void setStreamType_2(const int t = STREAMING_TYPE::UDP265);
+    void udpSettings();
+
+    QString getServerUri()  {return uri;}
+    QString getServerPort() {return port;}
+    QString getVideoPort()  {return this->video_port;  };
+    QString getVideoUrl()   {return this->video_uri;   };
+    QString getThermalVideoPort()  {return this->thermal_video_port;  };
+    QString getThermalVideoUrl()   {return this->thermal_video_uri;   };
+    QString getAudioPort()  {return this->audio_port;  };
+    QString getAudioUrl()   {return this->audio_uri;   };
+    int     getStreamType() {return this->stream_type; };
+    int     getStreamType_2() {return this->stream_type_2; };
+    QString getVideoPath()  {return this->videoSavePath; };
+    QString getImagePath();
+
 private:
     QString uri;
     QString port;
@@ -77,10 +82,10 @@ private:
     int win_w;
     int win_h;
 signals:
-    void onServerUriChanged();
-    void onServerPortChanged();
-    void onVideoUriChanged();
-    void onVideoPortChanged();
+    void serverUriChanged();
+    void serverPortChanged();
+    void videoUriChanged();
+    void videoPortChanged();
 };
 
 #endif // SETTINGMANAGER_H

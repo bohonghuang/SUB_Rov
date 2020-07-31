@@ -76,9 +76,10 @@ VideoReceiver::VideoReceiver(QObject* parent)
 #if defined(QGC_GST_STREAMING)
     _restart_timer.setSingleShot(true);
     connect(&_restart_timer, &QTimer::timeout, this, &VideoReceiver::_restart_timeout);
+    //_restart_timer.start();
     _tcp_timer.setSingleShot(true);
     connect(&_tcp_timer, &QTimer::timeout, this, &VideoReceiver::_tcp_timeout);
-    connect(this, &VideoReceiver::msgErrorReceived, this, &VideoReceiver::_handleError);
+    //connect(this, &VideoReceiver::msgErrorReceived, this, &VideoReceiver::_handleError);
     connect(this, &VideoReceiver::msgEOSReceived, this, &VideoReceiver::_handleEOS);
     connect(this, &VideoReceiver::msgStateChangedReceived, this, &VideoReceiver::_handleStateChanged);
     connect(&_frameTimer, &QTimer::timeout, this, &VideoReceiver::_updateTimer);

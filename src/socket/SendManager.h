@@ -49,6 +49,10 @@
 #define To_Machine_Open 0x01
 #define To_Machine_Close 0x02
 
+//启动停止位
+#define To_Start 0x01
+#define To_Stop 0x02
+#define To_Start_Stop_Normal 0x00
 
 
 #include <QObject>
@@ -119,6 +123,10 @@ public:
     void TurnOn();
     void TurnOff();
     void TurnDeviceNormal();
+
+    void TurnStart();
+    void TurnStop();
+    void TurnStartStopNormal();
 
     void SendCommandReset();
 

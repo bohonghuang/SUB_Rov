@@ -257,7 +257,6 @@ quint8* SendManager::udpCommand(){
 quint8 SendManager::getCheck(){
     quint8 temp;
 
-    qDebug("SendManager::get_check() In");
     temp = (unsigned char)(
                   this->sendcmd.head_1
                 + this->sendcmd.head_2
@@ -279,9 +278,8 @@ quint8 SendManager::getCheck(){
                 + this->sendcmd.startPi
                 + this->sendcmd.status)
                 & (0xFF);
-    qDebug() << " check get == " + QString(temp) ;
+    //qDebug() << " check get == " + QString(temp) ;
 
-    qDebug("SendManager::get_check() Out");
     return temp;
 }
 
@@ -367,6 +365,20 @@ void SendManager::TurnDeviceNormal(){
     this->sendcmd.status = To_Device_Status_Normal;
     qDebug("SendManager::TurnDeviceNormal() Out");
 }
+
+void SendManager::TurnStart()
+{
+    this->sendcmd.status = To_Start;
+}
+void SendManager::TurnStop()
+{
+    this->sendcmd.status = To_Stop;
+}
+void SendManager::TurnStartStopNormal()
+{
+    this->sendcmd.status = To_Start_Stop_Normal;
+}
+
 ///
 /// \brief SendManager::AddOil
 /// 这个方法中对oil进行了“加油”操作，

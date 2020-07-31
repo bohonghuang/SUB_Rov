@@ -21,5 +21,23 @@
         <file>resource/icon/up.png</file>
         <file>resource/icon/video_off.png</file>
         <file>resource/icon/video_on.png</file>
+        <file>resource/icon/flag/白字_变.png</file>
+        <file>resource/icon/flag/白字_串.png</file>
+        <file>resource/icon/flag/白字_电.png</file>
+        <file>resource/icon/flag/白字_动.png</file>
+        <file>resource/icon/flag/白字_机.png</file>
+        <file>resource/icon/flag/白字_聚.png</file>
+        <file>resource/icon/flag/白字_深.png</file>
+        <file>resource/icon/flag/白字_指.png</file>
+        <file>resource/icon/flag/黑字_变.png</file>
+        <file>resource/icon/flag/黑字_串.png</file>
+        <file>resource/icon/flag/黑字_电.png</file>
+        <file>resource/icon/flag/黑字_动.png</file>
+        <file>resource/icon/flag/黑字_机.png</file>
+        <file>resource/icon/flag/黑字_聚.png</file>
+        <file>resource/icon/flag/黑字_深.png</file>
+        <file>resource/icon/flag/黑字_指.png</file>
+        <file>resource/icon/flag/白字_云.png</file>
+        <file>resource/icon/flag/白字_P.png</file>
     </qresource>
 </RCC>

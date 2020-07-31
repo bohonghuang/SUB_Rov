@@ -140,6 +140,7 @@ SOURCES += \
         src/socket/Sendcommand.cpp \
         src/socket/SocketManager.cpp \
         src/socket/ReceiveCommand.cpp \
+        src/socket/SocketThread.cpp \
         src/socket/receivecommand.cpp \
         src/videostreaming/GLVideoItemStub.cc \
         src/videostreaming/VideoManager.cpp \
@@ -172,6 +173,7 @@ HEADERS += \
     src/socket/SendCommand.h \
     src/socket/SendManager.h \
     src/socket/SocketManager.h \
+    src/socket/SocketThread.h \
     src/videostreaming/GLVideoItemStub.h \
     src/videostreaming/VideoManager.h \
     src/videostreaming/VideoReceiver.h \

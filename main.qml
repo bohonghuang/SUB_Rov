@@ -332,6 +332,25 @@ Window {
         onTriggered: refresh();
     }
 
+    Connections{
+        target: settingsMaanger
+        onServerUriChanged: {
+            console.log("server uri is changed");
+        }
+        onServerPortChanged:{
+            console.log("server port is changed");
+        }
+        onVideoUriChanged: {
+            console.log("video uri is changed");
+            videoManager.restartVideos();
+        }
+        onVideoPortChanged: {
+            console.log("video port is changed");
+            videoManager.restartVideos();
+        }
+
+    }
+
     function settingsPageView() {
         return rov_sider.btnSettingsClicked;
     }
@@ -369,21 +388,9 @@ Window {
 
     function refresh(){
 
-        rov_sider.btnSocketSuccess = socketManager.isAccept? true:false;
-        rov_sider.btnRecordingSuccess = videoManager.recording===true ? true:false;
 
-        rovinfo.deepTxtText = "深度：" + socketManager.getDeepText();
-        rovinfo.innerTemTxtText = "内温：" + socketManager.getTemperatureInsideText();
-        rovinfo.waterTemTxtText = "外温：" + socketManager.getTemperatureOutsideText();
-        rovinfo.toUpTxtText = "俯仰：" + socketManager.getPitchText();
-        rovinfo.toLeftRightTxtText = qsTr("横滚：") + socketManager.getRollText();
-        rovinfo.speedTxtText = "航速：" + socketManager.getSpeedText();
-        rovinfo.elecATxtText = "电流：" + socketManager.getCurrentText();
-        rovinfo.elecUTxtText = "电压：" + socketManager.getVoltageText();
-        rovinfo.elecPTxtText = "功率：" + socketManager.getPowerText();
-
-        rovinfo.pointAngle = socketManager.getAngle();
     }
+
 
 }
 

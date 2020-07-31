@@ -11,10 +11,13 @@
 #include <QThread>
 #include "RovApplication.h"
 #include "RovToolBox.h"
+#include <SocketThread.h>
+#include <SettingManager.h>
 
 class SocketManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool accept READ isEnable WRITE enableSocket NOTIFY enableChanged)
 
 
 public:
@@ -22,7 +25,7 @@ public:
     ~SocketManager();
 
 
-    bool isAccept;
+    //bool accept;
 
     QString uri;
     QString port;
@@ -30,10 +33,14 @@ public:
     QUdpSocket *uSocket;
     QTcpSocket *tSocket;
 
+    SocketThread* myThread;
+
     SendManager *sendmanager;
     ReceiveManager *receivemanager;
+
+signals:
+    void enableChanged();
 public:
-    void InitSocket();
     void ReadError(QAbstractSocket::SocketError);
 
     Q_INVOKABLE SendManager* getSendManager() ;
@@ -41,8 +48,8 @@ public:
 
     Q_INVOKABLE void disConnectServer();
     Q_INVOKABLE void connectServer();
-    Q_INVOKABLE bool send();
-    Q_INVOKABLE bool receive();
+    Q_INVOKABLE void enableSocket(bool enable);
+    Q_INVOKABLE bool isEnable();
 
     QString getStringByQByteArray(QByteArray qb);
     Q_INVOKABLE void updateSettings();
@@ -62,10 +69,8 @@ public:
     Q_INVOKABLE bool getRovStatus();
     Q_INVOKABLE float getAngle();
 
-signals:
-    Q_INVOKABLE void onUriChanged();
-    Q_INVOKABLE void onPortChanged();
-    void onAccepteChanged();
 };
+
+
 
 #endif // SOCKETMANAGER_H

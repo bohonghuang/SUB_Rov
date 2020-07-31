@@ -28,15 +28,18 @@ public:
     VideoReceiver*  getVideoReceiver()       {return this->videoReceiver;}
     VideoReceiver*  getVideoReceiver_second(){return this->videoReceiver_second;}
     QString         getImageFile();
+
+
+public slots:
+    void restartVideos();
+    void startVideo();
+    void stopVideo();
+    void startRecording();
+    void stopRecording();
+    bool updateSettings();
     bool isRecording(){return this->recording;}
 
-    Q_INVOKABLE void restartVideos();
-    Q_INVOKABLE void startVideo();
-    Q_INVOKABLE void stopVideo();
-    Q_INVOKABLE void startRecording();
-    Q_INVOKABLE void stopRecording();
-    Q_INVOKABLE bool updateSettings();
-
+public:
 #if defined(QGC_GST_STREAMING)
     static gboolean _videoSinkQuery (GstPad* pad, GstObject* parent, GstQuery* query);
     GstElement*     _makeVideoSink  (gpointer widget);

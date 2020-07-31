@@ -2,18 +2,23 @@
 #define RECIVEMANAGER_H
 
 #include <QObject>
+#include <QThread>
 #include "ReceiveCommand.h"
 
 class ReceiveManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(ReceiveCommand receive READ getReceive NOTIFY recvCommandChanged)
+    Q_PROPERTY(quint8 deviceStatus READ getDeviceStatus NOTIFY onDeviceStatusChanged )
+
 private:
     ReceiveCommand receive;
 
 public:
     explicit ReceiveManager(QObject *parent = nullptr);
+    ReceiveCommand getReceive() {return this->receive;}
     //校验
-    bool isTrueCommand(quint8 *);
+    bool isTrueCommand(quint8 *, int);
     bool isTrueCommand(QByteArray);
     //更新内容
     void updateCommand(quint8 *);
@@ -43,9 +48,15 @@ public:
     double getPitch();
     //速度
     float getSpeed();
-
+    //
+    int getDeviceStatus();
+public slots:
     bool getRovStatus();
-    int getRovDeviceStatus();
+    bool getRovDeviceStatus(int x);
+
+signals:
+    void onDeviceStatusChanged();
+    void recvCommandChanged();
 };
 
 #endif // RECIVEMANAGER_H

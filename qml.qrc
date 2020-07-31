@@ -12,5 +12,6 @@
         <file>src/qml/Setting.qml</file>
         <file>src/qml/VideoBackground.qml</file>
         <file>src/qml/AboutPage.qml</file>
+        <file>src/qml/MyFlag.qml</file>
     </qresource>
 </RCC>

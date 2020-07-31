@@ -34,6 +34,13 @@ VideoManager::VideoManager(){
     this->videoReceiver = new  VideoReceiver(this);
     this->videoReceiver_second = new VideoReceiver(this);
 
+    connect(this->videoReceiver, &VideoReceiver::recordingChanged, this, [=](){
+        if(this->videoReceiver!=nullptr)
+            this->recording = this->videoReceiver->recording();
+
+        emit recordingChanged();
+    });
+
 }
 VideoManager::~VideoManager(){
     delete videoReceiver;

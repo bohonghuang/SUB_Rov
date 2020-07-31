@@ -184,11 +184,15 @@ void SettingManager::udpSettings()
 void SettingManager::setServerUri(QString u)
 {
     this->uri = u;
+
+    emit serverUriChanged();
 }
 
 void SettingManager::setServerPort(QString p)
 {
     this->port = p;
+
+    emit serverPortChanged();
 }
 
 void SettingManager::setStreamType(const int t)
@@ -204,11 +208,15 @@ void SettingManager::setStreamType_2(const int t)
 void SettingManager::setVideoUrl(const QString u)
 {
    this->video_uri = u;
+
+    emit videoUriChanged();
 }
 
 void SettingManager::setVideoPort(const QString p)
 {
     this->video_port = p;
+
+    emit videoPortChanged();
 }
 
 void SettingManager::setThermalVideoUrl(const QString u)
