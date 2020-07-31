@@ -65,9 +65,13 @@
 class SendManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool deep READ isDeepLock WRITE lockDeep NOTIFY deepChanged)
+    Q_PROPERTY(bool direction READ isDirectLock WRITE lockDirect NOTIFY directChanged)
+
 public:
     explicit SendManager(QObject *parent = nullptr);
     QString toString();
+
 public:
     SendCommand sendcmd;
     Oilvalve oil;
@@ -75,6 +79,16 @@ public:
     QString rootPath;
     QString logoPath;
     QString logo;
+
+public slots:
+    bool isDeepLock() {return sendcmd.deeplock== To_Deep_Lock ? true : false; }
+    void lockDeep(bool v){ v ? this->sendcmd.deeplock = To_Deep_Lock : To_Deep_Unlock; }
+    bool isDirectLock() {return sendcmd.directionlock == To_Direction_Lock? true : false; }
+    void lockDirect(bool v){ v ? this->sendcmd.directionlock = To_Direction_Lock : To_Direction_Unlock; }
+
+
+
+
 public:
     void Display();
     void DelayDisplay(QObject obj);
@@ -118,7 +132,9 @@ public:
     void TurnMachineClose();
 
     void TurnDirectionLock();
+    void TurnDirectionUnLock();
     void TurnDeepLock();
+    void TurnDeepUnLock();
 
     void TurnOn();
     void TurnOff();
@@ -134,7 +150,8 @@ public:
     quint8 getCheck();
     QByteArray getBytearrayCommand();
 signals:
-
+    void deepChanged();
+    void directChanged();
 };
 
 #endif // SENDMANAGER_H

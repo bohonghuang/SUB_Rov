@@ -38,10 +38,11 @@ public:
     SendManager *sendmanager;
     ReceiveManager *receivemanager;
 
+    QString getStringByQByteArray(QByteArray qb);
+    void ReadError(QAbstractSocket::SocketError);
 signals:
     void enableChanged();
-public:
-    void ReadError(QAbstractSocket::SocketError);
+public slots:
 
     Q_INVOKABLE SendManager* getSendManager() ;
     Q_INVOKABLE ReceiveManager* getReceiveManager(){return this->receivemanager;}
@@ -51,7 +52,6 @@ public:
     Q_INVOKABLE void enableSocket(bool enable);
     Q_INVOKABLE bool isEnable();
 
-    QString getStringByQByteArray(QByteArray qb);
     Q_INVOKABLE void updateSettings();
 
     Q_INVOKABLE QString getSpeedText() ;

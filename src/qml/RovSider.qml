@@ -10,7 +10,7 @@ Item {
 
     property bool socketSuccess: false
     property bool recordSucess: false
-
+    property bool rovStatus_start_stop: false
     ToolBar{
         id: toolBar
         width: parent.width
@@ -68,7 +68,13 @@ Item {
 //            MyButton {
 //                id: btn_status_control
 //                btnstr: socketSuccess ? qsTr("停止") : qsTr( "启动")
-//                btnimgSource:
+//                btnimgSource: socketSuccess ? "../../resource/icon/白字_止.png" : "../../resource/icon/白字_起.png"
+//                visible: socketSuccess
+//                MouseArea {
+//                    anchors.fill: parent
+//                    cursorShape: Qt.PointingHandCursor
+//                    onClicked: socketSuccess ? rovControl.doStop() : rovControl.doStart()
+//                }
 //            }
 
             MyButton{
@@ -92,6 +98,7 @@ Item {
         target: socketManager
         onEnableChanged: {
             socketSuccess = socketManager.isEnable();
+            console.log(socketSuccess);
         }
     }
 

@@ -212,6 +212,8 @@ Window {
         width: 330
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
+
+
         Rectangle{
             id: toolbar_second_body
             width: parent.width

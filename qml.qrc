@@ -13,5 +13,6 @@
         <file>src/qml/VideoBackground.qml</file>
         <file>src/qml/AboutPage.qml</file>
         <file>src/qml/MyFlag.qml</file>
+        <file>src/qml/MySwitch.qml</file>
     </qresource>
 </RCC>

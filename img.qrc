@@ -39,5 +39,7 @@
         <file>resource/icon/flag/黑字_指.png</file>
         <file>resource/icon/flag/白字_云.png</file>
         <file>resource/icon/flag/白字_P.png</file>
+        <file>resource/icon/flag/白字_起.png</file>
+        <file>resource/icon/flag/白字_止.png</file>
     </qresource>
 </RCC>

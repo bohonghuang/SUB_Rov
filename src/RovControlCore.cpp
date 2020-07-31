@@ -82,12 +82,28 @@ void RovControlCore::doLockDeep()
             ->TurnDeepLock();
 }
 
+void RovControlCore::doUnlockDeep()
+{
+    rovApp()->getToolbox()
+            ->getSocketManager()
+            ->getSendManager()
+            ->TurnDeepUnLock();
+}
+
 void RovControlCore::doLockDirection()
 {
     rovApp()->getToolbox()
             ->getSocketManager()
             ->getSendManager()
             ->TurnDirectionLock();
+}
+
+void RovControlCore::doUnlockDirection()
+{
+    rovApp()->getToolbox()
+            ->getSocketManager()
+            ->getSendManager()
+            ->TurnDirectionUnLock();
 }
 
 

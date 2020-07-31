@@ -25,7 +25,9 @@ public slots:
     void doStopSpin();
 
     void doLockDeep();
+    void doUnlockDeep();
     void doLockDirection();
+    void doUnlockDirection();
     //
     void doTurnLight();
     void doTurnLightUp();

@@ -7,7 +7,7 @@ SendCommand::SendCommand()
     head_length = 16;
 
     deeplock = 0x01;
-    directionlock =0x01;
+    directionlock =0x00;
     forward_backward =0x80;
     left_right =0x80;
     up_down =0x80;

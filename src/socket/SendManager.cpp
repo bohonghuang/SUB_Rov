@@ -310,30 +310,39 @@ void SendManager::SendCommandReset(){
 /// \brief SendManager::TurnDirectionLock
 /// 方向锁定
 void SendManager::TurnDirectionLock(){
-    qDebug("SendManager::TurnDirectionLock() In");
-    qDebug() << "send cmd -> direction Lock == " + QString(sendcmd.directionlock) ;
+    qDebug() << "Turn direction Lock ==> " + QString(sendcmd.directionlock) ;
 
     if(this->sendcmd.directionlock == To_Direction_Lock )
         this->sendcmd.directionlock = To_Direction_Unlock;
     else
         this->sendcmd.directionlock = To_Direction_Lock;
-    qDebug("SendManager::TurnDirectionLock() Out");
+
+    emit directChanged();
+}
+
+void SendManager::TurnDirectionUnLock()
+{
+    this->sendcmd.directionlock = To_Direction_Unlock;
 }
 
 ///
 /// \brief SendManager::TurnDeepLock
 /// 深度锁定
 void SendManager::TurnDeepLock(){
-    qDebug("SendManager::TurnDeepLock() In");
-    qDebug() << "send cmd -> deeplock == " + QString(sendcmd.deeplock) ;
+
+    qDebug() << "Turn deeplock ==> " + QString(sendcmd.deeplock) ;
 
     if(this->sendcmd.deeplock == To_Deep_Lock)
         this->sendcmd.deeplock = To_Deep_Unlock;
     else
         this->sendcmd.deeplock = To_Deep_Lock;
 
+    emit deepChanged();
+}
 
-    qDebug("SendManager::TurnDeepLock() Out");
+void SendManager::TurnDeepUnLock()
+{
+    this->sendcmd.deeplock = To_Deep_Unlock;
 }
 
 ///

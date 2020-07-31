@@ -87,6 +87,11 @@ void SocketThread::disconnectServer()
 {
     if(tcpSocket!=nullptr){
         tcpSocket->disconnectFromHost();
+
         qDebug() << "connect is closed" ;
     }
+    this->enableSocket = false;
+
+    emit rovApp()->getToolbox()->getSocketManager()->enableChanged();
+
 }

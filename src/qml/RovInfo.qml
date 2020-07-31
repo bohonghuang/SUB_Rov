@@ -1,11 +1,11 @@
-﻿import QtQuick 2.0
+﻿import QtQuick 2.9
 import QtQuick.Controls 2.5
-
+import QtQuick.Controls.Styles 1.4
 
 Item {
     id: element
     width: 160
-    height: 520
+    height: 600
     property alias deepTxtText: deepTxt.text
     property alias innerTemTxtText: innerTemTxt.text
     property alias waterTemTxtText: waterTemTxt.text
@@ -22,15 +22,21 @@ Item {
 
     property alias pointAngle: point_animation.to
 
+
+
+    property bool isDeepLock: false
+    property bool isDirectionLock: false
+
+
     onPointAngleChanged: {
         point_animation.running = true;
     }
 
     Rectangle {
         id: rectangle
-        height: parent.height
         color: "#434343"
         width: parent.width
+        height: 600
         radius: 10
         gradient: Gradient {
             GradientStop {
@@ -49,69 +55,6 @@ Item {
         border.width: 0
 
 
-        MyFlag{
-            id: flag_deep
-            x: 8
-            y: 365
-            img_source: "../../resource/icon/flag/白字_深.png"
-        }
-
-        MyFlag {
-            id: flag_zoom
-            x: 8
-            y: 417
-            img_source: "../../resource/icon/flag/白字_变.png"
-        }
-
-        MyFlag {
-            id: flag_focus
-            x: 60
-            y: 417
-            img_source: "../../resource/icon/flag/白字_聚.png"
-        }
-
-        MyFlag {
-            id: flag_power
-            x: 112
-            y: 417
-            img_source: "../../resource/icon/flag/白字_电.png"
-        }
-
-        MyFlag {
-            id: flag_cloud
-            x: 8
-            y: 472
-            img_source: "../../resource/icon/flag/白字_云.png"
-        }
-
-        MyFlag {
-            id: flag_point
-            x: 60
-            y: 365
-            img_source: "../../resource/icon/flag/白字_指.png"
-        }
-
-        MyFlag {
-            id: flag_machine
-            x: 112
-            y: 365
-            img_source: "../../resource/icon/flag/白字_机.png"
-        }
-
-        MyFlag {
-            id: flag_com
-            x: 60
-            y: 472
-            img_source: "../../resource/icon/flag/白字_串.png"
-        }
-
-        MyFlag {
-            id: flag_p
-            x: 112
-            y: 472
-            img_source: "../../resource/icon/flag/白字_P.png"
-        }
-
 
 
     }
@@ -120,14 +63,12 @@ Item {
 
     Grid {
         id: grid
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 163
         anchors.right: parent.right
         anchors.rightMargin: 9
         anchors.left: parent.left
         anchors.leftMargin: 9
         anchors.top: parent.top
-        anchors.topMargin: 44
+        anchors.topMargin: 20
         spacing: 10
         rows: 10
         columns: 1
@@ -235,6 +176,176 @@ Item {
     }
 
 
+    Flow {
+        id: flag_flow
+        x: 8
+        width: 141
+        height: 154
+        anchors.top: grid.bottom
+        anchors.topMargin: 25
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 10
+
+
+        MyFlag{
+            id: flag_deep
+            x: 8
+            y: 365
+            img_source: "../../resource/icon/flag/白字_深.png"
+        }
+
+        MyFlag {
+            id: flag_zoom
+            x: 8
+            y: 417
+            img_source: "../../resource/icon/flag/白字_变.png"
+        }
+
+        MyFlag {
+            id: flag_focus
+            x: 60
+            y: 417
+            img_source: "../../resource/icon/flag/白字_聚.png"
+        }
+
+        MyFlag {
+            id: flag_power
+            x: 112
+            y: 417
+            img_source: "../../resource/icon/flag/白字_电.png"
+        }
+
+        MyFlag {
+            id: flag_cloud
+            x: 8
+            y: 472
+            img_source: "../../resource/icon/flag/白字_云.png"
+        }
+
+        MyFlag {
+            id: flag_point
+            x: 60
+            y: 365
+            img_source: "../../resource/icon/flag/白字_指.png"
+        }
+
+        MyFlag {
+            id: flag_machine
+            x: 112
+            y: 365
+            img_source: "../../resource/icon/flag/白字_机.png"
+        }
+
+        MyFlag {
+            id: flag_com
+            x: 60
+            y: 472
+            img_source: "../../resource/icon/flag/白字_串.png"
+        }
+
+        MyFlag {
+            id: flag_p
+            x: 112
+            y: 472
+            img_source: "../../resource/icon/flag/白字_P.png"
+        }
+
+
+    }
+
+
+    Rectangle {
+        id: southRec
+        x: -120
+        y: 10
+        width: 100
+        height: 100
+        color: "#00000000"
+
+
+        Image {
+            id: imgSouthBack
+            anchors.fill: parent
+            source: "../../resource/icon/the_back.png"
+            fillMode: Image.PreserveAspectFit
+        }
+
+        Image {
+            id: imgSouthPoint
+            width: 70
+            height: 70
+            anchors.horizontalCenterOffset: 1
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            source: "../../resource/icon/the_point.png"
+            fillMode: Image.PreserveAspectFit
+        }
+    }
+
+    Switch {
+
+        id: switch_deep
+        height: 40
+        text: qsTr("深度锁定")
+        anchors.left: parent.left
+        anchors.leftMargin: 5
+        anchors.right: parent.right
+        anchors.rightMargin: 5
+        anchors.top: flag_flow.bottom
+        anchors.topMargin: 0
+        font.weight: Font.Light
+        font.bold: false
+        font.family: "Courier"
+        font.pointSize: 13
+        checked: sendManager.isDeepLock()
+        background: Rectangle{
+            anchors.fill: parent
+            color: "gray"
+            radius: 50
+        }
+
+        onCheckedChanged: {
+            if(checked === true){
+                rovControl.doLockDeep();
+            }
+            else{
+                rovControl.doUnlockDeep();
+            }
+        }
+
+    }
+    Switch {
+        id: switch_direction
+        height: 40
+        text: qsTr("方向锁定")
+        anchors.right: parent.right
+        anchors.rightMargin: 5
+        anchors.left: parent.left
+        anchors.leftMargin: 5
+        anchors.top: switch_deep.bottom
+        anchors.topMargin: 5
+        font.pointSize: 13
+        font.bold: false
+        font.weight: Font.Light
+        checked: sendManager.isDirectLock()
+        font.family: "Courier"
+        background: Rectangle {
+            color: "#808080"
+            radius: 50
+            anchors.fill: parent
+        }
+
+
+        onCheckedChanged: {
+            if(checked === true){
+                rovControl.doLockDirection();
+            }
+            else{
+                rovControl.doUnlockDirection();
+            }
+        }
+    }
+
     ParallelAnimation{
         id: animation_show
 
@@ -267,6 +378,8 @@ Item {
             duration: 200
         }
     }
+
+
     ParallelAnimation{
         id: animation_hidden
         onStopped: {
@@ -301,33 +414,6 @@ Item {
         duration: 200
     }
 
-    Rectangle {
-        id: southRec
-        x: -120
-        y: 10
-        width: 100
-        height: 100
-        color: "#00000000"
-
-
-        Image {
-            id: imgSouthBack
-            anchors.fill: parent
-            source: "../../resource/icon/the_back.png"
-            fillMode: Image.PreserveAspectFit
-        }
-
-        Image {
-            id: imgSouthPoint
-            width: 70
-            height: 70
-            anchors.horizontalCenterOffset: 1
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            source: "../../resource/icon/the_point.png"
-            fillMode: Image.PreserveAspectFit
-        }
-    }
 
 
     Connections {
@@ -337,6 +423,30 @@ Item {
             flag_refresh();
         }
     }
+    Connections {
+        target: sendManager
+        onDeepChanged: {
+            if(sendManager.isDeepLock()){
+                switch_deep.checked = true;
+            }
+            else{
+                switch_deep.checked = false;
+            }
+        }
+        onDirectChanged: {
+            if(sendManager.isDirectLock()){
+                switch_direction.checked = true;
+            }
+            else{
+                switch_direction.checked = false;
+            }
+        }
+    }
+
+
+
+
+
 
     function info_refresh () {
         deepTxtText = "深度：" + socketManager.getDeepText();
@@ -430,3 +540,10 @@ Item {
 }
 
 
+
+/*##^##
+Designer {
+    D{i:15;anchors_x:8;anchors_y:363}D{i:33;anchors_width:144;anchors_x:8;anchors_y:511}
+D{i:41;anchors_width:144;anchors_x:11;anchors_y:510}
+}
+##^##*/
