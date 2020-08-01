@@ -1,4 +1,4 @@
-# SUB ROV
+# SUB ROV - x360
 
 这是一个校园项目
 
@@ -10,6 +10,16 @@
 
 gstreamer 1.0 (请将其安装于C:/gstreamer  下)
 
+<br/>
+
+<br/>
+
+> 和master分支的主要差异为： 使用了qt自带的gamepad库，而取消了qjoysticks库。
+>
+> 带来的影响是起初的通过虚拟手柄映射解决不同手柄带来的设备问题。
+>
+> 以及舍弃了对安卓手柄的开发预期
+
 
 
 >  如果出现vc++ runtime 错误，请尝试通过安装vc运行库以修复该问题。
@@ -19,10 +29,6 @@ gstreamer 1.0 (请将其安装于C:/gstreamer  下)
 项目的参考对象有：
 
 [QGroundControl][1] 
-
-[QJoysticks][2]
-
-
 
 ### 文件结构
 

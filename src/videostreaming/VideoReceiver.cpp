@@ -1357,6 +1357,7 @@ VideoReceiver::_noteVideoSinkFrame()
 GstPadProbeReturn
 VideoReceiver::_keyframeWatch(GstPad* pad, GstPadProbeInfo* info, gpointer user_data)
 {
+    qDebug() << "_keyframeWatch";
     Q_UNUSED(pad);
     if(info != nullptr && user_data != nullptr) {
         GstBuffer* buf = gst_pad_probe_info_get_buffer(info);

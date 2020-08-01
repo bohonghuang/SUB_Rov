@@ -7,17 +7,6 @@
 #include "RovControlCore.h"
 #include <QDebug>
 
-RovToolBox::RovToolBox(RovApplication* app)
-{
-    qDebug() << "RovToolBox::RovToolBox()";
-    this->settingManager = new SettingManager();
-    this->socketManager = new SocketManager();
-    this->videoManager = new VideoManager();
-    this->keyManager = new KeyManager();
-    this->controler = new RovControlCore();
-
-    qDebug() << "Now Create Toolbox Complete";
-}
 RovToolBox::RovToolBox(){
     qDebug() << "RovToolBox::RovToolBox()";
 
@@ -26,6 +15,9 @@ RovToolBox::RovToolBox(){
     this->videoManager = new VideoManager();
     this->keyManager = new KeyManager();
     this->controler = new RovControlCore();
+
+
+    settingManager->start();
     qDebug() << "Now Create Toolbox Complete";
 
 }

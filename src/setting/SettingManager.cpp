@@ -3,6 +3,11 @@
 #include <QMutex>
 
 SettingManager::SettingManager(){
+
+
+
+
+
     this->read_write = new QSettings("./conf/setting.ini", QSettings::IniFormat);
     qDebug() << "ini 在" << read_write->fileName();
     this->InitSettings();
@@ -149,6 +154,17 @@ void SettingManager::InitSettings()
     }
     this->win_h = tmp.toInt() ;
     read_write->endGroup();
+
+
+    //enable 组
+    read_write->beginGroup("enable");
+    tmp = read_write->value("checkout").toString();
+    if( tmp.isEmpty() ){
+        tmp = QString("true");
+        read_write->setValue("checkout", tmp);
+    }
+    this->enableCheck = tmp.contains("true") ? true : false ;
+    read_write->endGroup();
 }
 
 QString SettingManager::getImagePath()
@@ -160,11 +176,47 @@ QString SettingManager::getImagePath()
     return imageFile;
 }
 
+void SettingManager::run(){
+    //server
+    connect(this, &SettingManager::serverUriChanged, this, [=](){
+        read_write->setValue("server/ip", this->uri);
+        qDebug() << "server ip write over";
+    });
+    connect(this, &SettingManager::serverPortChanged, this, [=](){
+        read_write->setValue("server/port", this->port);
+        qDebug() << "server port write over";
+    });
+    //video
+    connect(this, &SettingManager::videoTypeChanged, this, [=](){
+        read_write->setValue("video/type", this->stream_type);
+    });
+    connect(this, &SettingManager::videoUriChanged, this, [=](){
+        read_write->setValue("video/uri", this->video_uri);
+    });
+    connect(this, &SettingManager::videoPortChanged, this, [=](){
+        read_write->setValue("video/port", this->video_port);
+    });
+    //themal video
+    connect(this, &SettingManager::thermalVideoTypeChanged, this, [=](){
+        read_write->setValue("thermalvideo/type", this->stream_type_2);
+    });
+    connect(this, &SettingManager::thermalVideoUriChanged, this, [=](){
+        read_write->setValue("thermalvideo/uri", this->thermal_video_uri);
+    });
+    connect(this, &SettingManager::thermalVideoPortChanged, this, [=](){
+        read_write->setValue("thermalvideo/port", this->thermal_video_port);
+    });
+    //enable
+    connect(this, &SettingManager::checkoutChanged, this , [=]() {
+        read_write->setValue("enable/checkout", this->enableCheck);
+    });
+    exec();
+}
 
 void SettingManager::udpSettings()
 {
-    static QMutex mx;
-    mx.lock();
+//    static QMutex mx;
+//    mx.lock();
     qDebug("SettingManager::udpSettings in") ;
     read_write->setValue("server/ip", this->uri);
     read_write->setValue("server/port", this->port);
@@ -178,7 +230,14 @@ void SettingManager::udpSettings()
     read_write->setValue("audio/port", this->audio_port);
     qDebug("SettingManager::udpSettings out") ;
 
-    mx.unlock();
+    //mx.unlock();
+}
+
+void SettingManager::setEnableCheckout(const bool enable)
+{
+    this->enableCheck = enable;
+
+    emit checkoutChanged();
 }
 
 void SettingManager::setServerUri(QString u)
@@ -198,11 +257,15 @@ void SettingManager::setServerPort(QString p)
 void SettingManager::setStreamType(const int t)
 {
     this->stream_type = (STREAMING_TYPE) t;
+
+    emit videoTypeChanged();
 }
 
 void SettingManager::setStreamType_2(const int t)
 {
     this->stream_type_2 = (STREAMING_TYPE) t;
+
+    emit thermalVideoTypeChanged();
 }
 
 void SettingManager::setVideoUrl(const QString u)
@@ -222,11 +285,15 @@ void SettingManager::setVideoPort(const QString p)
 void SettingManager::setThermalVideoUrl(const QString u)
 {
     this->thermal_video_uri = u;
+
+    emit thermalVideoUriChanged();
 }
 
 void SettingManager::setThermalVideoPort(const QString p)
 {
     this->thermal_video_port = p;
+
+    emit thermalVideoPortChanged();
 }
 
 void SettingManager::setAudioUrl(const QString u)

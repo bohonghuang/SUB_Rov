@@ -24,6 +24,8 @@ void SocketThread::run()
         this->enableSocket = false;
         this->enableConnected = false;
         qDebug() << "Disconnected!" ;
+
+        emit rovApp()->getToolbox()->getSocketManager()->enableChanged();
     });
 
 
@@ -46,19 +48,24 @@ void SocketThread::run()
     connect(tcpSocket, &QTcpSocket::readyRead, this, [=](){
         QByteArray data;
         data = tcpSocket->readAll();
+//        data.
 
-        int flag = memcmp(data.data(), data.data(), 26);
+        int sindex = checkHead(data);
+
+        quint8 memdata [26];
+        bool isFlag = datacpy(data, sindex, memdata);
+        qDebug() << memdata[0] << " - " << memdata[1] << " - " << memdata[25];
+        memcpy(data.data(), memdata, 26);
 
 
-        if(! data.isEmpty() ){
+        if( isFlag ){
             rovApp()->getToolbox()
                     ->getSocketManager()
                     ->getReceiveManager()
                     ->updateCommand(data);
-            //qDebug() << data.data();
         }
         else{
-            qDebug() << "Data is null";
+            qDebug() << "Data is error!!";
         }
     });
     exec();
@@ -92,6 +99,51 @@ void SocketThread::disconnectServer()
     }
     this->enableSocket = false;
 
-    emit rovApp()->getToolbox()->getSocketManager()->enableChanged();
+}
+
+int SocketThread::checkHead(QByteArray data)
+{
+    int length = data.size();
+    int sindex = 0;
+    int cnt = 0;
+
+    for( int i=0; i<length; i++){
+        quint8 tmp = data[i];
+        if(tmp == 0xaa && cnt == 0){
+            cnt++;
+            sindex = i;
+        }
+        else if(tmp == 0x55 && cnt == 1){
+            cnt++;
+        }
+        else if( tmp == 0x16 && cnt == 2){
+            break;
+        }
+        else{
+            cnt = 0;
+            sindex = 0;
+        }
+    }
+
+    return sindex;
+}
+
+bool SocketThread::datacpy(QByteArray data, int sindex, quint8 *newdata, int length)
+{
+    int mi = 0;
+    int size = data.size();
+
+    if(size - sindex < length)
+    {
+           qWarning() << "read data error!!";
+           return false;
+    }
+    else{
+        for( int i=sindex; i<sindex+length && i<size ; i++,mi++){
+            newdata[mi] = data[i];
+        }
+
+        return true;
+    }
 
 }

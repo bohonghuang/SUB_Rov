@@ -25,6 +25,9 @@ public:
     void EnableSocket(bool enable){this->enableSocket = enable;};
     bool isEnableSocket() { return this->enableSocket; }
 
+    int checkHead(QByteArray data);
+    bool datacpy(QByteArray data, int sindex, quint8* newdata, int length = 26);
+
 private:
 
     QTcpSocket * tcpSocket;

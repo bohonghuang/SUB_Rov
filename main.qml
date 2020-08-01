@@ -17,7 +17,8 @@ Window {
     visible: true
     width: 1600
     height: 900 + 66
-    title: qsTr("Rov Controller")
+    title: qsTr("Rov Controller v0.17")
+
 
 
     RovSider{
@@ -30,14 +31,13 @@ Window {
 
         onBtnSettingsClickedChanged: {
             if(rov_sider.btnSettingsClicked == true){
-                page_open.running = true;
+                settingsPage.page_open_running = true;
                 settingsPage.focus = true;
             }
             else{
-                page_close.running = true;
+                settingsPage.page_close_running = true;
+                settingsPage.focus = false;
                 mainPage.focus = true;
-
-                settingsMaanger.udpSettings();
             }
         }
 
@@ -105,65 +105,50 @@ Window {
             }
         }
     }
+    Page {
+        id: thermal_page
+        font.family: "Tahoma"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 50
+        anchors.left: parent.left
+        anchors.leftMargin: 100
+        visible: true
+        width: 400
+        height: 200
+        //visible: mainPageView()
+
+        property bool isClicked : false;
+        Rectangle{
+            color: "#ffffff"
+            anchors.fill: parent
+            BorderImage {
+                id: borderImage_2
+                width: thermal_page.width/2
+                height: width/2.4
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: "../../resource/img/Logo.png"
+            }
+            VideoBackground{
+                id: thermalVideo
+                objectName: "thermalVideo";
+                anchors.fill: parent
+                anchors.centerIn: parent
+            }
+
+            MouseArea{
+                anchors.fill: parent
+            }
+        }
+    }
+
     Setting {
         id: settingsPage
         anchors.top: rov_sider.bottom
-        width: 0;
+        height: parent.height - rov_sider.height
         visible: false
 
-        ParallelAnimation{
-            id: page_open
-            onStarted: {
-                settingsPage.x = -500;
-                settingsPage.visible = true;
-                settingsPage.z = 10
-            }
-            PropertyAnimation{
-                target: settingsPage
-                property: "width"
-                to: 600
-                duration: 200
-            }
-            PropertyAnimation{
-                target: settingsPage
-                property: "x"
-                to: 0
-                duration: 200
-            }
-            PropertyAnimation{
-                target: settingsPage
-                property: "opacity"
-                to: 1
-                duration: 200
-            }
-        }
-        ParallelAnimation{
-            id: page_close
-            onStopped: {
-                settingsPage.x = -500
-                settingsPage.z = -10
-                settingsPage.visible = false;
-                settingsPage.enabled
-            }
-            PropertyAnimation{
-                target: settingsPage
-                property: "width"
-                to: 0
-                duration: 200
-            }
-            PropertyAnimation{
-                target: settingsPage
-                property: "x"
-                to: -500
-                duration: 200
-            }
-            PropertyAnimation{
-                target: settingsPage
-                property: "opacity"
-                to: 0
-                duration: 200
-            }
-        }
+
     }
 
 

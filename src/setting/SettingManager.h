@@ -4,26 +4,32 @@
 #include <QObject>
 #include <QSettings>
 #include <QDateTime>
+#include <QThread>
 
 #include "RovApplication.h"
 #include "RovToolBox.h"
 #include "VideoManager.h"
 
 
-
-class SettingManager : public QObject
+class SettingManager : public QThread
 {
     Q_OBJECT
     Q_PROPERTY(QString uri READ getServerUri WRITE setServerUri NOTIFY serverUriChanged)
     Q_PROPERTY(QString port READ getServerPort WRITE setServerPort NOTIFY serverPortChanged)
     Q_PROPERTY(QString video_uri READ getVideoPort WRITE setVideoUrl NOTIFY videoUriChanged)
     Q_PROPERTY(QString video_port READ getVideoUrl WRITE setVideoPort NOTIFY videoPortChanged())
+    Q_PROPERTY(bool info READ getInfo() NOTIFY infoChanged)
+    Q_PROPERTY(bool enableCheckout READ isEnableCheckout NOTIFY checkoutChanged)
+
 public:
     SettingManager();
     ~SettingManager();
     void InitSettings();
 
+    void run() override;
 
+
+    bool getInfo(){return info ;};
 
     typedef enum {
         UDP265,
@@ -44,6 +50,7 @@ public slots:
     void setStreamType(const int t = STREAMING_TYPE::UDP265);
     void setStreamType_2(const int t = STREAMING_TYPE::UDP265);
     void udpSettings();
+    void setEnableCheckout(const bool enable);
 
     QString getServerUri()  {return uri;}
     QString getServerPort() {return port;}
@@ -57,8 +64,13 @@ public slots:
     int     getStreamType_2() {return this->stream_type_2; };
     QString getVideoPath()  {return this->videoSavePath; };
     QString getImagePath();
+    bool    isEnableCheckout() {return this->enableCheck;}
 
 private:
+    bool info;
+
+    bool enableCheck;
+
     QString uri;
     QString port;
 
@@ -84,8 +96,14 @@ private:
 signals:
     void serverUriChanged();
     void serverPortChanged();
+    void videoTypeChanged();
     void videoUriChanged();
     void videoPortChanged();
+    void thermalVideoTypeChanged();
+    void thermalVideoUriChanged();
+    void thermalVideoPortChanged();
+    void infoChanged();
+    void checkoutChanged();
 };
 
 #endif // SETTINGMANAGER_H

@@ -304,6 +304,16 @@ void RovControlCore::doStop()
             ->TurnStop();
 }
 
+void RovControlCore::doStartPi()
+{
+    qDebug() << "doStartPi 未启用的功能";
+}
+
+void RovControlCore::doStopPi()
+{
+    qDebug() << "doStopPi 未启用的功能";
+}
+
 
 
 

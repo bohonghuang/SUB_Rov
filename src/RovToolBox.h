@@ -16,7 +16,6 @@ class RovToolBox : public QObject
     Q_OBJECT
 
 public:
-    RovToolBox(RovApplication * app);
     RovToolBox();
     void setInit();
 

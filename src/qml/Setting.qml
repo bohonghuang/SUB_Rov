@@ -3,474 +3,523 @@ import QtQuick.Window 2.3
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
-Rectangle {
+Page {
     //width: 0
 
     property bool isTcp: false
 
+    property alias page_open_running: page_open.running
+    property alias page_close_running: page_close.running
+
+
     id: settings_rec
-    color: "#e5efef"
+    background: Image {
+        id: img_back_settings
+        fillMode: Image.TileVertically
+        source: "../../resource/img/geometry.png"
+    }
+
+    visible: true
+
 
     width: 400
-    height: 800
+    height: 600
+    focusPolicy: Qt.ClickFocus
+    focus: visible
 
-    ListView{
-        anchors.left: parent.left
-        anchors.leftMargin: 0
-        anchors.right: parent.right
-        anchors.rightMargin: 0
-        GroupBox {
-            id: serverbox
+    ScrollView{
+        id: scrollView
+        anchors.fill: parent
+        ColumnLayout{
+            id: column
             width: 400
-            height: 180
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 30
-            enabled: true
-            font.family: "Tahoma"
-            font.pointSize: 15
-            title: qsTr("Send & Receive")
-            Layout.fillHeight: true
-            Layout.topMargin: 20
-            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-            Layout.fillWidth: true
-            visible: settings_rec.visible
+            spacing: 20
 
-            Label {
-                id: lblServerIP
-                text: qsTr("IP:")
-                anchors.left: parent.left
-                anchors.leftMargin: 30
-                font.pointSize: 20
-                anchors.top: parent.top
-                anchors.topMargin: 30
-                font.family: "Tahoma"
-            }
-
-            TextField {
-                id: txtServerIP
-                x: 83
-                width: 250
-                height: 40
-                text: settingsMaanger.getServerUri()
-                font.weight: Font.Light
-                font.pixelSize: 18
-                anchors.verticalCenter: lblServerIP.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 30
-                placeholderText: qsTr("Server IP")
-
-                onTextChanged: {
-                    settingsMaanger.setServerUri(text.toString());
-                }
-            }
-
-            Label {
-                id: lblServerPort
-                text: qsTr("Port:")
-                anchors.left: parent.left
-                anchors.leftMargin: 6
-                font.pointSize: 20
-                anchors.top: lblServerIP.bottom
-                anchors.topMargin: 24
-                font.family: "Tahoma"
-            }
-
-
-            TextField {
-                id: txtServerPort
-                x: 96
-                width: 250
-                height: 40
-                text: settingsMaanger.getServerPort()
-                anchors.verticalCenterOffset: 0
-                anchors.right: parent.right
-                anchors.rightMargin: 30
-                font.pixelSize: 18
-                font.weight: Font.Light
-                anchors.verticalCenter: lblServerPort.verticalCenter
-                placeholderText: qsTr("Server Port")
-
-                onTextChanged: {
-                    settingsMaanger.setServerPort(text.toString());
-                }
-            }
-        }
-
-        GroupBox {
-            id: videobox
-            width: 400
-            height: 180
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: serverbox.bottom
-            anchors.topMargin: 30
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-            font.family: "Tahoma"
-            font.pointSize: 15
-            title: qsTr("Video Strem")
-            visible: settings_rec.visible;
-            ComboBox {
-                id: cmbVideo
-                Layout.fillWidth: true
-                height: 30
-                anchors.top: parent.top
-                anchors.topMargin: 20
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                model: ListModel{
-                    id: videoItems
-                    ListElement {
-                        text: qsTr("UDP 265");
+            ColumnLayout{
+                id: check_out_enable
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    Label{
+                        text: qsTr("启用检查字")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
                     }
-                    ListElement{
-                        text: qsTr("UDP 264");
-                    }
-                    ListElement {
-                        text: qsTr("TCP");
-                    }
-                }
-                currentIndex: settingsMaanger.getStreamType()
-                onCurrentIndexChanged: {
-                    if(currentIndex === 2){
-                        frameTcp.visible = true;
-                        frameUdp.visible = false;
-                    }
-                    else{
-                        frameTcp.visible = false;
-                        frameUdp.visible = true;
-                    }
-
-                    settingsMaanger.setStreamType(currentIndex);
-
-                }
-            }
-
-            Frame {
-                id: frameUdp
-                height: 80
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.top: cmbVideo.bottom
-                anchors.topMargin: 0
-                font.family: "Tahoma"
-
-                Label {
-                    id: lblvideoPort
-                    height: 33
-                    text: qsTr("接收端口：")
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 219
-                    anchors.left: parent.left
-                    anchors.leftMargin: 0
-                    font.family: "Tahoma"
-                    font.pointSize: 20
-                }
-                TextField{
-                    id: txtvideoPort
-                    y: 12
-                    height: 40
-                    text: settingsMaanger.getVideoPort()
-                    anchors.verticalCenter: lblvideoPort.verticalCenter
-                    anchors.left: lblvideoPort.right
-                    anchors.leftMargin: 0
-                    leftPadding: 6
-                    padding: 6
-                    font.weight: Font.Light
-                    anchors.right: parent.right
-                    anchors.rightMargin: 15
-                    placeholderText: "Video Stream Port"
-                    font.family: "Tahoma"
-                    font.letterSpacing: 0
-                    font.pixelSize: 18
-
-                    onTextChanged: {
-                        settingsMaanger.setVideoPort(text.toString());
-                    }
-                }
-
-
-            }
-
-            Frame {
-                id: frameTcp
-                width: 200
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
-                anchors.top: cmbVideo.bottom
-                anchors.topMargin: 0
-                visible: false
-
-                Label {
-                    id: lblvideoUri
-                    text: qsTr("接收Uri：")
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 0
-                    font.pointSize: 20
-                }
-
-                TextField{
-                    id: txtvideoUri
-                    y: 73
-                    height: 40
-                    text: settingsMaanger.getVideoUrl()
-                    anchors.left: lblvideoUri.right
-                    anchors.leftMargin: 0
-                    anchors.right: parent.right
-                    anchors.rightMargin: 15
-                    placeholderText: qsTr("Video Stream Url")
-                    anchors.verticalCenter: lblvideoUri.verticalCenter
-                    font.pixelSize: 20
-                    onTextChanged: {
-                        settingsMaanger.setVideoUrl(text.toString());
+                    Switch {
+                        text: qsTr("")
+                        autoRepeat: false
+                        display: AbstractButton.TextBesideIcon
+                        checked: settingsMaanger.isEnableCheckout()
+                        onCheckedChanged: {
+                            settingsMaanger.setEnableCheckout(checked)
+                        }
                     }
                 }
             }
-        }
 
-        GroupBox {
-            id: videobox_2
-            width: 400
-            height: 180
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: videobox.bottom
-            anchors.topMargin: 30
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-            font.family: "Tahoma"
-            font.pointSize: 15
-            title: qsTr("Video Strem 2")
-            visible: settings_rec.visible;
-            ComboBox {
-                id: cmbVideo_2
-                Layout.fillWidth: true
-                height: 30
-                anchors.top: parent.top
-                anchors.topMargin: 20
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                model: ListModel{
-                    id: videoItems_2
-                    ListElement {
-                        text: qsTr("UDP 265");
+            ColumnLayout{
+                id: pi_enable
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    Label{
+                        text: qsTr("Pi 启用位")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
                     }
-                    ListElement{
-                        text: qsTr("UDP 264");
-                    }
-                    ListElement {
-                        text: qsTr("TCP");
-                    }
-                }
-                currentIndex: settingsMaanger.getStreamType_2()
-                onCurrentIndexChanged: {
-                    if(currentIndex === 2){
-                        frameTcp_2.visible = true;
-                        frameUdp_2.visible = false;
-                    }
-                    else{
-                        frameTcp_2.visible = false;
-                        frameUdp_2.visible = true;
-                    }
+                    Switch {
+                        text: qsTr("")
+                        autoRepeat: false
+                        display: AbstractButton.TextBesideIcon
 
-                    settingsMaanger.setStreamType_2(currentIndex);
-
-                }
-            }
-
-            Frame {
-                id: frameUdp_2
-                height: 80
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.top: cmbVideo_2.bottom
-                anchors.topMargin: 0
-                font.family: "Tahoma"
-
-                Label {
-                    id: lblvideoPort_2
-                    height: 33
-                    text: qsTr("接收端口：")
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 219
-                    anchors.left: parent.left
-                    anchors.leftMargin: 0
-                    font.family: "Tahoma"
-                    font.pointSize: 20
-                }
-                TextField{
-                    id: txtvideoPort_2
-                    y: 12
-                    height: 40
-                    text: settingsMaanger.getThermalVideoPort()
-                    anchors.verticalCenter: lblvideoPort_2.verticalCenter
-                    anchors.left: lblvideoPort_2.right
-                    anchors.leftMargin: 0
-                    leftPadding: 6
-                    padding: 6
-                    font.weight: Font.Light
-                    anchors.right: parent.right
-                    anchors.rightMargin: 15
-                    placeholderText: "Video Stream Port"
-                    font.family: "Tahoma"
-                    font.letterSpacing: 0
-                    font.pixelSize: 18
-
-                    onTextChanged: {
-                        settingsMaanger.setThermalVideoPort(text.toString());
-                    }
-                }
-
-
-            }
-
-            Frame {
-                id: frameTcp_2
-                width: 200
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
-                anchors.top: cmbVideo_2.bottom
-                anchors.topMargin: 0
-                visible: false
-
-                Label {
-                    id: lblvideoUri_2
-                    text: qsTr("接收Uri：")
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 0
-                    font.pointSize: 20
-                }
-
-                TextField{
-                    id: txtvideoUri_2
-                    y: 73
-                    height: 40
-                    text: settingsMaanger.getVideoUrl()
-                    anchors.left: lblvideoUri_2.right
-                    anchors.leftMargin: 0
-                    anchors.right: parent.right
-                    anchors.rightMargin: 15
-                    placeholderText: qsTr("Video Stream Url")
-                    anchors.verticalCenter: lblvideoUri_2.verticalCenter
-                    font.pixelSize: 20
-                    onTextChanged: {
-                        settingsMaanger.setThermalVideoUrl(text.toString())
+                        onCheckedChanged: {
+                            if(checked === true){
+                                rovControl.doStartPi()
+                            }
+                            else{
+                                rovControl.doStopPi()
+                            }
+                        }
                     }
                 }
             }
-        }
 
+            ColumnLayout{
+                id: device_enable
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    Label{
+                        text: qsTr("设备启动位")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
+                    }
+                    Switch {
+                        text: qsTr("")
+                        autoRepeat: false
+                        display: AbstractButton.TextBesideIcon
 
-        GroupBox {
-                id: audiobox
+                        onCheckedChanged: {
+                            if(checked === true){
+                                rovControl.doStart()
+                            }
+                            else{
+                                rovControl.doStop()
+                            }
+                        }
+                    }
+                }
+            }
+
+            ColumnLayout{
+                id: server_box
                 width: 400
-                height: 150
-                anchors.horizontalCenter: parent.horizontalCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                font.family: "Tahoma"
-                title: qsTr("Audio Stream")
-                font.pointSize: 15
-                anchors.top: videobox_2.bottom
-                anchors.topMargin: 30
-                visible: settings_rec.visible
-                Frame {
-                    id: frameAudio
-                    anchors.fill: parent
-                    font.family: "Tahoma"
-                    Label {
-                        id: lblAudioPort
-                        y: 12
-                        text: qsTr("接收端口：")
-                        anchors.leftMargin: 0
-                        font.family: "Tahoma"
-                        font.pointSize: 20
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
+                height: 180
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                Label{
+                    text: qsTr("通信传输")
+                    font.italic: true
+                    font.bold: true
+                    font.underline: false
+                    bottomPadding: 10
+                    font.pointSize: 20
+                }
 
-                    TextField {
-                        id: txtAudioPort
-                        y: 17
+                RowLayout{
+                    Layout.leftMargin: 20
+                    //IP 行
+                    spacing: 10
+                    Label{
+                        text: qsTr("IP：")
+                        Layout.leftMargin: 28
+                        font.pointSize: 20
+                    }
+                    TextField{
+                        id: input_server_ip
+                        width: 250
                         height: 40
-                        text: settingsMaanger.getAudioPort()
-                        anchors.right: parent.right
-                        anchors.rightMargin: 0
-                        placeholderText: qsTr("Audio Stream Port")
-                        anchors.leftMargin: 0
-                        font.family: "Tahoma"
-                        font.pixelSize: 18
-                        anchors.left: lblAudioPort.right
-                        font.letterSpacing: 0
-                        anchors.verticalCenter: lblAudioPort.verticalCenter
+                        text: settingsMaanger.getServerUri()
+                        font.pointSize: 15
+                        selectByMouse: true
+
                         onTextChanged: {
-                            settingsMaanger.setAudioPort(text.toString());
+                            settingsMaanger.setServerUri(text.toString())
+                        }
+
+                    }
+                }
+                RowLayout{
+                    Layout.leftMargin: 20
+                    //端口 行
+                    spacing: 10
+                    Label{
+                        text: qsTr("Port：")
+                        font.pointSize: 20
+                    }
+                    TextField{
+                        id: input_server_port
+                        width: 250
+                        height: 40
+                        text: settingsMaanger.getServerPort()
+                        font.pointSize: 15
+                        selectByMouse: true
+
+                        onTextChanged: {
+                            settingsMaanger.setServerPort(text.toString())
+                        }
+                    }
+                }
+
+
+
+            }
+
+            ColumnLayout{
+                id: video_box_1
+                width: 400
+                height: 180
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                Label{
+                    text: qsTr("视频传输")
+                    font.italic: true
+                    font.bold: true
+                    font.underline: false
+                    bottomPadding: 10
+                    font.pointSize: 20
+                }
+                ComboBox{
+                    font.pointSize: 15
+                    model: ListModel{
+                        ListElement{
+                            text: qsTr("UDP 265")
+
+                        }
+                        ListElement{
+                            text: qsTr("UDP 264")
+
+                        }
+                        ListElement{
+                            text: qsTr("TCP/MPEG2")
+
+                        }
+                    }
+                    currentIndex: settingsMaanger.getStreamType()
+                    onCurrentIndexChanged: {
+                        if(currentIndex == 2){
+                            video_udp_1.visible = false;
+                            video_tcp_1.visible = true;
+                        }
+                        else{
+                            video_udp_1.visible = true;
+                            video_tcp_1.visible = false;
+                        }
+
+                        settingsMaanger.setStreamType(currentIndex);
+                    }
+                }
+                ColumnLayout{
+                    id: video_tcp_1
+                    RowLayout{
+                        Layout.leftMargin: 20
+                        //IP 行
+                        spacing: 10
+                        Label{
+                            text: qsTr("URL：")
+                            Layout.leftMargin: 15
+                            font.pointSize: 20
+                        }
+                        TextField{
+                            id: input_video_url
+                            width: 250
+                            height: 40
+                            text: settingsMaanger.getVideoUrl()
+                            font.pointSize: 15
+                            selectByMouse: true
+                            onTextChanged: {
+                                settingsMaanger.setVideoUrl(text.toString())
+                            }
                         }
                     }
 
                 }
 
-                Frame {
-                    id: frameAudioTcp
-                    visible: false
-                    anchors.fill: parent
+                ColumnLayout{
+                    id: video_udp_1
+                    RowLayout{
+                        Layout.leftMargin: 20
+                        //端口 行
+                        spacing: 10
+                        Label{
+                            text: qsTr("Port：")
+                            font.pointSize: 20
+                        }
+                        TextField{
+                            id: input_video_port
+                            width: 250
+                            height: 40
+                            text: settingsMaanger.getVideoPort()
+                            font.pointSize: 15
+                            selectByMouse: true
 
-                    Label {
-                        id: lblAudioUri
-                        text: qsTr("接收Uri：")
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin: 0
-                        font.pointSize: 20
-                        anchors.left: parent.left
-                    }
-
-                    TextField {
-                        id: txtAudioUri
-                        y: 73
-                        height: 40
-                        text: settingsMaanger.getAudioUrl()
-                        anchors.right: parent.right
-                        anchors.rightMargin: 0
-                        placeholderText: qsTr("Audio Stream Url")
-                        anchors.leftMargin: 0
-                        font.pixelSize: 20
-                        anchors.left: lblAudioUri.right
-                        anchors.verticalCenter: lblAudioUri.verticalCenter
-
-                        onTextChanged: {
-                            settingsMaanger.setAudioUrl(text.toString())
+                            onTextChanged: {
+                                settingsMaanger.setVideoPort(text.toString())
+                            }
                         }
                     }
                 }
+            }
+
+            ColumnLayout{
+                id: video_box_2
+                width: 400
+                height: 180
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                Label{
+                    text: qsTr("副视频传输")
+                    font.italic: true
+                    font.bold: true
+                    font.underline: false
+                    bottomPadding: 10
+                    font.pointSize: 20
+                }
+                ComboBox{
+                    font.pointSize: 15
+                    model: ListModel{
+                        ListElement{
+                            text: qsTr("UDP 265")
+
+                        }
+                        ListElement{
+                            text: qsTr("UDP 264")
+
+                        }
+                        ListElement{
+                            text: qsTr("TCP/MPEG2")
+
+                        }
+                    }
+                    currentIndex: settingsMaanger.getStreamType_2()
+                    onCurrentIndexChanged: {
+                        if(currentIndex == 2){
+                            video_udp_2.visible = false;
+                            video_tcp_2.visible = true;
+                        }
+                        else{
+                            video_udp_2.visible = true;
+                            video_tcp_2.visible = false;
+                        }
+
+                        settingsMaanger.setStreamType_2(currentIndex)
+                    }
+                }
+                ColumnLayout{
+                    id: video_tcp_2
+                    RowLayout{
+                        Layout.leftMargin: 20
+                        //IP 行
+                        spacing: 10
+                        Label{
+                            text: qsTr("URL：")
+                            Layout.leftMargin: 15
+                            font.pointSize: 20
+                        }
+                        TextField{
+                            id: input_video_url_2
+                            width: 250
+                            height: 40
+                            text: settingsMaanger.getThermalVideoUrl()
+                            font.pointSize: 15
+                            selectByMouse: true
+                            onTextChanged: {
+                                settingsMaanger.setThermalVideoUrl(text.toString())
+                            }
+                        }
+                    }
+
+                }
+
+                ColumnLayout{
+                    id: video_udp_2
+                    RowLayout{
+                        Layout.leftMargin: 20
+                        //端口 行
+                        spacing: 10
+                        Label{
+                            text: qsTr("Port：")
+                            font.pointSize: 20
+                        }
+                        TextField{
+                            id: input_video_port_2
+                            width: 250
+                            height: 40
+                            text: settingsMaanger.getThermalVideoPort()
+                            font.pointSize: 15
+                            selectByMouse: true
+
+                            onTextChanged: {
+                                settingsMaanger.setThermalVideoPort(text.toString())
+                            }
+
+                        }
+                    }
+
+                }
+
+
+
+
+            }
+
+
+
+            ColumnLayout{
+                id: audio_box
+                width: 400
+                height: 180
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                Label{
+                    text: qsTr("声音通信")
+                    font.italic: true
+                    font.bold: true
+                    font.underline: false
+                    bottomPadding: 10
+                    font.pointSize: 20
+                }
+
+                RowLayout{
+                    Layout.leftMargin: 20
+                    //端口 行
+                    spacing: 10
+                    Label{
+                        text: qsTr("Port：")
+                        font.pointSize: 20
+                    }
+                    TextField{
+                        width: 250
+                        height: 40
+                        text: settingsMaanger.getAudioPort();
+                        font.pointSize: 15
+                        selectByMouse: true
+
+                        onTextChanged: {
+                            settingsMaanger.setAudioPort(text.toString())
+                        }
+
+                    }
+                }
+
+
+
+            }
+
+            ColumnLayout{
+                id: test_box
+                width: 400
+                height: 180
+                Layout.bottomMargin: 30
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                Label{
+                    text: qsTr("无用的测试组")
+                    font.italic: true
+                    font.bold: true
+                    font.underline: false
+                    bottomPadding: 10
+                    font.pointSize: 20
+                }
+
+                RowLayout{
+                    Layout.leftMargin: 20
+                    //端口 行
+                    spacing: 10
+                    Label{
+                        text: qsTr("Port：")
+                        font.pointSize: 20
+                    }
+                    TextField{
+                        width: 250
+                        height: 40
+                        text: qsTr("123")
+                        font.pointSize: 15
+                        selectByMouse: true
+
+                    }
+                }
+
+
+
+            }
+
+
 
         }
 
 
+
+    }
+    ParallelAnimation{
+        id: page_open
+        onStarted: {
+            settings_rec.x = -500;
+            settings_rec.z = 10
+            settings_rec.width = 0
+            settings_rec.visible = true;
+        }
+        PropertyAnimation{
+            target: settings_rec
+            property: "width"
+            to: 600
+            duration: 200
+        }
+        PropertyAnimation{
+            target: settings_rec
+            property: "x"
+            to: 0
+            duration: 200
+        }
+        PropertyAnimation{
+            target: settings_rec
+            property: "opacity"
+            to: 1
+            duration: 200
+        }
+    }
+    ParallelAnimation{
+        id: page_close
+        onStopped: {
+            settings_rec.x = -500
+            settings_rec.z = -10
+            settings_rec.visible = false;
+            settings_rec.enabled
+        }
+        PropertyAnimation{
+            target: settings_rec
+            property: "width"
+            to: 0
+            duration: 200
+        }
+        PropertyAnimation{
+            target: settings_rec
+            property: "x"
+            to: -500
+            duration: 200
+        }
+        PropertyAnimation{
+            target: settings_rec
+            property: "opacity"
+            to: 0
+            duration: 200
+        }
     }
 
 
@@ -481,8 +530,6 @@ Rectangle {
 
 
 
-/*##^##
-Designer {
-    D{i:17;anchors_width:186}D{i:26;anchors_width:186}
-}
-##^##*/
+
+
+

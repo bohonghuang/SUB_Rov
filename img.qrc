@@ -41,5 +41,6 @@
         <file>resource/icon/flag/白字_P.png</file>
         <file>resource/icon/flag/白字_起.png</file>
         <file>resource/icon/flag/白字_止.png</file>
+        <file>resource/img/geometry.png</file>
     </qresource>
 </RCC>

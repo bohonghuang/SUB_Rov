@@ -64,7 +64,7 @@ void VideoManager::initManager(){
 void VideoManager::startVideo(){
     qDebug("VideoManager::startVideo()");
     if(videoReceiver) videoReceiver->start();
-//    if(videoReceiver_second) videoReceiver_second->start();
+    if(videoReceiver_second) videoReceiver_second->start();
     qDebug("End startVideo()");
 }
 
@@ -73,7 +73,7 @@ void VideoManager::startVideo(){
 /// 结束视频
 void VideoManager::stopVideo(){
     if(videoReceiver) videoReceiver->stop();
-//    if(videoReceiver_second) videoReceiver_second->stop();
+    if(videoReceiver_second) videoReceiver_second->stop();
 }
 
 void VideoManager::startRecording()
@@ -88,7 +88,7 @@ void VideoManager::startRecording()
     else{
         qDebug() << "videoReceiver is null";
     }
-//    if(videoReceiver_second) videoReceiver_second->startRecording(videoFile2);
+    if(videoReceiver_second) videoReceiver_second->startRecording();
 
 
 }
@@ -96,7 +96,7 @@ void VideoManager::startRecording()
 void VideoManager::stopRecording()
 {
     if(videoReceiver) videoReceiver->stopRecording();
-//    if(videoReceiver_second) videoReceiver_second->stopRecording();
+    if(videoReceiver_second) videoReceiver_second->stopRecording();
 }
 
 #if defined(QGC_GST_STREAMING)
@@ -147,21 +147,38 @@ void VideoManager::initVideo(){
 
 bool VideoManager::updateSettings(){
     qDebug("VideoManager::updateSettings");
-    if(!videoReceiver)
+    if(!videoReceiver && !videoReceiver_second)
         return false;
 
     int type = rovApp()->getToolbox()->getSettingManager()->getStreamType();
-    if(type == SettingManager::TCP){
-        videoReceiver->setUri(QStringLiteral("tcp://%1").arg(rovApp()->getToolbox()->getSettingManager()->getVideoUrl()));
+    int type2 = rovApp()->getToolbox()->getSettingManager()->getStreamType_2();
 
+    if( videoReceiver ){
+        if(type == SettingManager::TCP){
+            videoReceiver->setUri(rovApp()->getToolbox()->getSettingManager()->getVideoUrl());
+        }
+        else if(type == SettingManager::UDP264){
+            videoReceiver->setUri(QStringLiteral("udp://0.0.0.0:%1").arg(rovApp()->getToolbox()->getSettingManager()->getVideoPort()));
+
+        }
+        else if(type == SettingManager::UDP265){
+            videoReceiver->setUri(QStringLiteral("udp265://0.0.0.0:%1").arg(rovApp()->getToolbox()->getSettingManager()->getVideoPort()));
+
+        }
     }
-    else if(type == SettingManager::UDP264){
-        videoReceiver->setUri(QStringLiteral("udp://0.0.0.0:%1").arg(rovApp()->getToolbox()->getSettingManager()->getVideoPort()));
 
-    }
-    else if(type == SettingManager::UDP265){
-        videoReceiver->setUri(QStringLiteral("udp265://0.0.0.0:%1").arg(rovApp()->getToolbox()->getSettingManager()->getVideoPort()));
+    if(videoReceiver_second){
+        if(type2 == SettingManager::TCP){
+            videoReceiver_second->setUri(rovApp()->getToolbox()->getSettingManager()->getThermalVideoUrl());
+        }
+        else if(type2 == SettingManager::UDP264){
+            videoReceiver_second->setUri(QStringLiteral("udp://0.0.0.0:%1").arg(rovApp()->getToolbox()->getSettingManager()->getThermalVideoPort()));
 
+        }
+        else if(type2 == SettingManager::UDP265){
+            videoReceiver_second->setUri(QStringLiteral("udp265://0.0.0.0:%1").arg(rovApp()->getToolbox()->getSettingManager()->getThermalVideoPort()));
+
+        }
     }
 
     this->initVideo();

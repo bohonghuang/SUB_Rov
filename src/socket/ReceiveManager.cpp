@@ -1,6 +1,8 @@
 ﻿#include "ReceiveManager.h"
 #include <QDebug>
 #include <QtMath>
+#include <RovApplication.h>
+#include <SettingManager.h>
 
 
 ReceiveManager::ReceiveManager(QObject *parent) : QObject(parent)
@@ -14,7 +16,8 @@ ReceiveManager::ReceiveManager(QObject *parent) : QObject(parent)
 /// \return true代表核验成功，false核验失败
 /// 用来核验数据内容是否为真实内容
 bool ReceiveManager::isTrueCommand(quint8* data , int length){
-    return true;
+    if( !rovApp()->getToolbox()->getSettingManager()->isEnableCheckout() )
+        return true;
 
     //下面的代码出现了内存错误
     //int length = _msize(data) / sizeof (quint8);
@@ -42,7 +45,10 @@ bool ReceiveManager::isTrueCommand(quint8* data , int length){
     for( i=0; i< length - 1 ; i++){
         sum += data[i];
     }
+    qDebug() << "Sum == > "  << (int) sum;
     result = sum & 0xffff;
+    qDebug( ) << "Now check result: ==> " << result;
+    qDebug( ) << "And data[25] is : ==> " <<  (int)data[25];
 
     if(result == data[25])
         return true;

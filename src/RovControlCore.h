@@ -61,6 +61,9 @@ public slots:
     //
     void doStart();
     void doStop();
+    //pi
+    void doStartPi();
+    void doStopPi();
 signals:
 
 };
