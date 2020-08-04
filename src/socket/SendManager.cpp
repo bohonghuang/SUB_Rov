@@ -186,7 +186,7 @@ void SendManager::ToForwar_back_Normal(){
 
 void SendManager::SetLeftOrRight(uchar c)
 {
-    this->sendcmd.forward_backward = c;
+    this->sendcmd.left_right = c;
 }
 
 void SendManager::SetForwardOrBack(uchar c)

@@ -42,7 +42,7 @@ void SocketThread::run()
             connectServer();
         }
     });
-    timer.start(100);
+    timer.start(500);
 
 
     connect(tcpSocket, &QTcpSocket::readyRead, this, [=](){

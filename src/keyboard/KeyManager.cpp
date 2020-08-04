@@ -1,6 +1,8 @@
 ﻿#include "KeyManager.h"
 #include "RovApplication.h"
 #include <RovControlCore.h>
+#include <SocketManager.h>
+#include <SendManager.h>
 
 
 ///
@@ -32,6 +34,7 @@ void KeyManager::doThings(Qt::Key key)
         break;
 
     case Qt::Key_A:
+        qDebug() << "A";
         rovc->do_Left_Right_Change(-1);
         break;
 
@@ -121,6 +124,9 @@ void KeyManager::doThings(Qt::Key key)
     default:
         break;
     }
+
+
+    qDebug() << rovApp()->getToolbox()->getSocketManager()->getSendManager()->sendcmd.left_right;
 }
 
 ///

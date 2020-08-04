@@ -42,7 +42,6 @@ void RovControlCore::do_Forward_Back_Change(double axist)
 void RovControlCore::do_Left_Right_Change(double axist)
 {
     int t = axist * 127 + 128;
-
     rovApp()->getToolbox()
             ->getSocketManager()
             ->getSendManager()

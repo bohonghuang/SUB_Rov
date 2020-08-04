@@ -298,10 +298,12 @@ Window {
     }
 
     Item{
+        id: key_board
         anchors.fill: parent;
         focus: true;
         Keys.enabled: true;
         Keys.onPressed: {
+            console.log("press")
             keyManager.doThings(event.key);
         }
 
@@ -374,7 +376,7 @@ Window {
     }
 
     function refresh(){
-
+       key_board.focus = true
 
     }
 

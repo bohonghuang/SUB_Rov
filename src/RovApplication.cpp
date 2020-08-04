@@ -38,7 +38,7 @@ RovApplication::RovApplication(int& argc, char*argv[])
     QCoreApplication::setOrganizationName("Rocael");
     QCoreApplication::setOrganizationDomain("Rocael.xyz");
     QCoreApplication::setApplicationName("Rov");
-    QCoreApplication::setApplicationVersion("1.0");
+    QCoreApplication::setApplicationVersion("0.17");
 
     qDebug() << "RovApplication::RovApplication()";
     _app = this;
