@@ -164,6 +164,12 @@ void SettingManager::InitSettings()
         read_write->setValue("checkout", tmp);
     }
     this->enableCheck = tmp.contains("true") ? true : false ;
+    tmp = read_write->value("lowMode").toString();
+    if( tmp.isEmpty() ){
+        tmp = QString("true");
+        read_write->setValue("lowMode",tmp);
+    }
+    this->lowMode = tmp.contains("true")? true: false;
     read_write->endGroup();
 }
 
@@ -210,6 +216,10 @@ void SettingManager::run(){
     connect(this, &SettingManager::checkoutChanged, this , [=]() {
         read_write->setValue("enable/checkout", this->enableCheck);
     });
+
+    connect(this, &SettingManager::lowModeChanged, this, [=](){
+        read_write->setValue("enable/lowMode", this->lowMode);
+    });
     exec();
 }
 
@@ -238,6 +248,13 @@ void SettingManager::setEnableCheckout(const bool enable)
     this->enableCheck = enable;
 
     emit checkoutChanged();
+}
+
+void SettingManager::setLowMode(bool mode)
+{
+    this->lowMode = mode;
+
+    emit lowModeChanged();
 }
 
 void SettingManager::setServerUri(QString u)

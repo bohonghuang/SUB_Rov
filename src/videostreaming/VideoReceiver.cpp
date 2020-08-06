@@ -618,7 +618,7 @@ VideoReceiver::start()
         return;
     }
 
-    bool lowMode  = true;
+    bool lowMode  = rovApp()->getToolbox()->getSettingManager()->isLowMode();
     g_object_set(_videoSink, "sync", !lowMode, NULL);
 
     if(_running) {
@@ -665,6 +665,7 @@ VideoReceiver::start()
         } else {
             g_object_set(G_OBJECT(dataSource), "location", qPrintable(_uri), "latency", 17, "udp-reconnect", 1, "timeout", static_cast<guint64>(5000000), NULL);
         }
+
         if ((demux = gst_element_factory_make("rtph264depay", "rtp-h264-depacketizer")) == NULL) {
             qCritical() << "VideoReceiver::start() failed. Error with gst_element_factory_make('rtph264depay')";
             break;

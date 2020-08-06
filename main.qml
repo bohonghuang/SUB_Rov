@@ -17,9 +17,9 @@ Window {
     visible: true
     width: 1600
     height: 900 + 66
-    title: qsTr("Rov Controller v0.17")
+    title: qsTr("Rov Controller v0.18")
 
-
+    Keys.forwardTo: key_board
 
     RovSider{
         id: rov_sider
@@ -28,6 +28,7 @@ Window {
         z: 100
         width: parent.width
         height: 66
+        Keys.forwardTo: key_board
 
         onBtnSettingsClickedChanged: {
             if(rov_sider.btnSettingsClicked == true){
@@ -77,6 +78,7 @@ Window {
         anchors.fill: parent
         visible: true
         //visible: mainPageView()
+        Keys.forwardTo: key_board
 
         property bool isClicked : false;
         property var _videoReceiver: videoManager.videoReceiver
@@ -116,6 +118,7 @@ Window {
         width: 400
         height: 200
         //visible: mainPageView()
+        Keys.forwardTo: key_board
 
         property bool isClicked : false;
         Rectangle{
@@ -149,6 +152,7 @@ Window {
         visible: false
 
 
+
     }
 
 
@@ -161,6 +165,7 @@ Window {
         width: 160
         height: 520
         Drag.active: true
+        Keys.forwardTo: key_board
 
         MouseArea{
             id: rovinfo_mouse
@@ -184,6 +189,7 @@ Window {
         anchors.right: parent.right
         anchors.rightMargin: 10
         z: 99
+        Keys.forwardTo: key_board
 
         MouseArea{
             anchors.fill: parent
@@ -197,7 +203,7 @@ Window {
         width: 330
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-
+Keys.forwardTo: key_board
 
         Rectangle{
             id: toolbar_second_body
@@ -303,7 +309,6 @@ Window {
         focus: true;
         Keys.enabled: true;
         Keys.onPressed: {
-            console.log("press")
             keyManager.doThings(event.key);
         }
 
@@ -312,6 +317,15 @@ Window {
         }
 
     }
+//    Keys{
+
+//        enabled: true
+//        onPressed: {
+//            console.log("press")
+//            keyManager.doThings(event.key);
+//        }
+//    }
+
 
     Timer{
         id: timer_refresh
@@ -376,7 +390,7 @@ Window {
     }
 
     function refresh(){
-       key_board.focus = true
+       //key_board.focus = true
 
     }
 

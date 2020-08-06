@@ -195,6 +195,28 @@ Item {
         }
 
         MyFlag {
+            id: flag_com
+            x: 60
+            y: 472
+            img_source: "../../resource/icon/flag/白字_串.png"
+        }
+
+        MyFlag {
+            id: flag_power
+            x: 112
+            y: 417
+            img_source: "../../resource/icon/flag/白字_电.png"
+        }
+
+
+        MyFlag {
+            id: flag_point
+            x: 60
+            y: 365
+            img_source: "../../resource/icon/flag/白字_指.png"
+        }
+
+        MyFlag {
             id: flag_zoom
             x: 8
             y: 417
@@ -209,25 +231,12 @@ Item {
         }
 
         MyFlag {
-            id: flag_power
-            x: 112
-            y: 417
-            img_source: "../../resource/icon/flag/白字_电.png"
-        }
-
-        MyFlag {
             id: flag_cloud
             x: 8
             y: 472
             img_source: "../../resource/icon/flag/白字_云.png"
         }
 
-        MyFlag {
-            id: flag_point
-            x: 60
-            y: 365
-            img_source: "../../resource/icon/flag/白字_指.png"
-        }
 
         MyFlag {
             id: flag_machine
@@ -236,12 +245,6 @@ Item {
             img_source: "../../resource/icon/flag/白字_机.png"
         }
 
-        MyFlag {
-            id: flag_com
-            x: 60
-            y: 472
-            img_source: "../../resource/icon/flag/白字_串.png"
-        }
 
         MyFlag {
             id: flag_p
@@ -476,28 +479,30 @@ Item {
     }
 
     function flag_machine_refresh(){
-        if(receiveManager.getRovDeviceStatus(1) === true)
+        if(receiveManager.getRovDeviceStatus(1) === false)
             flag_machine.light_running = true;
         else
             flag_machine.dark_running = true;
     }
 
     function flag_cloud_refresh(){
-        if(receiveManager.getRovDeviceStatus(2) === true)
+        //云台，到底则高亮，与其他监测设备相反，为了符合多数人的习惯
+        if(receiveManager.getRovDeviceStatus(2) === false)
             flag_cloud.light_running = true;
         else
             flag_cloud.dark_running = true;
     }
 
     function flag_zoom_refresh(){
-        if(receiveManager.getRovDeviceStatus(3) === true)
+        //同云台
+        if(receiveManager.getRovDeviceStatus(3) === false)
             flag_zoom.light_running = true;
         else
             flag_zoom.dark_running = true;
     }
 
     function flag_focus_refresh(){
-        if(receiveManager.getRovDeviceStatus(4) === true)
+        if(receiveManager.getRovDeviceStatus(4) === false)
             flag_focus.light_running = true;
         else
             flag_focus.dark_running = true;

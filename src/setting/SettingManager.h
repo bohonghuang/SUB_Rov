@@ -51,6 +51,7 @@ public slots:
     void setStreamType_2(const int t = STREAMING_TYPE::UDP265);
     void udpSettings();
     void setEnableCheckout(const bool enable);
+    void setLowMode(bool mode);
 
     QString getServerUri()  {return uri;}
     QString getServerPort() {return port;}
@@ -65,11 +66,13 @@ public slots:
     QString getVideoPath()  {return this->videoSavePath; };
     QString getImagePath();
     bool    isEnableCheckout() {return this->enableCheck;}
+    bool    isLowMode(){    return this->lowMode;   }
 
 private:
     bool info;
 
     bool enableCheck;
+    bool lowMode;
 
     QString uri;
     QString port;
@@ -104,6 +107,7 @@ signals:
     void thermalVideoPortChanged();
     void infoChanged();
     void checkoutChanged();
+    void lowModeChanged();
 };
 
 #endif // SETTINGMANAGER_H

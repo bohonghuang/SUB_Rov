@@ -89,6 +89,56 @@ Page {
             }
 
             ColumnLayout{
+                id: thermalVideo_enable
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    Label{
+                        text: qsTr("副播放器启动位")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
+                    }
+                    Switch {
+                        text: qsTr("")
+                        autoRepeat: false
+                        display: AbstractButton.TextBesideIcon
+                        checked: true
+                        onCheckedChanged: {
+                            thermal_page.visible = checked;
+                        }
+                    }
+                }
+            }
+
+            ColumnLayout{
+                            id: lowMode_enable
+                            Layout.topMargin: 20
+                            Layout.leftMargin: 20
+                            RowLayout{
+                                Label{
+                                    text: qsTr("LowMode")
+                                    leftPadding: 50
+                                    topPadding: 10
+                                    bottomPadding: 10
+                                    font.pointSize: 20
+                                }
+                                Switch {
+                                    text: qsTr("")
+                                    autoRepeat: false
+                                    display: AbstractButton.TextBesideIcon
+                                    checked: settingsMaanger.isLowMode();
+                                    onCheckedChanged: {
+                                        settingsMaanger.setLowMode(checked)
+                                    }
+                                }
+                            }
+                        }
+
+
+
+            ColumnLayout{
                 id: device_enable
                 Layout.topMargin: 20
                 Layout.leftMargin: 20
