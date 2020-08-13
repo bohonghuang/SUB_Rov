@@ -1,0 +1,39 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/sys/favicon_1.ico</file>
+        <file>res/img/geometry.png</file>
+        <file>res/img/Logo.png</file>
+        <file>res/icon/arrow_down.png</file>
+        <file>res/icon/arrow_up.png</file>
+        <file>res/icon/close.png</file>
+        <file>res/icon/connect.png</file>
+        <file>res/icon/deep.png</file>
+        <file>res/icon/direc.png</file>
+        <file>res/icon/down.png</file>
+        <file>res/icon/image.png</file>
+        <file>res/icon/let_down.png</file>
+        <file>res/icon/let_up.png</file>
+        <file>res/icon/main.png</file>
+        <file>res/icon/round.png</file>
+        <file>res/icon/round_over.png</file>
+        <file>res/icon/round_under.png</file>
+        <file>res/icon/setting.png</file>
+        <file>res/icon/the_back.png</file>
+        <file>res/icon/the_point.png</file>
+        <file>res/icon/up.png</file>
+        <file>res/icon/video_off.png</file>
+        <file>res/icon/video_on.png</file>
+        <file>res/icon/flag/白字_P.png</file>
+        <file>res/icon/flag/白字_变.png</file>
+        <file>res/icon/flag/白字_串.png</file>
+        <file>res/icon/flag/白字_电.png</file>
+        <file>res/icon/flag/白字_动.png</file>
+        <file>res/icon/flag/白字_机.png</file>
+        <file>res/icon/flag/白字_聚.png</file>
+        <file>res/icon/flag/白字_起.png</file>
+        <file>res/icon/flag/白字_深.png</file>
+        <file>res/icon/flag/白字_云.png</file>
+        <file>res/icon/flag/白字_止.png</file>
+        <file>res/icon/flag/白字_指.png</file>
+    </qresource>
+</RCC>

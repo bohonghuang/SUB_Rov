@@ -1,413 +1,221 @@
 ﻿#include "SendManager.h"
 
-SendManager::SendManager(QObject *parent)
-    : QObject(parent)
+#define UpDown_Normal_Value 0x00
+#define Spin_Normal_Value 0x00
+
+#define Forwardback_Normal_Value 0x80
+#define LeftRight_Normal_Value 0x80
+
+#define Spin_Left_Value 0x01
+#define Spin_Right_Value 0x02
+#define Up_Value 0x01
+#define Down_Value 0x02
+#define Forward_Value 0x01
+#define Back_Value 0x01
+//方向锁定
+#define Direction_Lock 0x01
+#define Direction_Unlock 0x02
+//深度锁定
+#define Deep_Lock 0x01
+#define Deep_Unlock 0x02
+//紧急制动
+#define Device_Status_Normal 0x00
+#define Device_Status_On 0x01
+#define Device_Status_Off 0x02
+
+//灯光控制
+#define Light_Normal 0x00
+//变亮
+#define Light_Up 0x01
+//变暗
+#define Light_Down 0x02
+
+//相机控制
+#define Camera_Normal 0x00
+#define Camera_Focus_Enlarge 0x01
+#define Camera_Focus_Reduce 0x02
+#define Camera_Zoom_Enlarge 0x11
+#define Camera_Zoom_Reduce 0x12
+
+//云台控制
+#define Cloud_Normal 0x00
+#define Cloud_Up 0x01
+#define Cloud_Down 0x02
+#define Cloud_Central 0x03
+
+//机器手控制
+#define Manipulator_Normal 0x00
+#define Manipulator_Open 0x01
+#define Manipulator_Close 0x02
+
+//启动停止位
+#define Start_Value 0x01
+#define Stop_Value 0x02
+#define Start_Stop_Normal 0x00
+
+//速度挡位：
+#define Speed_None 0x00
+#define Speed_First 0x19
+#define Speed_Second 0x5a
+#define Speed_Third 0x82
+#define Speed_Forth 0xB4
+#define Speed_Fifth 0xff
+
+//吸取器
+#define Draw_Open 0x01
+#define Draw_Close 0x02
+#define Draw_Normal 0x00
+
+void SendManager::initCommand()
 {
-    qDebug("SendManager: Create SendManager.");
+    maxLength = 20;
+    this->command = new quint8[maxLength]{
+        0xAA, 0x55, 0x10, Deep_Lock, Direction_Lock,
+        Forwardback_Normal_Value, LeftRight_Normal_Value,
+        UpDown_Normal_Value, Spin_Normal_Value,
+        Speed_None, Light_Normal, Camera_Normal, Cloud_Normal,
+        Manipulator_Normal, 0x00, Draw_Normal, 0x00, 0x00,
+        Start_Stop_Normal
+    };
 
-    this->oil = Oilvalve();
-    this->sendcmd = SendCommand();
-    rootPath = dir.currentPath();
-    qDebug("SendManager: Create complete.");
 }
 
-QString SendManager::toString()
+SendManager::SendManager(QObject *parent) : QObject(parent)
 {
-    return QString();
+    initCommand();
 }
 
-///
-/// \brief SendManager::TurnMachineNormal
-/// Machine的一般状态
-void SendManager::TurnMachineNormal(){
-    this->sendcmd.machine = To_Machine_Normal;
-
-}
-
-void SendManager::TurnMachineOpen()
+quint8 *SendManager::getCommand()
 {
-    this->sendcmd.machine = To_Machine_Open;
-}
-void SendManager::TurnMachineClose(){
-    this->sendcmd.machine = To_Machine_Close;
+    return this->command;
 }
 
-
-
-///
-/// \brief SendManager::TurnCameraFocusingToLarge
-/// 聚焦放大
-void SendManager::TurnCameraFocusingToLarge(){
-    this->sendcmd.camera = To_Camera_Focus_Large;
-}
-///
-/// \brief SendManager::TurnCameraFocusingToSmall
-/// 聚焦缩小
-void SendManager::TurnCameraFocusingToSmall(){
-    this->sendcmd.camera = To_Camera_Focus_Small;
-}
-///
-/// \brief SendManager::TurnCameroZoomToLarge
-/// 变焦放大
-void SendManager::TurnCameraZoomToLarge(){
-    this->sendcmd.camera = To_Camera_Zoom_Large;
-}
-///
-/// \brief SendManager::TurnCameroZoomToSmall
-/// 变焦缩小
-void SendManager::TurnCameraZoomToSmall(){
-    this->sendcmd.camera = To_Camera_Zoom_Small;
-}
-
-///
-/// \brief SendManager::TurnCameraNormal
-/// 相机的变化停止，保持当前状态
-void SendManager::TurnCameraNormal(){
-    this->sendcmd.camera = To_Camera_Normal;
-}
-
-
-//-------------云台控制---------------//
-
-void SendManager::TurnCloudUp()
+void SendManager::Deep(int v)
 {
-    this->sendcmd.cloud = To_Cloud_Up;
-}
-
-void SendManager::TurnCloudDown()
-{
-    this->sendcmd.cloud = To_Cloud_Down;
-}
-
-void SendManager::TurnCloudCentral()
-{
-    this->sendcmd.cloud = To_Cloud_Central;
-}
-///
-/// \brief SendManager::TurnCloudNormal
-///  云台的一般状态
-void SendManager::TurnCloudNormal(){
-    this->sendcmd.cloud = To_Cloud_Normal;
-}
-
-
-
-///
-/// \brief SendManager::ToNormal
-/// 在左右、上下、前后上恢复到一般状态
-void SendManager::ToAllNormal(){
-    ToUpDownNormal();
-    ToSpinNormal();
-    ToLeftRightNormal();
-    ToForwar_back_Normal();
-    TurnCloudNormal();
-    TurnNormalLight();
-    TurnCameraNormal();
-    TurnDeviceNormal();
-    TurnMachineNormal();
-}
-
-
-
-/********************************/
-/*****|一些关于方向控制的方法|******/
-/********************************/
-
-///
-/// \brief SendManager::ToDown
-/// 俯降
-void SendManager::ToDown(){
-    this->sendcmd.up_down
-            = To_Down_value;
-}
-
-///
-/// \brief SendManager::ToUp
-/// 拉升
-void SendManager::ToUp(){
-    this->sendcmd.up_down
-            = To_Up_value;
-}
-
-
-///
-/// \brief SendManager::ToUpDownNormal
-/// 上下状态恢复到一般状态
-void SendManager::ToUpDownNormal(){
-    this->sendcmd.up_down
-            = UpDown_Normal_value;
-}
-
-
-
-///
-/// \brief SendManager::ToLeftRightNormal
-/// 左右状态恢复到一般状态
-void SendManager::ToLeftRightNormal(){
-    this->sendcmd.left_right
-            = LeftRight_Normal_value;
-}
-
-
-///
-/// \brief SendManager::ToLeftSpin
-/// 左旋
-void SendManager::ToLeftSpin(){
-    this->sendcmd.spin
-            = To_Spin_Left_value;
-}
-
-
-///
-/// \brief SendManager::ToRightSpin
-/// 右旋
-void SendManager::ToRightSpin(){
-    this->sendcmd.spin
-            = To_Spin_Right_value;
-}
-
-///
-/// \brief SendManager::ToSpinNormal
-/// 旋转状态恢复到一般状态
-void SendManager::ToSpinNormal(){
-    this->sendcmd.spin
-            = Spin_Normal_value;
-}
-
-
-
-///
-/// \brief SendManager::ToForwar_back_Normal
-/// 前后状态恢复到一般状态
-void SendManager::ToForwar_back_Normal(){
-    this->sendcmd.forward_backward
-            = Forwardback_Normal_value;
-}
-
-void SendManager::SetLeftOrRight(uchar c)
-{
-    this->sendcmd.left_right = c;
-}
-
-void SendManager::SetForwardOrBack(uchar c)
-{
-    this->sendcmd.forward_backward = c;
-}
-
-
-//-------------灯光----------------//
-void SendManager::TurnLightUp()
-{
-    this->sendcmd.light = To_Up_Light;
-}
-void SendManager::TurnLightDown(){
-    this->sendcmd.light = To_Down_Light;
-}
-void SendManager::TurnNormalLight(){
-    this->sendcmd.light = To_Normal_Light;
-}
-
-
-/***********************************/
-
-
-///
-/// \brief SendManager::TurnCamera
-/// 摄像头的开闭
-void SendManager::TurnCamera(){
-
-}
-///
-/// \brief SendManager::GetCommand
-/// \return 一个指令集的数组的指针
-/// 获取一串指令集。
-/// 在该方法中做了一个 [] --> * 的操作
-quint8* SendManager::udpCommand(){
-    quint8* cmd = (quint8*)malloc(sizeof (quint8) * 20);
-
-    cmd[0] = this->sendcmd.head_1;
-    cmd[1] = this->sendcmd.head_2;
-    cmd[2] = this->sendcmd.head_length;
-    cmd[3] = this->sendcmd.deeplock;
-    cmd[4] = this->sendcmd.directionlock;
-    cmd[5] = this->sendcmd.forward_backward;
-    cmd[6] = this->sendcmd.left_right;
-    cmd[7] = this->sendcmd.up_down;
-    cmd[8] = this->sendcmd.spin;
-    cmd[9] = this->sendcmd.oil;
-    cmd[10] = this->sendcmd.light;
-    cmd[11] = this->sendcmd.camera;
-    cmd[12] = this->sendcmd.cloud;
-    cmd[13] = this->sendcmd.machine;
-    cmd[14] = this->sendcmd.startPi;
-    cmd[15] = this->sendcmd.draw;
-    cmd[16] = this->sendcmd.keep_1;
-    cmd[17] = this->sendcmd.keep_2;
-    cmd[18] = this->sendcmd.status;
-    cmd[19] = getCheck();
-
-    return cmd;
-}
-
-
-///
-/// \brief SendManager::GetCheck
-/// \return 一个0-255的值
-/// 这是一个核检方法，他能返回一个检查码。
-quint8 SendManager::getCheck(){
-    quint8 temp;
-
-    temp = (unsigned char)(
-                  this->sendcmd.head_1
-                + this->sendcmd.head_2
-                + this->sendcmd.head_length
-                + this->sendcmd.deeplock
-                + this->sendcmd.directionlock
-                + this->sendcmd.forward_backward
-                + this->sendcmd.left_right
-                + this->sendcmd.up_down
-                + this->sendcmd.spin
-                + this->sendcmd.oil
-                + this->sendcmd.light
-                + this->sendcmd.camera
-                + this->sendcmd.cloud
-                + this->sendcmd.machine
-                + this->sendcmd.keep_1
-                + this->sendcmd.keep_2
-                + this->sendcmd.draw
-                + this->sendcmd.startPi
-                + this->sendcmd.status)
-                & (0xFF);
-    //qDebug() << " check get == " + QString(temp) ;
-
-    return temp;
-}
-
-QByteArray SendManager::getBytearrayCommand()
-{
-    quint8* t = udpCommand();
-    QByteArray b;
-    int length = _msize( t) / sizeof (quint8);
-    b.resize(length);
-    memcpy(b.data(), t, length);
-
-    return b;
-}
-
-///
-/// \brief SendManager::SendCommandReset
-/// 对sendcmd的部分数值进行了重置
-void SendManager::SendCommandReset(){
-    qDebug("SendManager::SendCommandReset() In");
-
-    this->ToAllNormal();
-    qDebug("SendManager::SendCommandReset() Out");
-
-}
-
-
-///
-/// \brief SendManager::TurnDirectionLock
-/// 方向锁定
-void SendManager::TurnDirectionLock(){
-    qDebug() << "Turn direction Lock ==> " + QString(sendcmd.directionlock) ;
-
-    if(this->sendcmd.directionlock == To_Direction_Lock )
-        this->sendcmd.directionlock = To_Direction_Unlock;
-    else
-        this->sendcmd.directionlock = To_Direction_Lock;
-
-    emit directChanged();
-}
-
-void SendManager::TurnDirectionUnLock()
-{
-    this->sendcmd.directionlock = To_Direction_Unlock;
-}
-
-///
-/// \brief SendManager::TurnDeepLock
-/// 深度锁定
-void SendManager::TurnDeepLock(){
-
-    qDebug() << "Turn deeplock ==> " + QString(sendcmd.deeplock) ;
-
-    if(this->sendcmd.deeplock == To_Deep_Lock)
-        this->sendcmd.deeplock = To_Deep_Unlock;
-    else
-        this->sendcmd.deeplock = To_Deep_Lock;
+    if(v == 0)
+        this->command[3] = Deep_Lock;
+    if(v == 1)
+        this->command[3] = Deep_Lock;
+    if(v == 2)
+        this->command[3] = Deep_Unlock;
 
     emit deepChanged();
+    emit commandChanged();
 }
 
-void SendManager::TurnDeepUnLock()
+void SendManager::Direction(int v)
 {
-    this->sendcmd.deeplock = To_Deep_Unlock;
+    if(v == 0)
+        this->command[4] = Direction_Lock;
+    if(v == 1)
+        this->command[4] = Direction_Lock;
+    if(v == 2)
+        this->command[4] = Direction_Unlock;
+
+    emit directChanged();
+    emit commandChanged();
 }
 
-///
-/// \brief SendManager::TurnKeep_5
-/// 启动
-#include <QDebug>
-void SendManager::TurnOn(){
-    qDebug("SendManager::TurnOn() In");
-    qDebug() << "send cmd -> status == " + QString(sendcmd.status) ;
-    if(this->sendcmd.status == To_Device_Status_Normal || sendcmd.status == To_Device_Status_Off)
-        this->sendcmd.status = To_Device_Status_On;
-    qDebug("SendManager::TurnOn() Out");
-}
-
-void SendManager::TurnOff()
+void SendManager::ForwordBack(quint8 v)
 {
-    qDebug("SendManager::TurnOff() In");
-    qDebug() << "send cmd -> status == " + QString(sendcmd.status) ;
-    if(this->sendcmd.status == To_Device_Status_On)
-        this->sendcmd.status = To_Device_Status_Off;
-    qDebug("SendManager::TurnOff() Out");
-
+    this->command[5] = v;
+    emit commandChanged();
 }
 
-void SendManager::TurnDeviceNormal(){
-    qDebug("SendManager::TurnDeviceNormal() In");
-    qDebug() << "send cmd -> status == " + QString(sendcmd.status) ;
-
-    this->sendcmd.status = To_Device_Status_Normal;
-    qDebug("SendManager::TurnDeviceNormal() Out");
-}
-
-void SendManager::TurnStart()
+void SendManager::LeftRight(quint8 v)
 {
-    this->sendcmd.status = To_Start;
+    this->command[6] = v;
+    emit commandChanged();
 }
-void SendManager::TurnStop()
+
+void SendManager::UpDown(int v)
 {
-    this->sendcmd.status = To_Stop;
+    if(v == 0)
+        this->command[7] = UpDown_Normal_Value;
+    if(v >= 1)
+        this->command[7] = Up_Value;
+    if(v <= -1)
+        this->command[7] = Down_Value;
+
+    emit commandChanged();
 }
-void SendManager::TurnStartStopNormal()
+
+void SendManager::Spin(int v)
 {
-    this->sendcmd.status = To_Start_Stop_Normal;
+    if(v == 0)
+        this->command[8] = Spin_Normal_Value;
+    if(v >= 1)
+        this->command[8] = Spin_Left_Value;
+    if(v <= -1)
+        this->command[8] = Spin_Right_Value;
+    emit commandChanged();
 }
 
-///
-/// \brief SendManager::AddOil
-/// 这个方法中对oil进行了“加油”操作，
-/// 并将新的值赋给了成员sendcmd模型之中
-void SendManager::AddOil(){
-    qDebug("SendManager::AddOil() In");
-    qDebug() << "send cmd -> oil == " + QString(sendcmd.oil) ;
+void SendManager::Oil(int v)
+{
+    int t = this->command[9];
+    if(v >= 1){
+        t += 30;
+        if(t>255)
+            t = 255;
+    }
+    if( v <= -1){
+        t -= 30;
+        if(t<0)
+            t = 0;
+    }
 
-    this->sendcmd.oil = this->oil.GetOilAddLevelAndOfIndex();
-    qDebug("SendManager::AddOil() Out");
+    this->command[9] = (quint8) t;
+    emit commandChanged();
+
 }
 
-///
-/// \brief SendManager::SubOil
-/// 这里做的是减速操作
-/// 并将新的值赋给了成员sendcmd模型之中
-void SendManager::SubOil(){
-    qDebug("SendManager::SubOil() In");
-    qDebug() << "send cmd -> oil == " + QString(sendcmd.oil) ;
+void SendManager::Light(int v)
+{
+    if(v == 0)
+        this->command[10] = Light_Normal;
+    if(v >= 1)
+        this->command[10] = Light_Up;
+    if(v <= -1)
+        this->command[10] = Light_Down;
+    emit commandChanged();
+}
 
-    this->sendcmd.oil = this->oil.GetOilSubOilAndOfIndex();
-    qDebug("SendManager::SubOil() Out");
+void SendManager::Cloud(int v)
+{
+    if(v == 0)
+        this->command[11] = Cloud_Normal;
+    if(v >= 1)
+        this->command[11] = Cloud_Up;
+    if(v <= -1)
+        this->command[11] = Cloud_Down;
+    emit commandChanged();
+}
+
+void SendManager::Camera(quint8 v)
+{
+    this->command[12] = v;
+    emit commandChanged();
+}
+
+void SendManager::Manipulator(int v)
+{
+    if(v == 0)
+        this->command[8] = Manipulator_Normal;
+    if(v >= 1)
+        this->command[8] = Manipulator_Open;
+    if(v <= -1)
+        this->command[8] = Manipulator_Close;
+    emit commandChanged();
+}
+
+void SendManager::DeviceSwitch(int v)
+{
+    if(v == 0)
+        this->command[8] = Start_Stop_Normal;
+    if(v >= 1)
+        this->command[8] = Start_Value;
+    if(v <= -1)
+        this->command[8] = Stop_Value;
+    emit commandChanged();
 }

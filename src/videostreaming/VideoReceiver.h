@@ -1,151 +1,100 @@
-﻿#ifndef VIDEORECEIVE_H
-#define VIDEORECEIVE_H
+﻿#ifndef VIDEORECEIVER_H
+#define VIDEORECEIVER_H
 
 #include <QObject>
-#include <QTimer>
-#include <QUrl>
-#include <QFile>
-#include <QFileInfoList>
-#include <QDir>
-#include <QDateTime>
-#include <QTcpSocket>
-#include <QDebug>
-#include <QNetworkProxy>
-#include <SettingManager.h>
+#include <QThread>
 
-#if defined(QGC_GST_STREAMING)
-#include <gst/gst.h>
-//qDebug("In include defined");
-#endif
+#include <opencv2/opencv.hpp>
+#include "../Log/MyLogging.h"
+#include "../RovApplication.h"
+#include "ImageProvider.h"
 
-class VideoSetting;
+class VideoLogging: public MyLogging
+{
+public:
+    void info(const QString& msg ){ log(msg, INFO, VIDEO_LOGGING); }
+    void debug(const QString& msg ){ log(msg, DEBUG, VIDEO_LOGGING); }
+    void warning(const QString& msg ){ log(msg, WARNING, VIDEO_LOGGING); }
+};
 
-class VideoReceiver: public QObject
+using namespace cv;
+
+class VideoReceiver : public QThread
 {
     Q_OBJECT
 public:
+    explicit VideoReceiver(QObject *parent = nullptr);
 
-#if defined(QGC_GST_STREAMING)
-    Q_PROPERTY(bool             recording           READ    recording           NOTIFY recordingChanged)
-#endif
-    Q_PROPERTY(bool             videoRunning        READ    videoRunning        NOTIFY  videoRunningChanged)
-    Q_PROPERTY(QString          imageFile           READ    imageFile           NOTIFY  onImageFileChanged)
-    Q_PROPERTY(QString          videoFile           READ    videoFile           NOTIFY  videoFileChanged)
+    typedef enum {
+        GSTREAMER_UDP_264,
+        GSTREAMER_UDP_265,
+        MPEG_TCP
+    } TypeStream;
 
-    VideoReceiver(QObject* parent = nullptr);
-    ~VideoReceiver();
+    //初始化
+    void initReceiver();
+    // 设置流类型
+    void setTypeStream(TypeStream ts);
+    // 设置链接地址（在tcp模式下）
+    void setUrl(const QString& url);
+    // 设置端口，在udp模式下
+    void setPort(const QString& port);
+    // 获取当前的open状态
+    bool isOpened() {return this->opened;   }
+    void setOpened(bool open);
+    // 录制状态
+    bool isRecorded() {return this->record; }
+    void setRecorded(bool record);
 
-#if defined(QGC_GST_STREAMING)
-    virtual bool            recording       () { return _recording; }
-#endif
+    ImageProvider* getProvider(){return this->provider;}
 
-    virtual bool            videoRunning    () { return _videoRunning; }
-    virtual QString         imageFile       () { return _imageFile; }
-    virtual QString         videoFile       () { return _videoFile; }
-    virtual bool            showFullScreen  () { return _showFullScreen; }
 
-#if defined(QGC_GST_STREAMING)
-    void                  setVideoSink      (GstElement* videoSink);
-#endif
+    // 开始拉流
+    void startVideo();
+    // 停止拉流
+    void stopVideo();
+    // 开始录像
+    void startRecording();
+    // 停止录像
+    void stopRecording();
+    // 主循环
+    void run() override;
+    // 改变帧样式
+    Mat matStyle(Mat& frame);
+    //截图
+    void grabImage();
+
+    //转变
+    Mat qImage2Mat(QImage& img);
+    QImage mat2QImage(Mat& mat);
+
+private:
+    VideoCapture capture;
+    VideoWriter writer;
+    Mat frame;
+
+    TypeStream type;
+    bool record;
+    bool opened;
+
+    QString url;
+    QString port;
+
+    VideoLogging log;
+
+    int frame_width;
+    int frame_height;
+
+    ImageProvider* provider;
 
 signals:
-    void videoRunningChanged                ();
-    void onImageFileChanged                 ();
-    void videoFileChanged                   ();
-    void showFullScreenChanged              ();
-#if defined(QGC_GST_STREAMING)
-    void recordingChanged                   ();
-    void msgErrorReceived                   ();
-    void msgEOSReceived                     ();
-    void msgStateChangedReceived            ();
-    void gotFirstRecordingKeyFrame          ();
-#endif
+    void streamTypeChanged();
+    void urlChanged();
+    void portChanged();
+    void openedChanged();
+    void recordChanged();
 
-public slots:
-    virtual void start                      ();
-    virtual void stop                       ();
-    virtual void setUri                     (const QString& uri);
-    virtual void stopRecording              ();
-    virtual void startRecording             ();
-
-protected slots:
-    virtual void _updateTimer               ();
-#if defined(QGC_GST_STREAMING)
-    GstElement*  _makeSource                (const QString& uri);
-    GstElement*  _makeFileSink              (const QString& videoFile, unsigned format);
-    virtual void _restart_timeout           ();
-    virtual void _tcp_timeout               ();
-    virtual void _connected                 ();
-    virtual void _socketError               (QAbstractSocket::SocketError socketError);
-    virtual void _handleError               ();
-    virtual void _handleEOS                 ();
-    virtual void _handleStateChanged        ();
-#endif
-
-protected:
-#if defined(QGC_GST_STREAMING)
-
-    typedef struct
-    {
-        GstPad*         teepad;
-        GstElement*     queue;
-        GstElement*     filesink;
-        gboolean        removing;
-        GstElement*     parse;
-        GstElement*     mux;
-    } Sink;
-
-    bool                _running;
-    bool                _recording;
-    bool                _streaming;
-    bool                _starting;
-    bool                _stopping;
-    bool                _stop;
-    Sink*               _sink;
-    GstElement*         _tee;
-    GstElement*         _pipelineStopRec;
-
-    void _noteVideoSinkFrame                            ();
-
-    static gboolean             _onBusMessage           (GstBus* bus, GstMessage* message, gpointer user_data);
-    static GstPadProbeReturn    _unlinkCallBack         (GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
-    static GstPadProbeReturn    _videoSinkProbe         (GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
-    static GstPadProbeReturn    _keyframeWatch          (GstPad* pad, GstPadProbeInfo* info, gpointer user_data);
-    void                        _detachRecordingBranch  (GstPadProbeInfo* info);
-
-    virtual void                _unlinkRecordingBranch  (GstPadProbeInfo* info);
-    virtual void                _shutdownRecordingBranch();
-    virtual void                _shutdownPipeline       ();
-    virtual void                _cleanupOldVideos       ();
-
-    GstElement*     _pipeline;
-    GstElement*     _videoSink;
-    guint64         _lastFrameId;
-    qint64          _lastFrameTime;
-
-    //-- Wait for Video Server to show up before starting
-    QTimer          _frameTimer;
-    QTimer          _restart_timer;
-    int             _restart_time_ms;
-    QTimer          _tcp_timer;
-    QTcpSocket*     _socket;
-    bool            _serverPresent;
-
-    int             _tcpTestInterval_ms;
-
-    //-- RTSP UDP reconnect timeout
-    uint64_t        _udpReconnect_us;
-#endif
-
-    QString         _uri;
-    QString         _imageFile;
-    QString         _videoFile;
-    bool            _videoRunning;
-    bool            _showFullScreen;
-    VideoSetting*  _videoSettings;
-
-    QString _savePath;
-
+    void imgChanged();
 };
 
-#endif // VIDEORECEIVE_H
+#endif // VIDEORECEIVER_H

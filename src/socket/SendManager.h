@@ -1,157 +1,50 @@
 ﻿#ifndef SENDMANAGER_H
 #define SENDMANAGER_H
 
-#define UpDown_Normal_value 0x00
-#define Spin_Normal_value 0x00
-
-#define Forwardback_Normal_value 0x80
-#define LeftRight_Normal_value 0x80
-
-#define To_Spin_Left_value 0x01
-#define To_Spin_Right_value 0x02
-#define To_Up_value 0x01
-#define To_Down_value 0x02
-#define To_Forward_value 0x01
-#define To_Back_value 0x01
-//方向锁定
-#define To_Direction_Lock 0x01
-#define To_Direction_Unlock 0x02
-//深度锁定
-#define To_Deep_Lock 0x01
-#define To_Deep_Unlock 0x02
-//紧急制动
-#define To_Device_Status_Normal 0x00
-#define To_Device_Status_On 0x01
-#define To_Device_Status_Off 0x02
-
-//灯光控制
-#define To_Normal_Light 0x00
-//变亮
-#define To_Up_Light 0x01
-//变暗
-#define To_Down_Light 0x02
-
-//相机控制
-#define To_Camera_Normal 0x00
-#define To_Camera_Focus_Large 0x01
-#define To_Camera_Focus_Small 0x02
-#define To_Camera_Zoom_Large 0x11
-#define To_Camera_Zoom_Small 0x12
-
-//云台控制
-#define To_Cloud_Normal 0x00
-#define To_Cloud_Up 0x01
-#define To_Cloud_Down 0x02
-#define To_Cloud_Central 0x03
-
-//机器手控制
-#define To_Machine_Normal 0x00
-#define To_Machine_Open 0x01
-#define To_Machine_Close 0x02
-
-//启动停止位
-#define To_Start 0x01
-#define To_Stop 0x02
-#define To_Start_Stop_Normal 0x00
-
-
 #include <QObject>
-#include "SendCommand.h"
-#include <QDir>
-#include <QDebug>
+#include "../Log/MyLogging.h"
 
-#include "src/robot/Oilvalve.h"
+class SendLogging : public MyLogging
+{
+public:
+    void info(const QString& msg ){ log(msg, INFO, SEND_LOGGING); }
+    void debug(const QString& msg ){ log(msg, DEBUG, SEND_LOGGING); }
+    void warning(const QString& msg ){ log(msg, WARNING, SEND_LOGGING); }
+};
+
 
 class SendManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool deep READ isDeepLock WRITE lockDeep NOTIFY deepChanged)
-    Q_PROPERTY(bool direction READ isDirectLock WRITE lockDirect NOTIFY directChanged)
+private:
+    quint8* command;
+    int maxLength;
+    void initCommand();
 
 public:
     explicit SendManager(QObject *parent = nullptr);
-    QString toString();
 
-public:
-    SendCommand sendcmd;
-    Oilvalve oil;
-    QDir dir;
-    QString rootPath;
-    QString logoPath;
-    QString logo;
+    quint8* getCommand();
 
-public slots:
-    bool isDeepLock() {return sendcmd.deeplock== To_Deep_Lock ? true : false; }
-    void lockDeep(bool v){ v ? this->sendcmd.deeplock = To_Deep_Lock : To_Deep_Unlock; }
-    bool isDirectLock() {return sendcmd.directionlock == To_Direction_Lock? true : false; }
-    void lockDirect(bool v){ v ? this->sendcmd.directionlock = To_Direction_Lock : To_Direction_Unlock; }
-
-
+    void Deep(int v = 0);
+    void Direction(int v = 0);
+    void ForwordBack(quint8 v = 0x80);
+    void LeftRight(quint8 v = 0x80);
+    void UpDown(int v = 0);
+    void Spin(int v = 0);
+    void Oil(int v = 0);
+    void Light(int v = 0);
+    void Cloud(int v = 0);
+    void Camera(quint8 v = 0x00);
+    void Manipulator(int v = 0);
+    void DeviceSwitch(int v = 0);
 
 
-public:
-    void Display();
-    void DelayDisplay(QObject obj);
-    void ThreadStart();
-    //
-    void ToUp();
-    void ToDown();
-    void ToLeftSpin();
-    void ToRightSpin();
-    //
-    void ToAllNormal();
-    //
-    void ToSpinNormal();
-    void ToUpDownNormal();
-    void ToLeftRightNormal();
-    void ToForwar_back_Normal();
-    //
-    void SetLeftOrRight(uchar);
-    void SetForwardOrBack(uchar);
-    //
-    void TurnLightUp();
-    void TurnLightDown();
-    void TurnNormalLight();
-    void AddOil();
-    void SubOil();
-    //
-    void TurnCamera();
-    void TurnCameraNormal();
-    void TurnCameraFocusingToLarge();
-    void TurnCameraFocusingToSmall();
-    void TurnCameraZoomToLarge();
-    void TurnCameraZoomToSmall();
-    //
-    void TurnCloudUp();
-    void TurnCloudDown();
-    void TurnCloudCentral();
-    void TurnCloudNormal();
 
-    void TurnMachineNormal();
-    void TurnMachineOpen();
-    void TurnMachineClose();
-
-    void TurnDirectionLock();
-    void TurnDirectionUnLock();
-    void TurnDeepLock();
-    void TurnDeepUnLock();
-
-    void TurnOn();
-    void TurnOff();
-    void TurnDeviceNormal();
-
-    void TurnStart();
-    void TurnStop();
-    void TurnStartStopNormal();
-
-    void SendCommandReset();
-
-    quint8* udpCommand();
-    quint8 getCheck();
-    QByteArray getBytearrayCommand();
 signals:
     void deepChanged();
     void directChanged();
+    void commandChanged();
 };
 
 #endif // SENDMANAGER_H

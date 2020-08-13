@@ -1,167 +1,71 @@
 ﻿#include "SocketManager.h"
-#include <QDebug>
-#include <SettingManager.h>
 
-SocketManager::SocketManager(){
-    qDebug("SocketManager: Create a new and first SocketManager");
+SocketManager::SocketManager()
+{
+    SocketLog.info("Create a new SocketManager ");
 
+    this->sendManager = new SendManager();
+    this->receiveManager = new ReceiveManager();
 
-    sendmanager = new SendManager();
-    receivemanager = new ReceiveManager();
-
-    myThread = new SocketThread(tSocket);
+    myThread = new SocketThread();
     myThread->start();
-
-
-    qDebug("SocketManager: create complete");
-}
-SocketManager::~SocketManager(){
-
-}
-
-void SocketManager::updateSettings()
-{
-    this->uri = rovApp()->getToolbox()->getSettingManager()->getServerUri();
-    this->port = rovApp()->getToolbox()->getSettingManager()->getServerPort();
-}
-
-void SocketManager::disConnectServer()
-{
-    myThread->disconnectServer();
-}
-
-void SocketManager::connectServer(){
-    myThread->connectServer();
 }
 
 void SocketManager::enableSocket(bool enable)
 {
-    myThread->EnableSocket(enable);
-
+    myThread->enableSocket(enable);
     emit enableChanged();
 }
 
 bool SocketManager::isEnable()
 {
-    return myThread->isEnableSocket();
+    myThread->isEnableSocket();
 }
 
-void SocketManager::ReadError(QAbstractSocket::SocketError)
+QString SocketManager::getInfoText(SocketManager::INFO_TYPE t)
 {
-    qDebug() << "SocketManager::ReadError";
-}
-
-
-
-QString SocketManager::getStringByQByteArray(QByteArray qb)
-{
-    int t;
+    SocketLog.info("Get a Info text, the type is: " + QString(t));
     QString str = "";
-    int length = qb.size();
-    for( int i=0; i< length; i++){
-        t = qb[i];
-        str = str + t + "_";
+    switch (t) {
+    case SocketManager::YAW:
+        str = QStringLiteral("%1 °")
+                .arg(QString::number(this->receiveManager->getYaw(), 'f', 2));
+        break;
+    case SocketManager::ROLL:
+        str = QStringLiteral("%1 °")
+                .arg(QString::number(this->receiveManager->getRoll(), 'f', 2));
+        break;
+    case SocketManager::PITCH:
+        str = QStringLiteral("%1 °")
+                .arg(QString::number(this->receiveManager->getPitch(), 'f', 2));
+        break;
+    case SocketManager::SPEED:
+        str = QStringLiteral("%1 m/s")
+                .arg(QString::number(this->receiveManager->getSpeed(), 'f', 1));
+        break;
+    case SocketManager::VOLTAGE:
+        str = QStringLiteral("%1 V")
+                .arg(QString::number(this->receiveManager->getVoltage(), 'f', 2));
+        break;
+    case SocketManager::CURRENT:
+        str = QStringLiteral("%1 A")
+                .arg(QString::number(this->receiveManager->getCurrent(), 'f', 2));
+        break;
+    case SocketManager::POWER:
+        str = QStringLiteral("%1 W")
+                .arg(QString::number(this->receiveManager->getPower(), 'f', 2));
+        break;
+    case SocketManager::TEMPERATURE_INSIDE:
+        str = QStringLiteral("%1 ℃")
+                .arg(QString::number(this->receiveManager->getTemperatureInside(), 'f', 2));
+        break;
+    case SocketManager::TEMPERATURE_OUTSIDE:
+        str = QStringLiteral("%1 ℃")
+                .arg(QString::number(this->receiveManager->getTemperatureOutside(), 'f', 2));
+        break;
+    default:
+        break;
     }
 
     return str;
 }
-
-
-SendManager* SocketManager::getSendManager()
-{
-    return this->sendmanager;
-}
-
-
-QString SocketManager::getSpeedText()
-{
-    float tp =  receivemanager->getSpeed();
-    QString tmp = QString::number(tp, 'f', 2);
-
-    return QStringLiteral("%1 dm/s").arg(tmp);
-}
-
-QString SocketManager::getPitchText()
-{
-    double tp =  receivemanager->getPitch();
-    QString tmp = QString::number(tp, 'f', 2);
-
-    return QStringLiteral("%1 °").arg(tmp);
-}
-
-QString SocketManager::getYawText()
-{
-    double tp =  receivemanager->getYaw();
-    QString tmp = QString::number(tp, 'f', 2);
-
-    return QStringLiteral("%1 °").arg(tmp);
-}
-
-QString SocketManager::getRollText()
-{
-    double t = receivemanager->getRoll();
-    QString tmp = QString::number(t, 'f', 2);
-
-    return QStringLiteral("%1 °").arg(tmp);
-}
-
-QString SocketManager::getDeepText()
-{
-    int t = receivemanager->getDeep();
-    QString tmp = QString(t) + QStringLiteral(" 米");
-    return QStringLiteral("%1 cm").arg(t);
-}
-
-QString SocketManager::getVoltageText()
-{
-    double t = receivemanager->getVoltage();
-    QString tmp = QString::number(t, 'f', 2);
-
-    return QStringLiteral("%1 V").arg(tmp);
-}
-
-QString SocketManager::getCurrentText()
-{
-    double t = receivemanager->getCurrent();
-    QString tmp = QString::number(t, 'f', 2);
-
-    return QStringLiteral("%1 A").arg(tmp);
-}
-
-QString SocketManager::getPowerText()
-{
-    double t = receivemanager->getPower();
-    QString tmp = QString::number(t, 'f', 2);
-
-    return QStringLiteral("%1 W").arg(tmp);
-}
-
-QString SocketManager::getTemperatureInsideText()
-{
-    double t = receivemanager->getTemperatureInside();
-    QString tmp = QString::number(t, 'f', 2);
-
-    return QStringLiteral("%1 ℃").arg(tmp);
-}
-
-QString SocketManager::getTemperatureOutsideText()
-{
-    double t = receivemanager->getTemperatureOutside();
-    QString tmp = QString::number(t, 'f', 2);
-
-    return QStringLiteral("%1 ℃").arg(tmp);
-}
-
-bool SocketManager::getRovStatus()
-{
-    return receivemanager->getRovStatus();
-}
-
-float SocketManager::getAngle()
-{
-    return receivemanager->getYaw();
-}
-
-
-
-

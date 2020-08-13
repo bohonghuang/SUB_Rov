@@ -1,107 +1,99 @@
 ﻿#include "SocketThread.h"
-#include <RovApplication.h>
-#include <SettingManager.h>
-#include <SocketManager.h>
 
-SocketThread::SocketThread(QTcpSocket *t){
-    this->tcpSocket = t;
-    tcpSocket = new QTcpSocket(this);
+SocketThread::SocketThread()
+{
+    this->socket = new QTcpSocket(this);
 
-    enableSocket = false;
-    enableConnected = false;
+    _socketed = false;
+    _connected = false;
 }
 
-void SocketThread::run()
-{
-    //连接到
-    connect(tcpSocket, &QTcpSocket::connected, this, [=](){
-        if( enableSocket ){
-            this->enableConnected = true;
-        }
+void SocketThread::run(){
+    //连接
+    connect(socket, &QTcpSocket::connected, this, [=]{
+        if( _socketed )
+            _connected = true;
     });
-    //断开连接
-    connect(tcpSocket, &QTcpSocket::disconnected, this, [=](){
-        this->enableSocket = false;
-        this->enableConnected = false;
-        qDebug() << "Disconnected!" ;
+    //断开
+    connect(socket, &QTcpSocket::disconnected, this, [=]{
+        this->_socketed = false;
+        this->_connected = false;
+        SocketLog.info("Disconnected!!");
 
         emit rovApp()->getToolbox()->getSocketManager()->enableChanged();
     });
 
+    //发送
+    connect(rovApp()->getToolbox()->getSocketManager()->getSendManager()
+            , &SendManager::commandChanged, this, [=](){
+        if(_connected){
+            quint8* data = rovApp()->getToolbox()->getSocketManager()
+                                   ->getSendManager()->getCommand();
+            QByteArray sendData;
+            sendData.resize(20);
+            int length = 20;
+            memcpy(sendData.data(), data, length);
 
-    QTimer timer;
-    connect(&timer, &QTimer::timeout, this, [=](){
-        if( enableConnected ) {
-            QByteArray senddata = rovApp()->getToolbox()
-                    ->getSocketManager()->getSendManager()
-                    ->getBytearrayCommand();
-
-            tcpSocket->write(senddata);
+            socket->write(sendData);
         }
-        else if( enableSocket ){
+        else{
             connectServer();
         }
     });
-    timer.start(500);
 
-
-    connect(tcpSocket, &QTcpSocket::readyRead, this, [=](){
+    //接收
+    connect(socket, &QTcpSocket::readyRead, this, [=]{
         QByteArray data;
-        data = tcpSocket->readAll();
-//        data.
+        data = socket->readAll();
 
-        int sindex = checkHead(data);
+        int sindex = checkHeader(data);
 
         quint8 memdata [26];
         bool isFlag = datacpy(data, sindex, memdata);
-        qDebug() << memdata[0] << " - " << memdata[1] << " - " << memdata[25];
-        memcpy(data.data(), memdata, 26);
+
+        SocketLog.info(QStringLiteral("1: %1, 2: %2, 3: %3, end_check: %4").arg(memdata[0])
+                .arg(memdata[1]).arg(memdata[2]).arg(memdata[25]));
 
 
         if( isFlag ){
             rovApp()->getToolbox()
                     ->getSocketManager()
                     ->getReceiveManager()
-                    ->updateCommand(data);
+                    ->setCommand(memdata);
         }
         else{
             qDebug() << "Data is error!!";
         }
     });
+
     exec();
 }
 
 void SocketThread::connectServer()
 {
-    if( enableConnected ){
+    if( _connected )
         return ;
-    }
-    QString uri = rovApp()->getToolbox()->getSettingManager()->getServerUri();
-    qint16 port = rovApp()->getToolbox()->getSettingManager()->getServerPort().toUInt();
 
+    QString uri = rovApp()->getToolbox()->getSettingsManager()->getServerUri();
+    quint16 port = rovApp()->getToolbox()->getSettingsManager()->getServerPort().toUInt();
     connectServer(uri, port);
 }
 
-void SocketThread::connectServer(QString u, quint16 p)
-{
-    tcpSocket->abort();
-    tcpSocket->connectToHost( u , p);
-
-    qDebug() << "connect to "<< u << " - " << p ;
+void SocketThread::connectServer(QString u, quint16 p){
+    socket->abort();
+    socket->connectToHost(u, p);
+    SocketLog.info("Connecting to " + u + " - " +p);
 }
 
 void SocketThread::disconnectServer()
 {
-    if(tcpSocket!=nullptr){
-        tcpSocket->disconnectFromHost();
+    socket->disconnectFromHost();
+    SocketLog.info("Disconnecting from host");
 
-        qDebug() << "connect is closed" ;
-    }
-    this->enableSocket = false;
-
+    this->_socketed = false;
 }
 
-int SocketThread::checkHead(QByteArray data)
+int SocketThread::checkHeader(QByteArray data)
 {
     int length = data.size();
     int sindex = 0;
@@ -135,8 +127,8 @@ bool SocketThread::datacpy(QByteArray data, int sindex, quint8 *newdata, int len
 
     if(size - sindex < length)
     {
-           qWarning() << "read data error!!";
-           return false;
+       SocketLog.warning("read data error!!");
+       return false;
     }
     else{
         for( int i=sindex; i<sindex+length && i<size ; i++,mi++){
@@ -145,5 +137,4 @@ bool SocketThread::datacpy(QByteArray data, int sindex, quint8 *newdata, int len
 
         return true;
     }
-
 }

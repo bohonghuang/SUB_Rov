@@ -52,12 +52,12 @@ public:
     /// \brief getTmperatureInside: 获取内温度
     /// \return 单位摄氏度（℃），保留两位小数
     ///
-    double getTmperatureInside();
+    double getTemperatureInside();
     ///
     /// \brief getTmperatureOutside: 获取外温度
     /// \return 单位摄氏度（℃），保留两位小数
     ///
-    double getTmperatureOutside();
+    double getTemperatureOutside();
     ///
     /// \brief getDeep: 获取深度
     /// \return 单位米（m），保留两位小数

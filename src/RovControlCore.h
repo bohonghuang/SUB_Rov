@@ -1,71 +1,117 @@
-﻿#ifndef ROVCONTORLCORE_H
-#define ROVCONTORLCORE_H
+﻿#ifndef ROVCONTROLLER_H
+#define ROVCONTROLLER_H
 
 #include <QObject>
-#include <VideoManager.h>
 
-class RovControlCore : public QObject
+class RovControlCore
 {
     Q_OBJECT
 public:
-    explicit RovControlCore(QObject *parent = nullptr);
+    RovControlCore();
 
 public slots:
+    ///
+    /// \brief 上升
+    ///
+    void up();
+    void down();
+    void stopUpDown();
 
-    void doTurnUp();
-    void doTurnDown();
-    void doStopUpDown();
 
+    void forwardBack(double axist);
+    void leftRight(double axist);
 
-    void do_Forward_Back_Change(double axist);
-    void do_Left_Right_Change(double axist);
+    void spinLeft();
+    void spinRight();
+    void stopSpin();
 
-    void doSpinLeft();
-    void doSpinRight();
-    void doStopSpin();
+    void lockDeep();
+    void unlockDeep();
+    void lockDirection();
+    void unlockDirection();
 
-    void doLockDeep();
-    void doUnlockDeep();
-    void doLockDirection();
-    void doUnlockDirection();
-    //
-    void doTurnLight();
-    void doTurnLightUp();
-    void doTurnLightDown();
-    void doTurnLightNormal();
-    //拍照
-    void doCamputure();
-    //紧急关闭操作
-    void doKeep5();
-    void doRecord();
-    void doCameraFocusing(double axit);
-    void doCameraZooming(double axit);
-    void doCameraFocusingToLarge();
-    void doCameraFocusingToSmall();
-    void doCameraZoomingToLarge();
-    void doCameraZoomingToSmall();
-    void doCameraNormal();
-    //
-    void doAddOil();
-    void doSubOil();
-    //
-    void doTurnCloud();
-    void doTurnCloudUp();
-    void doTurnCloudDown();
-    void doTurnCloudCentral();
-    void doTurnCloudNormal();
-    //
-    void doTurnMachineOpen();
-    void doTurnMachineClose();
-    void doTurnMachineNormal();
-    //
-    void doStart();
-    void doStop();
-    //pi
-    void doStartPi();
-    void doStopPi();
-signals:
+    ///
+    /// \brief 截图/拍照
+    ///
+    void grabImage();
+
+    ///
+    /// \brief 变焦放大
+    ///
+    void enlargeZoom();
+    ///
+    /// \brief 变焦缩小
+    ///
+    void reduceZoom();
+    ///
+    /// \brief 聚焦放大
+    ///
+    void enlargeFocus();
+    ///
+    /// \brief 聚焦缩小
+    ///
+    void reduceFocus();
+    void normalCamera();
+
+    ///
+    /// \brief 加油
+    ///
+    void addOil();
+    ///
+    /// \brief 减油
+    ///
+    void subOil();
+
+    ///
+    /// \brief 升起云台
+    ///
+    void upCloud();
+    ///
+    /// \brief 降下云台
+    ///
+    void downCloud();
+    void normalCloud();
+
+    ///
+    /// \brief 打开机械手
+    ///
+    void openManipulator();
+    ///
+    /// \brief 关闭机械手
+    ///
+    void closeManipulator();
+    ///
+    /// \brief 机械手常态
+    ///
+    void normalManipulator();
+
+    ///
+    /// \brief 启动设备
+    ///
+    void startDevice();
+    ///
+    /// \brief 停止设备
+    ///
+    void stopDevice();
+
+    ///
+    /// \brief 启动pi
+    ///
+    void startPi();
+    ///
+    /// \brief 停止 pi
+    ///
+    void stopPi();
+
+    ///
+    /// \brief 启动录像
+    ///
+    void startRecording();
+    ///
+    /// \brief 停止录像
+    ///
+    void stopRecording();
 
 };
 
-#endif // ROVCONTORLCORE_H
+#endif // ROVCONTROLLER_H

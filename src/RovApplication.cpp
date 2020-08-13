@@ -1,194 +1,69 @@
 ﻿#include "RovApplication.h"
-#include <QNetworkProxyFactory>
-#include <QtBluetooth/QBluetoothLocalDevice>
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
-#include <QSettings>
+#include <QQmlApplicationEngine>
+
 #include <QDir>
-#include <QRunnable>
-#include <QtQml>
-#include <QQuickWindow>
 
-#include "SettingManager.h"
-#include "VideoManager.h"
-#include "VideoStreaming.h"
-#include "SocketManager.h"
-#include <KeyManager.h>
+#include "VideoStreaming/ImageProvider.h"
 
-RovApplication* RovApplication::_app = nullptr;
-
-class FinishVideoManager : public QRunnable
+RovApplication::RovApplication(int& argc, char* argv[]) : QApplication(argc, argv)
 {
-private:
-    VideoManager* manager;
-public:
-    FinishVideoManager(VideoManager* v) : manager(v)
-    {
-    }
-    void run(){
-        qDebug("FinishVideoManager::run().") ;
-        manager->initVideo();
-    }
-};
+    QApplication::setOrganizationName("Sub");
+    QApplication::setOrganizationDomain("jmu.edu.cn");
+    QApplication::setApplicationName("SUB_APP");
+    QApplication::setApplicationVersion("0.20");
+    //
+    //QNetworkProxyFactory::setUseSystemConfiguration(true);
 
-
-RovApplication::RovApplication(int& argc, char*argv[])
-    : QApplication          (argc, argv)
-{
-    QCoreApplication::setOrganizationName("Rocael");
-    QCoreApplication::setOrganizationDomain("Rocael.xyz");
-    QCoreApplication::setApplicationName("Rov");
-    QCoreApplication::setApplicationVersion("0.17");
-
-    qDebug() << "RovApplication::RovApplication()";
+    qDebug("RovApplication() --> ");
     _app = this;
-    msecsElapsedTime.start();
-    // Setup for network proxy support
-    QNetworkProxyFactory::setUseSystemConfiguration(true);
 
+    checkSavePath();
 
-    // Initialize Bluetooth
-    //#ifdef QGC_ENABLE_BLUETOOTH
-#ifdef ROV_ENABLE_BLUETOOTH
-    QBluetoothLocalDevice localDevice;
-    if (localDevice.isValid())
-    {
-        bluetoothAvailable = true;
-    }
-#endif
-
-    int gstDebugLevel = 1;
-    // Initialize Video Streaming
-    initializeVideoStreaming(argc, argv, gstDebugLevel);
-
-    this->toolbox = new RovToolBox();
-    this->toolbox->setInit();
-    qDebug() << toolbox;
-    qDebug("End it");
+    this->toolbox = new RovToolbox();
 }
 
-void RovApplication::setLanguage(){
-
-}
-
-void RovApplication::shutdown(){
-    delete qmlAppEngine;
-
+RovApplication::~RovApplication(){
+    this->_app = nullptr;
     delete toolbox;
 }
-bool RovApplication::initAppBoot()
+
+void RovApplication::initAppBoot()
 {
-    qDebug("RovApplication::initAppBoot()");
-    QQmlApplicationEngine* pEngine = new QQmlApplicationEngine(this);
-    pEngine->addImportPath("qrc:/");
-    pEngine->rootContext()->setContextProperty("socketManager", toolbox->getSocketManager());
-    pEngine->rootContext()->setContextProperty("sendManager", toolbox->getSocketManager()->getSendManager());
-    pEngine->rootContext()->setContextProperty("videoManager", toolbox->getVideoManager());
-    pEngine->rootContext()->setContextProperty("receiveManager", toolbox->getSocketManager()->getReceiveManager());
-    pEngine->rootContext()->setContextProperty("rovControl", toolbox->getRovControlCore() );
-    pEngine->rootContext()->setContextProperty("keyManager", toolbox->getKeyManager());
-    pEngine->rootContext()->setContextProperty("settingsMaanger", toolbox->getSettingManager());
+    qDebug("---> Init App Boot") ;
 
-    qmlRegisterUncreatableType<VideoManager>("Rov.VideoManager",1, 0, "VideoManager", "Reference only");
-    qmlRegisterUncreatableType<SocketManager>("Rov.SocketManager",1, 0, "SocketManager", "Reference only");
-    qmlRegisterUncreatableType<ReceiveManager>("Rov.ReceiveManager",1, 0, "ReceiveManager", "Reference only");
-    qmlRegisterUncreatableType<SendManager>("Rov.SendManager",1, 0, "SendManager", "Reference only");
-    qmlRegisterUncreatableType<RovControlCore>("Rov.Controler",1, 0, "RovControlCore", "Reference only");
+    QQmlApplicationEngine* engine = new QQmlApplicationEngine(this);
+    engine->addImportPath("qrc:/");
+    engine->addImageProvider("provider", toolbox->getVideoManager()->getProvider());
+    engine->addImageProvider("thermalProvider", toolbox->getVideoManager()->getThermalProvider());
 
 
-    pEngine->load(QUrl(QStringLiteral("qrc:/main.qml")));
+    engine->load(QUrl(QStringLiteral("qrc:/main.qml")));
+}
 
-    qmlAppEngine = pEngine;
-
-    QQuickWindow * rootWindow = (QQuickWindow*)rovApp()->MainRootWindow();
-
-    if(rootWindow){
-        qDebug("rootWindow has");
-        rootWindow->scheduleRenderJob(new FinishVideoManager(toolbox->getVideoManager()),
-                                      QQuickWindow::BeforeSynchronizingStage);
+void RovApplication::checkSavePath()
+{
+    QString savePath = "/resource/videos";
+    QDir saveDir(savePath);
+    if( !saveDir.exists() ){
+        saveDir.mkpath(savePath);
     }
 
-//    QTimer timer;
-//    timer.interval();
+    savePath = "/resource/images";
+    saveDir = QDir(savePath);
+    if( !saveDir.exists() ){
+        saveDir.mkpath(savePath);
+    }
 
-    return true;
+    savePath = "/temp";
+    saveDir = QDir(savePath);
+    if( !saveDir.exists() ){
+        saveDir.mkpath(savePath);
+    }
 }
-RovApplication::~RovApplication(){
-    _app = nullptr;
-}
-RovApplication * rovApp(void)
+
+
+RovApplication* rovApp(void)
 {
     return RovApplication::_app;
 }
-void RovApplication::openVideoSettingWindow()
-{
 
-}
-
-QObject* RovApplication::rootQmlObject ()
-{
-    if(this->qmlAppEngine && this->qmlAppEngine->rootObjects().size())
-    {
-        return this->qmlAppEngine->rootObjects()[0];
-    }
-    return nullptr;
-}
-void RovApplication::initCommon(){
-}
-
-void RovApplication::showMessage(const QString&message)
-{
-
-}
-
-bool RovApplication::isInternetAvailable(){
-        return true;
-}
-
-QQuickItem* RovApplication::MainRootWindow()
-{
-    if(!this->mainRootWindow)
-        this->mainRootWindow = reinterpret_cast<QQuickItem*>(rootQmlObject());
-    return this->mainRootWindow;
-}
-
-bool RovApplication::checkTelemetrySavePath(bool useMessageBox)
-{
-    QString saveDirPath = "/video/";
-        if (saveDirPath.isEmpty()) {
-            QString error = tr("Unable to save telemetry log. Application save directory is not set.");
-            showMessage(error);
-            return false;
-        }
-
-        QDir saveDir(saveDirPath);
-        if (!saveDir.exists()) {
-            QString error = tr("Unable to save telemetry log. Telemetry save directory \"%1\" does not exist.").arg(saveDirPath);
-            showMessage(error);
-            return false;
-        }
-
-        return true;
-}
-
-
-bool RovApplication::pareseVersionText(const QString& versionString,
-                                       int & majorVersion,
-                                       int & minorVersion,
-                                       int & buildVersion)
-{
-    QRegularExpression regExp("v(\\d+)\\.(\\d+)\\.(\\d+)");
-    QRegularExpressionMatch match = regExp.match(versionString);
-    if (match.hasMatch() && match.lastCapturedIndex() == 3) {
-        majorVersion = match.captured(1).toInt();
-        minorVersion = match.captured(2).toInt();
-        buildVersion = match.captured(3).toInt();
-        return true;
-    }
-
-    return false;
-}
-
-void RovApplication::checkForNewVersion(){
-
-}

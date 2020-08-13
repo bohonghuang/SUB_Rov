@@ -1,18 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>src/qml/ButtonInfo.qml</file>
-        <file>src/qml/ButtonSecondToolbar.qml</file>
-        <file>src/qml/Joysticks.qml</file>
-        <file>src/qml/MyButton.qml</file>
-        <file>src/qml/MyGamePad.qml</file>
-        <file>src/qml/RovInfo.qml</file>
-        <file>src/qml/RovSider.qml</file>
-        <file>src/qml/SecondToolbar.qml</file>
-        <file>src/qml/Setting.qml</file>
-        <file>src/qml/VideoBackground.qml</file>
-        <file>src/qml/AboutPage.qml</file>
-        <file>src/qml/MyFlag.qml</file>
-        <file>src/qml/MySwitch.qml</file>
     </qresource>
 </RCC>

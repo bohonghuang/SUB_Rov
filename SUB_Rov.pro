@@ -1,157 +1,49 @@
-QT += \
-    gui \
-    network \
-    qml \
-    quick \
-    quickwidgets\
-    network\
-    core\
-    gui-private
+QT += quick \
+    widgets
+    network
+
+CONFIG += c++11
+
+INCLUDEPATH += d:/Library/opencv-3.4.10/include\
+    d:/Library/opencv-3.4.10/include/opencv
+
+LIBS += -Ld:/Library/opencv-3.4.10/x64/vc14/lib \
+    -lopencv_world3410d -lopencv_world3410
 
 
-CONFIG += qt \
-    thread \
-    c++11
-
-
-
-
-win32 {
-    contains(QMAKE_TARGET.arch, x86_64) {
-        message("Windows build")
-        CONFIG += WindowsBuild
-        CONFIG += WarningsAsErrorsOn
-    } else {
-        error("Unsupported Windows toolchain, only Visual Studio 2017 64 bit is supported")
-    }
-}
-
-BASEDIR      = $$IN_PWD
-LANGUAGE = C++
-
-TEMPLATE = app
-ROVRoot = $$PWD
-
-iOSBuild{
-    ICON = logo.ico
-}
-WindowsBuild{
-    RC_ICONS = "./resource/sys/favicon_1.ico"
-}
-DebugBuild{
-    DESTDIR  = $${OUT_PWD}/debug
-    CONFIG += DebugBuild
-}
-else{
-    DESTDIR = $${OUT_PWD}/release
-    CONFIG += ReleaseBuild
-}
-!iOSBuild {
-    OBJECTS_DIR  = $${OUT_PWD}/obj
-    MOC_DIR      = $${OUT_PWD}/moc
-    UI_DIR       = $${OUT_PWD}/ui
-    RCC_DIR      = $${OUT_PWD}/rcc
-}
-
-WindowsBuild {
-    QMAKE_CFLAGS -= -Zc:strictStrings
-    QMAKE_CFLAGS_RELEASE -= -Zc:strictStrings
-    QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO -= -Zc:strictStrings
-    QMAKE_CXXFLAGS -= -Zc:strictStrings
-    QMAKE_CXXFLAGS_RELEASE -= -Zc:strictStrings
-    QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO -= -Zc:strictStrings
-    QMAKE_CXXFLAGS_WARN_ON += /W3 \
-        /wd4996 \   # silence warnings about deprecated strcpy and whatnot, these come from the shapefile code with is external
-        /wd4005 \   # silence warnings about macro redefinition, these come from the shapefile code with is external
-        /wd4290 \   # ignore exception specifications
-        /wd4267     # silence conversion from 'size_t' to 'int', possible loss of data, these come from gps drivers shared with px4
-    WarningsAsErrorsOn {
-        QMAKE_CXXFLAGS_WARN_ON += /WX
-    }
-}
-ReleaseBuild {
-    DEFINES += QT_NO_DEBUG QT_MESSAGELOGCONTEXT
-    CONFIG += force_debug_info  # Enable debugging symbols on release builds
-    !iOSBuild {
-        !AndroidBuild {
-            CONFIG += ltcg              # Turn on link time code generation
-        }
-    }
-
-    WindowsBuild {
-        # Run compilation using VS compiler using multiple threads
-        QMAKE_CXXFLAGS += -MP
-
-        # Enable function level linking and enhanced optimized debugging
-        QMAKE_CFLAGS_RELEASE   += /Gy /Zo
-        QMAKE_CXXFLAGS_RELEASE += /Gy /Zo
-        QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO   += /Gy /Zo
-        QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO += /Gy /Zo
-
-        # Eliminate duplicate COMDATs
-        QMAKE_LFLAGS_RELEASE += /OPT:ICF
-#        QMAKE_LFLAGS_RELEASE_WITH_DEBUGINFO += /OPT:ICF
-    }
-}
-
-installer {
-    CONFIG -= debug
-    CONFIG -= debug_and_release
-    CONFIG += release
-    message(Build Installer)
-}
-
-
-AndroidBuild || iOSBuild {
-    # Android and iOS don't unclude these
-} else {
-    QT += \
-        printsupport \
-        serialport \
-}
-
-include(src/videostreaming/VideoStreaming.pri);
-
-
+# The following define makes your compiler emit warnings if you use
+# any Qt feature that has been marked deprecated (the exact warnings
+# depend on your compiler). Refer to the documentation for the
+# deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-#INCLUDEPATH += D:/Library/boost_1_73_0
 
-
-INCLUDEPATH += \
-    src \
-    src/videostreaming \
-    src/keyboard \
-    src/joystick \
-    src/robot \
-    src/setting \
-    src/socket
+# You can also make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
         main.cpp \
-        src/RovControlCore.cpp \
+        src/Keyboard/KeyManager.cpp \
+        src/Log/MyLogging.cpp \
+        src/Robot/Oilvalve.cpp \
         src/RovApplication.cpp \
-        src/RovToolBox.cpp \
-        src/keyboard/KeyManager.cpp \
-        src/robot/Oilvalve.cpp \
-        src/setting/SettingManager.cpp \
-        src/socket/ReceiveCommand.cpp \
-        src/socket/ReceiveManager.cpp \
-        src/socket/SendManager.cpp \
-        src/socket/Sendcommand.cpp \
-        src/socket/SocketManager.cpp \
-        src/socket/ReceiveCommand.cpp \
-        src/socket/SocketThread.cpp \
-        src/socket/receivecommand.cpp \
-        src/videostreaming/GLVideoItemStub.cc \
-        src/videostreaming/VideoManager.cpp \
-        src/videostreaming/VideoReceiver.cpp \
-        src/videostreaming/VideoStreaming.cpp
+        src/RovControlCore.cpp \
+        src/RovToolbox.cpp \
+        src/Settings/SettingsManager.cpp \
+        src/Socket/ReceiveManager.cpp \
+        src/Socket/SendManager.cpp \
+        src/Socket/SocketManager.cpp \
+        src/Socket/SocketThread.cpp \
+        src/VideoStreaming/ImageProvider.cpp \
+        src/VideoStreaming/VideoManager.cpp \
+        src/VideoStreaming/VideoReceiver.cpp
 
 RESOURCES += qml.qrc \
-    img.qrc
+    res.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH = $$PWD/modules
+QML_IMPORT_PATH =
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -162,28 +54,18 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/RovControlCore.h \
+    src/Keyboard/KeyManager.h \
+    src/Log/MyLogging.h \
+    src/Robot/Oilvalve.h \
     src/RovApplication.h \
-    src/RovToolBox.h \
-    src/keyboard/KeyManager.h \
-    src/robot/Oilvalve.h \
-    src/setting/SettingManager.h \
-    src/socket/ReceiveCommand.h \
-    src/socket/ReceiveManager.h \
-    src/socket/SendCommand.h \
-    src/socket/SendManager.h \
-    src/socket/SocketManager.h \
-    src/socket/SocketThread.h \
-    src/videostreaming/GLVideoItemStub.h \
-    src/videostreaming/VideoManager.h \
-    src/videostreaming/VideoReceiver.h \
-    src/videostreaming/VideoStreaming.h
-
-#FORMS += \
-#    SettingWidget.ui
-
-
-FORMS +=
-
-
-
+    src/RovControlCore.h \
+    src/RovController.h \
+    src/RovToolbox.h \
+    src/Settings/SettingsManager.h \
+    src/Socket/ReceiveManager.h \
+    src/Socket/SendManager.h \
+    src/Socket/SocketManager.h \
+    src/Socket/SocketThread.h \
+    src/VideoStreaming/ImageProvider.h \
+    src/VideoStreaming/VideoManager.h \
+    src/VideoStreaming/VideoReceiver.h

@@ -2,77 +2,43 @@
 #define VIDEOMANAGER_H
 
 #include <QObject>
-#include <QSettings>
-#include <QLoggingCategory>
-#include <QSize>
-
-#include "gst/gst.h"
-
-class JoyManager;
-class VideoReceiver;
-class RovApplication;
+#include "VideoReceiver.h"
+#include "ImageProvider.h"
 
 class VideoManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(VideoReceiver*   videoReceiver   READ    getVideoReceiver                           CONSTANT)
-    Q_PROPERTY(VideoReceiver*   videoReceiver_second   READ    getVideoReceiver_second             CONSTANT)
-    Q_PROPERTY(QString          imageFile       READ    getImageFile                               NOTIFY  imageFileChanged)
-    Q_PROPERTY(bool recording READ isRecording NOTIFY recordingChanged)
-
 public:
-    VideoManager();
-    ~VideoManager();
-    void initManager();
+    explicit VideoManager(QObject *parent = nullptr);
 
-    VideoReceiver*  getVideoReceiver()       {return this->videoReceiver;}
-    VideoReceiver*  getVideoReceiver_second(){return this->videoReceiver_second;}
-    QString         getImageFile();
+    void setUrl(const QString& url);
+    void updateSettings();
 
-
+    VideoReceiver* getReceiver(){return  this->videoReceiver; }
+    VideoReceiver* getThermalReceiver(){return this->videoReceiver_sencond;}
+    ImageProvider* getProvider() {return this->videoReceiver->getProvider();}
+    ImageProvider* getThermalProvider() {return this->videoReceiver_sencond->getProvider(); }
 public slots:
-    void restartVideos();
     void startVideo();
     void stopVideo();
-    void startRecording();
-    void stopRecording();
-    bool updateSettings();
-    bool isRecording(){return this->recording;}
+    void restartVideo();
+    void startRecord();
+    void stopRecord();
+    void grabImage();
 
-public:
-#if defined(QGC_GST_STREAMING)
-    static gboolean _videoSinkQuery (GstPad* pad, GstObject* parent, GstQuery* query);
-    GstElement*     _makeVideoSink  (gpointer widget);
-#endif
-
-    // 截图
-protected slots:
-    void udpPortChanged();
-    void rtspUrlChanged();
-    void tcpUrlChanged();
-    void lowLatencyModeChanged();
-
-protected:
-    friend class FinishVideoManager;
-    void initVideo();
-
-public:
-    QString videoFile;
-    QString imageFile;
-
-    VideoReceiver* videoReceiver = nullptr;
-    VideoReceiver* videoReceiver_second = nullptr;
-    bool streaming;
+private:
     bool recording;
+    bool playing;
+
+    QString url;
+
+    VideoReceiver* videoReceiver;
+    VideoReceiver* videoReceiver_sencond;
 
 signals:
-    void imageFileChanged();
-    void streamingChanged();
     void recordingChanged();
-    void videoSizeChanged();
-
-public:
-
+    void openedChanged();
+    void thermalOpenedChanged();
 
 };
 

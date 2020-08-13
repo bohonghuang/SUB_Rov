@@ -32,8 +32,6 @@ public:
     void enableSocket(bool enable);
     bool isEnable();
 
-
-
     typedef enum{
         SPEED,
         PITCH,

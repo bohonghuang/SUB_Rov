@@ -1,42 +1,37 @@
 ﻿#ifndef SOCKETTHREAD_H
 #define SOCKETTHREAD_H
 
-#include <QObject>
 #include <QThread>
 #include <QTcpSocket>
+#include <QTimer>
+#include <QObject>
 
-
+#include "../RovApplication.h"
+#include "SocketManager.h"
 
 class SocketThread : public QThread
 {
+    Q_OBJECT
 public:
-    SocketThread(QTcpSocket* tcp);
-
-    void run();
-
-    ///
-    /// \brief connectServer
-    /// 连接到ip
+    SocketThread();
+    void run() override;
     void connectServer();
-    void connectServer(QString uri, quint16 port);
+    void connectServer(QString u, quint16 p);
     void disconnectServer();
 
-    void EnableConnect(bool enable){this->enableConnected = enable; };
-    void EnableSocket(bool enable){this->enableSocket = enable;};
-    bool isEnableSocket() { return this->enableSocket; }
-
-    int checkHead(QByteArray data);
-    bool datacpy(QByteArray data, int sindex, quint8* newdata, int length = 26);
+    void enableConnect(bool enable) {this->_connected = enable;}
+    bool isEnableConnect() {return this->_connected; }
+    void enableSocket(bool enable) {this->_socketed = enable; }
+    bool isEnableSocket() {return this->_socketed;}
 
 private:
+    QTcpSocket* socket;
+    bool _connected;
+    bool _socketed;
 
-    QTcpSocket * tcpSocket;
-    QTimer * timerSend;
-    QTimer * timerReceive;
-    //启用连接
-    bool enableConnected;
-    //启用套接字
-    bool enableSocket;
+    int checkHeader(QByteArray data);
+    bool datacpy(QByteArray data, int sindex, quint8*newdata, int length=20);
+
 };
 
 #endif // SOCKETTHREAD_H

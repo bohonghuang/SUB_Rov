@@ -1,6 +1,7 @@
 ﻿#include "KeyManager.h"
-#include "RovApplication.h"
-#include <RovControlCore.h>
+
+#include "../RovApplication.h"
+#include "../RovController.h"
 #include <SocketManager.h>
 #include <SendManager.h>
 
@@ -9,12 +10,14 @@
 /// \brief KeyManager::KeyManager   默认的构造，注册本体为qml类别
 ///
 KeyManager::KeyManager(){
+    log.info("Key Manager is creating!");
+
     qmlRegisterUncreatableType<KeyManager>("Rov.KeyManager",1, 0, "KeyManager", "Reference only");
 
 }
 KeyManager::~KeyManager()
 {
-
+    log.info("Key Manager is Deleting!");
 }
 ///
 /// \brief KeyManager::doThings 用于做按下动作的事情
@@ -23,6 +26,8 @@ KeyManager::~KeyManager()
 void KeyManager::doThings(Qt::Key key)
 {
     RovControlCore* rovc = rovApp()->getToolbox()->getRovControlCore();
+    log.info("Do --> Key::" + QString(key) + " things");
+
     switch (key) {
     // WASD前后左右
     case Qt::Key_W:
@@ -136,6 +141,9 @@ void KeyManager::doThings(Qt::Key key)
 void KeyManager::doRelease(Qt::Key key)
 {
     RovControlCore* rovControl = rovApp()->getToolbox()->getRovControlCore();
+
+    log.info("Do --> Key::" + QString(key) + " Release things");
+
     switch( key ){
     case Qt::Key_W:
     case Qt::Key_S:
