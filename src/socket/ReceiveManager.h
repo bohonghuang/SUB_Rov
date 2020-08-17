@@ -2,19 +2,9 @@
 #define RECEIVEMANAGER_H
 
 #include <QObject>
-#include "../Settings/SettingsManager.h"
 #include "../Log/MyLogging.h"
 
-//#include "../RovToolbox.h"
-class ReceiveLogging : public MyLogging
-{
-public:
-    void info(const QString& msg ){ log(msg, INFO, RECEIVE_LOGGING); }
-    void debug(const QString& msg ){ log(msg, DEBUG, RECEIVE_LOGGING); }
-    void warning(const QString& msg ){ log(msg, WARNING, RECEIVE_LOGGING); }
-};
-
-ReceiveLogging Log;
+class ReceiveLogging;
 
 class ReceiveManager : public QObject
 {
@@ -31,6 +21,7 @@ private:
     int getBit(quint8 num, int pos);
     double getAngle(quint8 high, quint8 low);
 
+    ReceiveLogging* log;
 public:
     explicit ReceiveManager(QObject *parent = nullptr);
     ///
@@ -52,12 +43,12 @@ public:
     /// \brief getTmperatureInside: 获取内温度
     /// \return 单位摄氏度（℃），保留两位小数
     ///
-    double getTmperatureInside();
+    double getTemperatureInside();
     ///
     /// \brief getTmperatureOutside: 获取外温度
     /// \return 单位摄氏度（℃），保留两位小数
     ///
-    double getTmperatureOutside();
+    double getTemperatureOutside();
     ///
     /// \brief getDeep: 获取深度
     /// \return 单位米（m），保留两位小数
@@ -108,6 +99,14 @@ public:
 
 signals:
     void commandChanged();
+};
+
+class ReceiveLogging : public MyLogging
+{
+public:
+    void info(const QString& msg ){ log(msg, INFO, RECEIVE_LOGGING); }
+    void debug(const QString& msg ){ log(msg, DEBUG, RECEIVE_LOGGING); }
+    void warning(const QString& msg ){ log(msg, WARNING, RECEIVE_LOGGING); }
 };
 
 #endif // RECEIVEMANAGER_H

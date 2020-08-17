@@ -16,7 +16,7 @@ QString makeFile(MyLogging::LOG_TYPE type){
     QDir dir;
     QString localPath = QCoreApplication::applicationDirPath();
     QString filePath = localPath + "/temp";
-    qDebug() << localPath;
+//    qDebug() << localPath;
     if( !dir.exists(filePath) ){
         dir.mkpath(filePath);
     }

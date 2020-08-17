@@ -2,8 +2,7 @@
 #define ROVCONTROLLER_H
 
 #include <QApplication>
-#include <QQuickItem>
-#include "RovToolbox.h"
+#include <RovToolbox.h>
 
 class RovApplication : public QApplication
 {
@@ -14,12 +13,15 @@ public:
 
     static RovApplication* _app;
 
+    RovApplication *getThis();
+
     RovToolbox* getToolbox(){return this->toolbox;}
-private:
-    void initAppBoot();
-    void checkSavePath();
+
 private:
     RovToolbox* toolbox;
+    QThread* myThread;
+    void initAppBoot();
+    void checkSavePath();
 };
 
 RovApplication* rovApp(void);

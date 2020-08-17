@@ -1,9 +1,10 @@
 ﻿#include "KeyManager.h"
 
 #include "../RovApplication.h"
-#include "../RovController.h"
-#include <SocketManager.h>
-#include <SendManager.h>
+#include "../RovControlCore.h"
+#include <RovToolbox.h>
+#include "../Socket/SocketManager.h"
+#include "../Socket/SendManager.h"
 
 
 ///
@@ -26,112 +27,109 @@ KeyManager::~KeyManager()
 void KeyManager::doThings(Qt::Key key)
 {
     RovControlCore* rovc = rovApp()->getToolbox()->getRovControlCore();
-    log.info("Do --> Key::" + QString(key) + " things");
-
+//    log.info("Do --> Key::" + QString(key) + " things");
+//    qDebug()<<"Do --> Key::" + QString(key) + " things";
     switch (key) {
     // WASD前后左右
     case Qt::Key_W:
-        rovc->do_Forward_Back_Change(1);
+        rovc->forwardBack(1);
         break;
 
     case Qt::Key_S:
-        rovc->do_Forward_Back_Change(-1);
+        rovc->forwardBack(-1);
         break;
 
     case Qt::Key_A:
-        qDebug() << "A";
-        rovc->do_Left_Right_Change(-1);
+        rovc->leftRight(-1);
         break;
 
     case Qt::Key_D:
-        rovc->do_Left_Right_Change(1);
+        rovc->leftRight(1);
         break;
     // Q E 左旋右旋
     case Qt::Key_Q:
-        rovc->doSpinLeft();
+        rovc->spinLeft();
         break;
 
     case Qt::Key_E:
-        rovc->doSpinRight();
+        rovc->spinRight();
         break;
     // F 使灯亮 E使灯暗 主要是为符合F键位距离食指的位置更近的设计。 松开则不动
     case Qt::Key_F:
-        rovc->doTurnLightUp();
+        rovc->upLight();
         break;
 
     case Qt::Key_R:
-        rovc->doTurnLightDown();
+        rovc->downLight();
         break;
     // Space 使上升 Control 使下降
     case Qt::Key_Space:
-        rovc->doTurnUp();
+        rovc->up();
         break;
 
     case Qt::Key_Control:
-        rovc->doTurnDown();
+        rovc->down();
         break;
     // F1 深度锁定/解锁  F2 方向锁定/解锁
     case Qt::Key_F1:
-        rovc->doLockDeep();
+        rovc->lockDeep();
         break;
 
     case Qt::Key_F2:
-        rovc->doLockDirection();
+        rovc->lockDirection();
         break;
     // Y 加油  H 减油
     case Qt::Key_Y:
-        rovc->doAddOil();
+        rovc->addOil();
         break;
 
     case Qt::Key_H:
-        rovc->doSubOil();
+        rovc->subOil();
         break;
     // I 云台向上 K 云台下降 松开则不行动
     case Qt::Key_I:
-        rovc->doTurnCloudUp();
+        rovc->upCloud();
         break;
 
     case Qt::Key_K:
-        rovc->doTurnCloudDown();
+        rovc->downCloud();
         break;
     // U 机器手开  J 机器手闭  松开恢复
     case Qt::Key_U:
-        rovc->doTurnMachineOpen();
+        rovc->openManipulator();
         break;
 
     case Qt::Key_J:
-        rovc->doTurnMachineClose();
+        rovc->closeManipulator();
         break;
 
     case Qt::Key_Up:
     case Qt::Key_8:
-        rovc->doCameraZoomingToLarge();
+        rovc->enlargeZoom();
         break;
 
     case Qt::Key_Down:
     case Qt::Key_5:
-        rovc->doCameraZoomingToSmall();
+        rovc->reduceZoom();
         break;
 
     case Qt::Key_Left:
     case Qt::Key_4:
-        rovc->doCameraFocusingToSmall();
+        rovc->reduceFocus();
         break;
 
     case Qt::Key_Right:
     case Qt::Key_6:
-        rovc->doCameraFocusingToLarge();
+        rovc->enlargeFocus();
         break;
 
     case Qt::Key_P:
-        rovc->doCamputure();
+        rovc->grabImage();
         break;
     default:
         break;
     }
 
-
-    qDebug() << rovApp()->getToolbox()->getSocketManager()->getSendManager()->sendcmd.left_right;
 }
 
 ///
@@ -147,27 +145,27 @@ void KeyManager::doRelease(Qt::Key key)
     switch( key ){
     case Qt::Key_W:
     case Qt::Key_S:
-        rovControl->do_Forward_Back_Change(0);
+        rovControl->forwardBack(0);
         break;
 
     case Qt::Key_A:
     case Qt::Key_D:
-        rovControl->do_Left_Right_Change(0);
+        rovControl->leftRight(0);
         break;
 
     case Qt::Key_F:
     case Qt::Key_R:
-        rovControl->doTurnLightNormal();
+        rovControl->normalLight();
         break;
 
     case Qt::Key_Q:
     case Qt::Key_E:
-        rovControl->doStopSpin();
+        rovControl->stopSpin();
         break;
 
     case Qt::Key_Space:
     case Qt::Key_Control:
-        rovControl->doStopUpDown();
+        rovControl->stopUpDown();
         break;
 
     case Qt::Key_Y:
@@ -176,12 +174,12 @@ void KeyManager::doRelease(Qt::Key key)
 
     case Qt::Key_J:
     case Qt::Key_U:
-        rovControl->doTurnMachineNormal();
+        rovControl->normalManipulator();
         break;
 
     case Qt::Key_I:
     case Qt::Key_K:
-        rovControl->doTurnCloudNormal();
+        rovControl->normalCloud();
         break;
 
     case Qt::Key_4:
@@ -192,7 +190,7 @@ void KeyManager::doRelease(Qt::Key key)
     case Qt::Key_Up:
     case Qt::Key_Down:
     case Qt::Key_Right:
-        rovControl->doCameraNormal();
+        rovControl->normalCamera();
         break;
     default:
         break;

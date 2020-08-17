@@ -1,12 +1,24 @@
 ﻿#include "SocketThread.h"
 
+#include <QTcpSocket>
+#include <RovApplication.h>
+#include <RovToolbox.h>
+
 SocketThread::SocketThread()
 {
     this->socket = new QTcpSocket(this);
+    this->log = new SocketLogging;
 
     _socketed = false;
     _connected = false;
 }
+
+SocketThread::~SocketThread()
+{
+    this->socket->close();
+    delete socket;
+}
+
 
 void SocketThread::run(){
     //连接
@@ -18,48 +30,55 @@ void SocketThread::run(){
     connect(socket, &QTcpSocket::disconnected, this, [=]{
         this->_socketed = false;
         this->_connected = false;
-        SocketLog.info("Disconnected!!");
+        //SocketLog.info("Disconnected!!");
 
         emit rovApp()->getToolbox()->getSocketManager()->enableChanged();
     });
 
     //发送
-    connect(rovApp()->getToolbox()->getSocketManager()->getSendManager()
-            , &SendManager::commandChanged, this, [=](){
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [=](){
+//        qDebug() << "发送";
         if(_connected){
             quint8* data = rovApp()->getToolbox()->getSocketManager()
                                    ->getSendManager()->getCommand();
-            QByteArray sendData;
-            sendData.resize(20);
-            int length = 20;
-            memcpy(sendData.data(), data, length);
 
+            const int length = 20;
+            data[length - 1] = getCheck(data, length);
+
+            QByteArray sendData;
+
+            sendData.resize(length);
+            memcpy(sendData.data(), data, length);
+//            qDebug() << sendData;
             socket->write(sendData);
         }
-        else{
+        else if( _socketed){
             connectServer();
         }
     });
+    timer->start(100);
 
     //接收
     connect(socket, &QTcpSocket::readyRead, this, [=]{
         QByteArray data;
         data = socket->readAll();
-
-        int sindex = checkHeader(data);
+//        qDebug() << data;
+//        int sindex = checkHeader(data);
 
         quint8 memdata [26];
-        bool isFlag = datacpy(data, sindex, memdata);
-
-        SocketLog.info(QStringLiteral("1: %1, 2: %2, 3: %3, end_check: %4").arg(memdata[0])
+        bool isFlag = datacpy(data, 0, memdata);
+        qDebug() << memdata[21] << " - " << memdata[22];
+        log->info(QStringLiteral("1: %1, 2: %2, 3: %3, end_check: %4").arg(memdata[0])
                 .arg(memdata[1]).arg(memdata[2]).arg(memdata[25]));
 
 
         if( isFlag ){
-            rovApp()->getToolbox()
-                    ->getSocketManager()
-                    ->getReceiveManager()
-                    ->setCommand(memdata);
+            if( rovApp()->getToolbox()->getSocketManager()->getReceiveManager()->checkout(memdata))
+                rovApp()->getToolbox()
+                        ->getSocketManager()
+                        ->getReceiveManager()
+                        ->setCommand(memdata);
         }
         else{
             qDebug() << "Data is error!!";
@@ -71,24 +90,26 @@ void SocketThread::run(){
 
 void SocketThread::connectServer()
 {
+//    qDebug() << _connected;
     if( _connected )
         return ;
 
     QString uri = rovApp()->getToolbox()->getSettingsManager()->getServerUri();
     quint16 port = rovApp()->getToolbox()->getSettingsManager()->getServerPort().toUInt();
+
     connectServer(uri, port);
 }
 
 void SocketThread::connectServer(QString u, quint16 p){
     socket->abort();
     socket->connectToHost(u, p);
-    SocketLog.info("Connecting to " + u + " - " +p);
+    log->info("Connecting to " + u + " - " +p);
 }
 
 void SocketThread::disconnectServer()
 {
     socket->disconnectFromHost();
-    SocketLog.info("Disconnecting from host");
+    log->info("Disconnecting from host");
 
     this->_socketed = false;
 }
@@ -127,7 +148,7 @@ bool SocketThread::datacpy(QByteArray data, int sindex, quint8 *newdata, int len
 
     if(size - sindex < length)
     {
-       SocketLog.warning("read data error!!");
+       //SocketLog.warning("read data error!!");
        return false;
     }
     else{
@@ -137,4 +158,13 @@ bool SocketThread::datacpy(QByteArray data, int sindex, quint8 *newdata, int len
 
         return true;
     }
+}
+
+quint8 SocketThread::getCheck(quint8* data, int length)
+{
+    quint8 sum = 0;
+    for(int i=0; i<length-1 ; i++){
+        sum += data[i];
+    }
+    return sum;
 }

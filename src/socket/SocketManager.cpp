@@ -1,14 +1,23 @@
 ﻿#include "SocketManager.h"
 
+#include <RovApplication.h>
+
 SocketManager::SocketManager()
 {
-    SocketLog.info("Create a new SocketManager ");
+    this->log = new SocketLogging;
+    log->info("Create a new SocketManager ");
 
     this->sendManager = new SendManager();
     this->receiveManager = new ReceiveManager();
 
     myThread = new SocketThread();
-    myThread->start();
+
+    qmlRegisterUncreatableType<SocketManager>("Rov.SocketManager",1, 0, "SocketManager", "Reference only");
+
+    connect(this->sendManager, &SendManager::commandChanged, this, &SocketManager::sendChanged);
+    connect(this->receiveManager, &ReceiveManager::commandChanged, this, &SocketManager::receiveChanged);
+
+
 }
 
 void SocketManager::enableSocket(bool enable)
@@ -19,12 +28,12 @@ void SocketManager::enableSocket(bool enable)
 
 bool SocketManager::isEnable()
 {
-    myThread->isEnableSocket();
+    return myThread->isEnableSocket();
 }
 
 QString SocketManager::getInfoText(SocketManager::INFO_TYPE t)
 {
-    SocketLog.info("Get a Info text, the type is: " + QString(t));
+    log->info("Get a Info text, the type is: " + QString(t));
     QString str = "";
     switch (t) {
     case SocketManager::YAW:
@@ -63,9 +72,26 @@ QString SocketManager::getInfoText(SocketManager::INFO_TYPE t)
         str = QStringLiteral("%1 ℃")
                 .arg(QString::number(this->receiveManager->getTemperatureOutside(), 'f', 2));
         break;
+    case SocketManager::DEEP:
+        str = QStringLiteral("%1 m")
+                .arg(QString::number(this->receiveManager->getDeep(), 'f', 2));
+        break;
     default:
         break;
     }
 
     return str;
+}
+
+void SocketManager::disconnectServer()
+{
+    this->enableSocket(false);
+    this->myThread->disconnectServer();
+}
+
+void SocketManager::connectServer()
+{
+    this->enableSocket(true);
+    this->myThread->connectServer();
+
 }

@@ -1,36 +1,33 @@
-﻿#include "SettingManager.h"
-#include <QDir>
-#include <QMutex>
+﻿#include "SettingsManager.h"
+#include <QDebug>
 
-SettingManager::SettingManager(){
-    log.info("SettingsManager is Creating");
+#include <RovApplication.h>
 
-    this->read_write = new QSettings("./conf/setting.ini", QSettings::IniFormat);
-    qDebug() << "ini 在" << read_write->fileName();
+SettingsManager::SettingsManager(){
+    //SettingsLog.info("SettingsManager is Creating");
+
+    this->log = new SettingsLoggging;
+    QString local = QCoreApplication::applicationDirPath();
+    this->read_write = new QSettings(local+"/config/setting.ini", QSettings::IniFormat);
+//    qDebug() << "ini in" << read_write->fileName();
     this->InitSettings();
-    //此时应该已经将所有的成员都初始化了
 
     QString localPath = QCoreApplication::applicationDirPath();
 
     this->videoSavePath = localPath + "/resource/videos";
     this->grapImageSavePath = localPath + "/resource/images";
+    this->enableMainVideo = true;
+    this->enableThermal = false;
 
-    QDir dir;
-    if( !dir.exists(this->videoSavePath) ){
-        dir.mkpath(this->videoSavePath);
-    }
-    if( !dir.exists(this->grapImageSavePath)){
-        dir.mkpath(this->grapImageSavePath);
-    }
+    this->thermal_w = 480;
 
 
-    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
-    qmlRegisterUncreatableType<SettingManager>("Rov.SettingsManager", 1, 0, "SettingsManager", "Reference only");
+    qmlRegisterUncreatableType<SettingsManager>("Rov.SettingsManager", 1, 0, "SettingsManager", "Reference only");
 
 
 }
 
-SettingManager::~SettingManager()
+SettingsManager::~SettingsManager()
 {
     delete read_write;
 
@@ -39,9 +36,9 @@ SettingManager::~SettingManager()
 ///
 /// \brief SettingManager::InitSettings 从ini文件中获取并初始化
 ///
-void SettingManager::InitSettings()
+void SettingsManager::InitSettings()
 {
-    log.info("InitSettings!");
+    log->info("InitSettings!");
     // server 组
     read_write->beginGroup("server");
     QString tmp = read_write->value("ip").toString();
@@ -75,7 +72,7 @@ void SettingManager::InitSettings()
     this->video_port = tmp;
     tmp = read_write->value("type").toString();
     if( tmp.isEmpty() ){
-        tmp = QString( "0" );
+        tmp = QString( "1" );
         read_write->setValue("type", tmp.toInt());
     }
     this->stream_type = (STREAMING_TYPE) tmp.toInt();
@@ -99,7 +96,7 @@ void SettingManager::InitSettings()
     this->thermal_video_port = tmp;
     tmp = read_write->value("type").toString();
     if( tmp.isEmpty() ){
-        tmp = QString( "0" );
+        tmp = QString( "1" );
         read_write->setValue("type", tmp.toInt());
     }
     this->stream_type_2 = (STREAMING_TYPE) tmp.toInt();
@@ -171,7 +168,7 @@ void SettingManager::InitSettings()
     read_write->endGroup();
 }
 
-QString SettingManager::getImagePath()
+QString SettingsManager::getImagePath()
 {
     QString savePath = this->grapImageSavePath;
     QString imageFile = savePath + "/"
@@ -180,72 +177,72 @@ QString SettingManager::getImagePath()
     return imageFile;
 }
 
-void SettingManager::run(){
+void SettingsManager::run(){
     //server
-    connect(this, &SettingManager::serverUriChanged, this, [=](){
+    connect(this, &SettingsManager::serverUriChanged, this, [=](){
         read_write->setValue("server/ip", this->uri);
-        log.info("server ip changed to " + this->uri);
+        log->info("server ip changed to " + this->uri);
     });
-    connect(this, &SettingManager::serverPortChanged, this, [=](){
+    connect(this, &SettingsManager::serverPortChanged, this, [=](){
         read_write->setValue("server/port", this->port);
-        log.info("server port changed to "+ this->port);
+        log->info("server port changed to "+ this->port);
     });
     //video
-    connect(this, &SettingManager::videoTypeChanged, this, [=](){
+    connect(this, &SettingsManager::videoTypeChanged, this, [=](){
         read_write->setValue("video/type", this->stream_type);
-        log.info("video type changed to " + QString(this->stream_type) + " ");
+        log->info("video type changed to " + QString(this->stream_type) + " ");
     });
-    connect(this, &SettingManager::videoUriChanged, this, [=](){
+    connect(this, &SettingsManager::videoUriChanged, this, [=](){
         read_write->setValue("video/uri", this->video_uri);
-        log.info("video url changed to " + this->video_uri);
+        log->info("video url changed to " + this->video_uri);
     });
-    connect(this, &SettingManager::videoPortChanged, this, [=](){
+    connect(this, &SettingsManager::videoPortChanged, this, [=](){
         read_write->setValue("video/port", this->video_port);
-        log.info("video port changed to " + this->video_port);
+        log->info("video port changed to " + this->video_port);
     });
     //themal video
-    connect(this, &SettingManager::thermalVideoTypeChanged, this, [=](){
+    connect(this, &SettingsManager::thermalVideoTypeChanged, this, [=](){
         read_write->setValue("thermalvideo/type", this->stream_type_2);
-        log.info("thermal video type changed to " + QString(this->stream_type_2));
+        log->info("thermal video type changed to " + QString(this->stream_type_2));
     });
-    connect(this, &SettingManager::thermalVideoUriChanged, this, [=](){
+    connect(this, &SettingsManager::thermalVideoUriChanged, this, [=](){
         read_write->setValue("thermalvideo/uri", this->thermal_video_uri);
-        log.info("thermal video url changed to " + this->thermal_video_uri);
+        log->info("thermal video url changed to " + this->thermal_video_uri);
     });
-    connect(this, &SettingManager::thermalVideoPortChanged, this, [=](){
+    connect(this, &SettingsManager::thermalVideoPortChanged, this, [=](){
         read_write->setValue("thermalvideo/port", this->thermal_video_port);
-        log.info("thermal video port changed to " + this->thermal_video_port);
+        log->info("thermal video port changed to " + this->thermal_video_port);
     });
     //enable
-    connect(this, &SettingManager::checkoutChanged, this , [=]() {
+    connect(this, &SettingsManager::checkoutChanged, this , [=]() {
         read_write->setValue("enable/checkout", this->enableCheck);
         QString tmp = this->enableCheck? "ON" : "OFF";
-        log.info("Checkout Enable Switch is " + tmp);
+        log->info("Checkout Enable Switch is " + tmp);
     });
 
-    connect(this, &SettingManager::lowModeChanged, this, [=](){
+    connect(this, &SettingsManager::lowModeChanged, this, [=](){
         read_write->setValue("enable/lowMode", this->lowMode);
         QString tmp = this->lowMode? "ON" : "OFF";
-        log.info("LowMode Enable Switch is " + tmp);
+        log->info("LowMode Enable Switch is " + tmp);
     });
 
     //宽高
-    connect(this, &SettingManager::winWidthChanged, this, [=](){
+    connect(this, &SettingsManager::winWidthChanged, this, [=](){
         read_write->setValue("width", this->win_w );
-        log.info("height changed to " +QString (this->win_w) );
+        log->info("height changed to " +QString (this->win_w) );
     });
-    connect(this, &SettingManager::winHeightChanged, this, [=](){
+    connect(this, &SettingsManager::winHeightChanged, this, [=](){
         read_write->setValue("height", this->win_h );
-        log.info("height changed to " +QString (this->win_h) );
+        log->info("height changed to " +QString (this->win_h) );
     });
     exec();
 }
 
-void SettingManager::udpSettings()
+void SettingsManager::udpSettings()
 {
 //    static QMutex mx;
 //    mx.lock();
-    log.info("SettingManager::udpSettings ()") ;
+    log->info("SettingManager::udpSettings ()") ;
 
     read_write->setValue("server/ip", this->uri);
     read_write->setValue("server/port", this->port);
@@ -262,96 +259,127 @@ void SettingManager::udpSettings()
     //mx.unlock();
 }
 
-void SettingManager::setEnableCheckout(const bool enable)
+void SettingsManager::setEnableCheckout(const bool enable)
 {
     this->enableCheck = enable;
 
     emit checkoutChanged();
 }
 
-void SettingManager::setLowMode(bool mode)
+void SettingsManager::setLowMode(bool mode)
 {
     this->lowMode = mode;
 
     emit lowModeChanged();
 }
 
-void SettingManager::setWindowWidth(int width)
+void SettingsManager::setEnableMainVideo(bool enable)
+{
+    this->enableMainVideo = enable;
+    emit enableMainChanged();
+}
+
+void SettingsManager::setEnableThermal(bool enable)
+{
+    this->enableThermal = enable;
+    emit enableThermalChanged();
+}
+
+void SettingsManager::setWindowWidth(int width)
 {
     this->win_w = width;
 
     emit winWidthChanged();
 }
 
-void SettingManager::setWindowHeight(int height)
+void SettingsManager::setWindowHeight(int height)
 {
     this->win_h = height;
 
     emit winHeightChanged();
 }
 
-void SettingManager::setServerUri(QString u)
+QString SettingsManager::getVideoPath()
+{
+    static int count = 1;
+    QString savePath = this->videoSavePath;
+    QString videoFile = savePath + "/"
+            + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss")
+            + ".mp4";
+    count ++;
+    return videoFile;
+}
+
+void SettingsManager::setServerUri(QString u)
 {
     this->uri = u;
 
     emit serverUriChanged();
 }
 
-void SettingManager::setServerPort(QString p)
+void SettingsManager::setServerPort(QString p)
 {
     this->port = p;
 
     emit serverPortChanged();
 }
 
-void SettingManager::setStreamType(const int t)
+void SettingsManager::setStreamType(const int t)
 {
     this->stream_type = (STREAMING_TYPE) t;
 
     emit videoTypeChanged();
 }
 
-void SettingManager::setStreamType_2(const int t)
+void SettingsManager::setStreamType_2(const int t)
 {
     this->stream_type_2 = (STREAMING_TYPE) t;
 
     emit thermalVideoTypeChanged();
 }
 
-void SettingManager::setVideoUrl(const QString u)
+void SettingsManager::setVideoUrl(const QString u)
 {
    this->video_uri = u;
 
     emit videoUriChanged();
 }
 
-void SettingManager::setVideoPort(const QString p)
+void SettingsManager::setVideoPort(const QString p)
 {
     this->video_port = p;
 
     emit videoPortChanged();
 }
 
-void SettingManager::setThermalVideoUrl(const QString u)
+void SettingsManager::setThermalVideoUrl(const QString u)
 {
+    if( this->thermal_video_uri.contains(this->video_uri)){
+        log->warning("The thermal url is same of main url");
+        return ;
+    }
     this->thermal_video_uri = u;
 
     emit thermalVideoUriChanged();
 }
 
-void SettingManager::setThermalVideoPort(const QString p)
+void SettingsManager::setThermalVideoPort(const QString p)
 {
+    if( this->thermal_video_port.contains(this->video_port)){
+        log->warning("The thermal port is same of main port");
+        return ;
+    }
     this->thermal_video_port = p;
 
     emit thermalVideoPortChanged();
 }
 
-void SettingManager::setAudioUrl(const QString u)
+void SettingsManager::setAudioUrl(const QString u)
 {
     this->audio_uri = u;
 }
 
-void SettingManager::setAudioPort(const QString p)
+void SettingsManager::setAudioPort(const QString p)
 {
     this->audio_port = p;
 }

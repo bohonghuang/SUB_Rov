@@ -1,15 +1,18 @@
-﻿#ifndef ROVCONTROLLER_H
-#define ROVCONTROLLER_H
+﻿#ifndef ROVCONTROLCORE_H
+#define ROVCONTROLCORE_H
 
 #include <QObject>
 
-class RovControlCore
+class RovControlCore : public QObject
 {
     Q_OBJECT
 public:
-    RovControlCore();
-
+    explicit RovControlCore(QObject *parent = nullptr);
 public slots:
+    QString getInfoText(int index);
+    QString getFlagPath(int index);
+    bool getFlagShow(int index);
+    double getPointerAngle();
     ///
     /// \brief 上升
     ///
@@ -72,6 +75,9 @@ public slots:
     void downCloud();
     void normalCloud();
 
+    void upLight();
+    void downLight();
+    void normalLight();
     ///
     /// \brief 打开机械手
     ///
@@ -111,7 +117,8 @@ public slots:
     /// \brief 停止录像
     ///
     void stopRecording();
+signals:
 
 };
 
-#endif // ROVCONTROLLER_H
+#endif // ROVCONTROLCORE_H

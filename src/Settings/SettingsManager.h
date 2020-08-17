@@ -5,31 +5,27 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QThread>
-#include "../Log/MyLogging.h"
+#include <QDir>
+#include <QMutex>
 
+#include <MyLogging.h>
 
-class SettingsLoggging: public MyLogging
-{
-public:
-    void info(const QString& msg ){ log(msg, INFO, SETTINGS_LOGGING); }
-    void debug(const QString& msg ){ log(msg, DEBUG, SETTINGS_LOGGING); }
-    void warning(const QString& msg ){ log(msg, WARNING, SETTINGS_LOGGING); }
-};
-
+class SettingsLoggging;
 class SettingsManager : public QThread
 {
     Q_OBJECT
-    Q_PROPERTY(QString uri        READ      getServerUri    WRITE setServerUri NOTIFY serverUriChanged)
+    Q_PROPERTY(QString uri        READ      getServerUri    WRITE setServerUri  NOTIFY serverUriChanged)
     Q_PROPERTY(QString port       READ      getServerPort   WRITE setServerPort NOTIFY serverPortChanged)
-    Q_PROPERTY(QString video_uri  READ      getVideoPort    WRITE setVideoUrl NOTIFY videoUriChanged)
-    Q_PROPERTY(QString video_port READ      getVideoUrl     WRITE setVideoPort NOTIFY videoPortChanged())
-    Q_PROPERTY(bool    info       READ      getInfo()        NOTIFY infoChanged)
+    Q_PROPERTY(QString video_uri  READ      getVideoPort    WRITE setVideoUrl   NOTIFY videoUriChanged)
+    Q_PROPERTY(QString video_port READ      getVideoUrl     WRITE setVideoPort  NOTIFY videoPortChanged)
+    Q_PROPERTY(bool    info       READ      getInfo        NOTIFY infoChanged)
     Q_PROPERTY(bool    enableCheckout READ  isEnableCheckout NOTIFY checkoutChanged)
 
 public:
     SettingsManager();
     ~SettingsManager();
     void InitSettings();
+
 
     void run() override;
 
@@ -56,8 +52,12 @@ public slots:
     void udpSettings();
     void setEnableCheckout(const bool enable);
     void setLowMode(bool mode);
+    void setEnableMainVideo(bool enable);
+    void setEnableThermal(bool enable);
     void setWindowWidth(int width);
     void setWindowHeight(int height);
+    void setThermalWidth(int width){this->thermal_w = width;};
+    void setThermalHeight(int height){this->thermal_h = height;};
 
     QString getServerUri()  {return uri;}
     QString getServerPort() {return port;}
@@ -69,17 +69,23 @@ public slots:
     QString getAudioUrl()   {return this->audio_uri;   };
     int     getStreamType() {return this->stream_type; };
     int     getStreamType_2() {return this->stream_type_2; };
-    QString getVideoPath()  {return this->videoSavePath; };
+    QString getVideoPath();
     QString getImagePath();
     bool    isEnableCheckout() {return this->enableCheck;}
     bool    isLowMode(){    return this->lowMode;   }
+    bool    isEnableMainVideo(){return this->enableMainVideo; }
+    bool    isEnableThermal(){return this->enableThermal;  }
 
     int     getWinWidth() {return this->win_w;}
     int     getWinHeight() {return this->win_h; }
+    int     getThermalWidth(){return this->thermal_w;}
+    int     getThermalHeight(){return this->thermal_h;}
 
 private:
     bool info;
 
+    bool enableMainVideo;
+    bool enableThermal;
     bool enableCheck;
     bool lowMode;
 
@@ -106,9 +112,11 @@ private:
     int win_w;
     int win_h;
 
+    int thermal_w;
+    int thermal_h;
 
+    SettingsLoggging* log;
 
-    SettingsLoggging log;
 signals:
     void serverUriChanged();
     void serverPortChanged();
@@ -124,6 +132,17 @@ signals:
 
     void winWidthChanged();
     void winHeightChanged();
+
+    void enableMainChanged();
+    void enableThermalChanged();
+};
+
+class SettingsLoggging: public MyLogging
+{
+public:
+    void info(const QString& msg ){ log(msg, INFO, SETTINGS_LOGGING); }
+    void debug(const QString& msg ){ log(msg, DEBUG, SETTINGS_LOGGING); }
+    void warning(const QString& msg ){ log(msg, WARNING, SETTINGS_LOGGING); }
 };
 
 #endif // SETTINGMANAGER_H

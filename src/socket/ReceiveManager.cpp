@@ -2,7 +2,8 @@
 #include <QtMath>
 
 #include "../RovApplication.h"
-
+#include "../Settings/SettingsManager.h"
+#include <RovToolbox.h>
 
 void ReceiveManager::initCommand()
 {
@@ -12,7 +13,14 @@ void ReceiveManager::initCommand()
         this->command[i] = 0x00;
     }
 
-    Log.info("init receive CMD: " + getCommandOfInt());
+    log->info("init receive CMD: " + getCommandOfInt());
+    connect(this, &ReceiveManager::commandChanged, this, [=]{
+        QString str = "CMD: ";
+        for( int i=0; i<maxLength; i++){
+            str += " " + QString::number(command[i]);
+        }
+        log->info(str);
+    });
 }
 
 QString ReceiveManager::getCommandOfInt()
@@ -26,7 +34,7 @@ QString ReceiveManager::getCommandOfInt()
 
 int ReceiveManager::getBit(quint8 num, int pos)
 {
-    quint8 tmp =  num >> (pos-1);
+    quint8 tmp =  num >> (pos);
     return tmp & 0x01;
 }
 
@@ -43,6 +51,7 @@ double ReceiveManager::getAngle(quint8 high, quint8 low)
 
 ReceiveManager::ReceiveManager(QObject *parent) : QObject(parent)
 {
+    this->log = new ReceiveLogging;
     initCommand();
 }
 
@@ -60,15 +69,15 @@ bool ReceiveManager::checkout(quint8 *nc, int length)
     }
 
     if( nc == nullptr){
-        Log.warning("param newCommand is null!!");
+        log->warning("param newCommand is null!!");
         return false;
     }
     if( length<25 ){
-        Log.warning("Length is a error number: " + QString(length));
+        log->warning("Length is a error number: " + QString(length));
         return false;
     }
     if( nc[0] != 0xAA && nc[1] != 0x55 && nc[2] != 0x16 ){
-        Log.warning("Header is error number: " + QStringLiteral("%1 %2 %3").arg(nc[0])
+        log->warning("Header is error number: " + QStringLiteral("%1 %2 %3").arg(nc[0])
                 .arg(nc[1])
                 .arg(nc[2]));
         return false;
@@ -86,8 +95,8 @@ bool ReceiveManager::checkout(quint8 *nc, int length)
         return true;
     }
     else{
-        Log.warning("check result is not same!!");
-        Log.warning(QStringLiteral("Sum is: %1. end check number is: %2").arg(result)
+        log->warning("check result is not same!!");
+        log->warning(QStringLiteral("Sum is: %1. end check number is: %2").arg(result)
                     .arg(end));
         return false;
     }
@@ -122,6 +131,7 @@ double ReceiveManager::getDeep()
     int result = (int)(( 0 | (this->command[9] << 16)
                            | (this->command[10] << 8)
                            |  this->command[11]) );
+//    qDebug() << (double)((double) result/100);
     return (double)((double) result/100);
 }
 
@@ -152,7 +162,7 @@ bool ReceiveManager::getDeviceStatus(int x)
     if( x>8)
         x = 8;
 
-    if( getBit(this->command[19] , x) == 0 )
+    if( getBit(this->command[19] , 8-x) == 0 )
         return false;
     else
         return true;
@@ -168,7 +178,9 @@ bool ReceiveManager::isStarted()
 
 double ReceiveManager::getCurrent()
 {
-    return (double)((double)this->command[21] + ((double)this->command[22] / 100));
+    double curH = this->command[21] ;
+    double curL = this->command[22] / 100;
+    return curH + curL;
 }
 
 double ReceiveManager::getPower()

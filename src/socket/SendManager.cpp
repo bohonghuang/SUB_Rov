@@ -82,6 +82,7 @@ void SendManager::initCommand()
 
 SendManager::SendManager(QObject *parent) : QObject(parent)
 {
+    this->log = new SendLogging;
     initCommand();
 }
 
@@ -90,70 +91,117 @@ quint8 *SendManager::getCommand()
     return this->command;
 }
 
+int SendManager::getCommandLength()
+{
+    return this->maxLength;
+}
+
+bool SendManager::isDeepLocked()
+{
+    if( this->command[3] == Deep_Unlock)
+        return false;
+    else
+        return true;
+}
+
+bool SendManager::isDirectLocked()
+{
+    if( this->command[4] == Direction_Unlock)
+        return false;
+    else
+        return true;
+}
+
 void SendManager::Deep(int v)
 {
+    int index = 3;
+    quint8 temp = command[index];
     if(v == 0)
-        this->command[3] = Deep_Lock;
+        this->command[index] = Deep_Lock ;
     if(v == 1)
-        this->command[3] = Deep_Lock;
+        this->command[index] = Deep_Lock;
     if(v == 2)
-        this->command[3] = Deep_Unlock;
+        this->command[index] = Deep_Unlock;
 
     emit deepChanged();
-    emit commandChanged();
+
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::Direction(int v)
 {
+    int index = 4;
+    quint8 temp = command[index];
     if(v == 0)
-        this->command[4] = Direction_Lock;
+        this->command[index] = Direction_Lock;
     if(v == 1)
-        this->command[4] = Direction_Lock;
+        this->command[index] = Direction_Lock;
     if(v == 2)
-        this->command[4] = Direction_Unlock;
+        this->command[index] = Direction_Unlock;
 
     emit directChanged();
-    emit commandChanged();
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::ForwordBack(quint8 v)
 {
-    this->command[5] = v;
-    emit commandChanged();
+    int index = 5;
+    quint8 temp = command[index];
+
+    this->command[index] = v;
+
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::LeftRight(quint8 v)
 {
-    this->command[6] = v;
-    emit commandChanged();
+    int index = 6;
+    quint8 temp = command[index];
+
+    this->command[index] = v;
+
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::UpDown(int v)
 {
+    int index = 7;
+    quint8 temp = command[index];
     if(v == 0)
-        this->command[7] = UpDown_Normal_Value;
+        this->command[index] = UpDown_Normal_Value;
     if(v >= 1)
-        this->command[7] = Up_Value;
+        this->command[index] = Up_Value;
     if(v <= -1)
-        this->command[7] = Down_Value;
+        this->command[index] = Down_Value;
 
-    emit commandChanged();
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::Spin(int v)
 {
+    int index = 8;
+    quint8 temp = command[index];
     if(v == 0)
-        this->command[8] = Spin_Normal_Value;
+        this->command[index] = Spin_Normal_Value;
     if(v >= 1)
-        this->command[8] = Spin_Left_Value;
+        this->command[index] = Spin_Left_Value;
     if(v <= -1)
-        this->command[8] = Spin_Right_Value;
-    emit commandChanged();
+        this->command[index] = Spin_Right_Value;
+
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::Oil(int v)
 {
-    int t = this->command[9];
+    int index = 9;
+    quint8 temp = command[index];
+    int t = this->command[index];
     if(v >= 1){
         t += 30;
         if(t>255)
@@ -165,57 +213,74 @@ void SendManager::Oil(int v)
             t = 0;
     }
 
-    this->command[9] = (quint8) t;
-    emit commandChanged();
+    this->command[index] = (quint8) t;
+
+    if( temp != command[index])
+        emit commandChanged();
 
 }
 
 void SendManager::Light(int v)
 {
+    int index = 10;
+    quint8 temp = command[index];
     if(v == 0)
-        this->command[10] = Light_Normal;
+        this->command[index] = Light_Normal;
     if(v >= 1)
-        this->command[10] = Light_Up;
+        this->command[index] = Light_Up;
     if(v <= -1)
-        this->command[10] = Light_Down;
-    emit commandChanged();
-}
-
-void SendManager::Cloud(int v)
-{
-    if(v == 0)
-        this->command[11] = Cloud_Normal;
-    if(v >= 1)
-        this->command[11] = Cloud_Up;
-    if(v <= -1)
-        this->command[11] = Cloud_Down;
-    emit commandChanged();
+        this->command[index] = Light_Down;
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::Camera(quint8 v)
 {
-    this->command[12] = v;
-    emit commandChanged();
+    int index  =11;
+    quint8 temp = command[index];
+    this->command[index] = v;
+    if( temp != command[index])
+        emit commandChanged();
+}
+
+void SendManager::Cloud(int v)
+{
+    int index = 12;
+    quint8 temp = command[index];
+    if(v == 0)
+        this->command[index] = Cloud_Normal;
+    if(v >= 1)
+        this->command[index] = Cloud_Up;
+    if(v <= -1)
+        this->command[index] = Cloud_Down;
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::Manipulator(int v)
 {
+    int index = 13;
+    quint8 temp = command[index];
     if(v == 0)
-        this->command[8] = Manipulator_Normal;
+        this->command[index] = Manipulator_Normal;
     if(v >= 1)
-        this->command[8] = Manipulator_Open;
+        this->command[index] = Manipulator_Open;
     if(v <= -1)
-        this->command[8] = Manipulator_Close;
-    emit commandChanged();
+        this->command[index] = Manipulator_Close;
+    if( temp != command[index])
+        emit commandChanged();
 }
 
 void SendManager::DeviceSwitch(int v)
 {
+    int index = 18;
+    quint8 temp = command[index];
     if(v == 0)
-        this->command[8] = Start_Stop_Normal;
+        this->command[index] = Start_Stop_Normal;
     if(v >= 1)
-        this->command[8] = Start_Value;
+        this->command[index] = Start_Value;
     if(v <= -1)
-        this->command[8] = Stop_Value;
-    emit commandChanged();
+        this->command[index] = Stop_Value;
+    if( temp != command[index])
+        emit commandChanged();
 }
