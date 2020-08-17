@@ -13,5 +13,6 @@
         <file>qml/View/AboutView.qml</file>
         <file>qml/View/MainView.qml</file>
         <file>qml/View/SettingsView.qml</file>
+        <file>qml/RovGamepad.qml</file>
     </qresource>
 </RCC>

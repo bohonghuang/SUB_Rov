@@ -1,10 +1,12 @@
 ﻿import QtQuick 2.0
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.5
+import QtGamepad 1.12
 
 import "../Video"
 import "../ToolBar"
 import "../Info"
+import "../"
 
 Window {
     id: window
@@ -17,6 +19,9 @@ Window {
     AboutView{
         id: aboutView
         visible: false
+    }
+    RovGamepad{
+        id: gamepad
     }
 
     Item {
