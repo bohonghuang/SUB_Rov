@@ -3,6 +3,8 @@
 #include <QMetaType>
 #include <RovApplication.h>
 
+#include <QMessageBox>
+
 VideoManager::VideoManager(QObject *parent) : QThread(parent)
 {
     this->myThread = new QThread(this);
@@ -43,11 +45,15 @@ void VideoManager::startCap1UDP(QString port)
     if( !rovApp()->getToolbox()->getSettingsManager()->isEnableMainVideo() )
         return ;
     log->info("startCap1UDP");
-    capture1.open("udpsrc port=" + port.toStdString() + " "
-                  "caps=\"application/x-rtp, "
-                  "media=(string)video, encoding-name=(string)H264\" "
-                  "! rtph264depay ! h264parse ! avdec_h264 "
-                  "! videoconvert ! appsink", cv::CAP_GSTREAMER);
+    QString cmd = QStringLiteral ("udpsrc port=%1 caps=\"application/x-rtp, media=(string)video, encoding-name=(string)H264\" ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! appsink")
+            .arg(port);
+
+    try {
+        capture1.open( cmd.toStdString(), cv::CAP_GSTREAMER);
+    }  catch (QString exp) {
+        QMessageBox::warning(nullptr,"OpenError!","Capture Open failed! Please checkout the port and the stream!");
+
+    }
 
     if( capture1.isOpened() ){
         this->enableCap1 = true;
@@ -293,6 +299,8 @@ void VideoManager::stopWork()
 
 QImage VideoManager::mat2QImage(const cv::Mat &mat)
 {
+//    qDebug() << mat.channels();
+    cv::cvtColor(mat,mat,CV_BGR2RGB);
     switch ( mat.type() ) {
     // 8bits, 4 channel
     case CV_8UC4:{
