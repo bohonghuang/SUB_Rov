@@ -2,6 +2,7 @@
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
+import QtQml.Models 2.3
 
 Item {
     width: 450
@@ -153,10 +154,10 @@ Item {
             }
             Connections {
                 target: settingsManager
-                onEnableMainChanged :{
+                function onEnableMainChanged() {
                     mainVideo_enable_switch.checked = settingsManager.isEnableMainVideo()
                 }
-                onEnableThermalChanged :{
+                function onEnableThermalChanged() {
                     thermalVideo_enable_switch.checked = settingsManager.isEnableThermal()
                 }
             }

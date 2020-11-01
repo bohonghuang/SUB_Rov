@@ -1,6 +1,6 @@
 ﻿#include "RovControlCore.h"
 #include "RovApplication.h"
-#include <RovToolbox.h>
+//#include "RovToolbox.h"
 
 RovControlCore::RovControlCore(QObject *parent) : QObject(parent)
 {
@@ -71,15 +71,15 @@ QString RovControlCore::getFlagPath(int index)
     QString strPath ="";
 
     switch (index+1) {
-    case 1: strPath = QStringLiteral("qrc:/res/icon/flag/白字_深.png"); break;
-    case 2: strPath = QStringLiteral("qrc:/res/icon/flag/白字_串.png"); break;
-    case 3: strPath = QStringLiteral("qrc:/res/icon/flag/白字_电.png"); break;
-    case 4: strPath = QStringLiteral("qrc:/res/icon/flag/白字_指.png"); break;
-    case 5: strPath = QStringLiteral("qrc:/res/icon/flag/白字_变.png"); break;
-    case 6: strPath = QStringLiteral("qrc:/res/icon/flag/白字_聚.png"); break;
-    case 7: strPath = QStringLiteral("qrc:/res/icon/flag/白字_云.png"); break;
-    case 8: strPath = QStringLiteral("qrc:/res/icon/flag/白字_机.png"); break;
-    case 9: strPath = QStringLiteral("qrc:/res/icon/flag/白字_P.png"); break;
+    case 1: strPath = QStringLiteral("qrc:/res/icon/flag/white_deep.png"); break;
+    case 2: strPath = QStringLiteral("qrc:/res/icon/flag/white_com.png"); break;
+    case 3: strPath = QStringLiteral("qrc:/res/icon/flag/white_eletric.png"); break;
+    case 4: strPath = QStringLiteral("qrc:/res/icon/flag/white_point.png"); break;
+    case 5: strPath = QStringLiteral("qrc:/res/icon/flag/white_change.png"); break;
+    case 6: strPath = QStringLiteral("qrc:/res/icon/flag/white_order.png"); break;
+    case 7: strPath = QStringLiteral("qrc:/res/icon/flag/white_cloud.png"); break;
+    case 8: strPath = QStringLiteral("qrc:/res/icon/flag/white_machine.png"); break;
+    case 9: strPath = QStringLiteral("qrc:/res/icon/flag/white_p.png"); break;
     }
     return strPath;
 }

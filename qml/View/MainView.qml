@@ -16,6 +16,7 @@ Window {
 
     visible: false
 
+
     AboutView{
         id: aboutView
         visible: false
@@ -50,11 +51,11 @@ Window {
 
         Connections{
             target: videoManager
-            onFrame1Changed: {
+            function onFrame1Changed() {
                 video_view.imgSource = "";
                 video_view.imgSource = "image://provider"
             }
-            onFrame2Changed: {
+            function onFrame2Changed() {
                 sub_View.imgSource = "";
                 sub_View.imgSource = "image://thermalProvider"
             }
@@ -135,4 +136,5 @@ Window {
             info.opening()
         }
     }
+
 }

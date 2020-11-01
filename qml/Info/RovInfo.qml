@@ -1,6 +1,7 @@
 ﻿import QtQuick 2.0
 import QtQuick.Controls 2.5
 
+
 Item {
     id: infoElement
     width: 160
@@ -112,7 +113,7 @@ Item {
         }
         Connections {
             target: socketManager
-            onReceiveChanged:{
+            function onReceiveChanged(){
                 for( var i=0; i<10 ;i++){
                     info_text_repeat.itemAt(i).text = rovControl.getInfoText(i);
                     if(i<9){

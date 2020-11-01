@@ -1,8 +1,12 @@
-﻿#ifndef ROVCONTROLLER_H
+﻿/*
+ * RovApplication是用于建立rov应用程序的主类
+ *
+ * */
+#ifndef ROVCONTROLLER_H
 #define ROVCONTROLLER_H
 
 #include <QApplication>
-#include <RovToolbox.h>
+#include "RovToolbox.h"
 
 class RovApplication : public QApplication
 {
@@ -13,13 +17,12 @@ public:
 
     static RovApplication* _app;
 
-    RovApplication *getThis();
-
+//    RovApplication *getThis();
     RovToolbox* getToolbox(){return this->toolbox;}
 
 private:
     RovToolbox* toolbox;
-    QThread* myThread;
+//    QThread* myThread;
     void initAppBoot();
     void checkSavePath();
 };

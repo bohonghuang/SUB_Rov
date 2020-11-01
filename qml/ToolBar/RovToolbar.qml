@@ -51,7 +51,7 @@ Item {
     }
     Connections {
         target: socketManager
-        onEnableChanged: {
+        function onEnableChanged() {
             btn_connect.btnImage = socketManager.isEnable() ? "qrc:/res/icon/close.png" : "qrc:/res/icon/connect.png";
             btn_connect.btnText = socketManager.isEnable() ? qsTr("断开连接") : qsTr("连接");
         }
@@ -59,12 +59,12 @@ Item {
     Connections{
         target: videoManager
 
-        onWriter1Changed: {
+        function onWriter1Changed() {
             btn_record.btnImage = videoManager.isRecording()? "qrc:/res/icon/video_off.png" : "qrc:/res/icon/video_on.png"
             btn_record.btnText = videoManager.isRecording()? qsTr("停止录制") : qsTr("录制")
         }
 
-        onWriter2Changed: {
+        function onWriter2Changed() {
             btn_record.btnImage = videoManager.isRecording()? "qrc:/res/icon/video_off.png" : "qrc:/res/icon/video_on.png"
             btn_record.btnText = videoManager.isRecording()? qsTr("停止录制") : qsTr("录制")
         }

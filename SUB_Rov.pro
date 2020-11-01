@@ -10,17 +10,17 @@ CONFIG += c++11 \
     thread
 
 
-INCLUDEPATH += d:/Library/opencv-3.4.10/include \
-    d:/Library/opencv-3.4.10/include/opencv
+INCLUDEPATH += D:/ImDeveloper/Environment/opencv-3.4.10/include \
+    D:/ImDeveloper/Environment/opencv-3.4.10/include/opencv
 
 CONFIG(debug, debug|release ){
 #    message("Debug build" )
-    LIBS += -Ld:/Library/opencv-3.4.10/x64/vc14/lib \
+    LIBS += -LD:/ImDeveloper/Environment/opencv-3.4.10/x64/vc14/lib \
         -lopencv_world3410d
     CONFIG+= DebugBuild
 } else : CONFIG(release, debug| release){
 #    message("Release build" )
-    LIBS += -Ld:/Library/opencv-3.4.10/x64/vc14/lib \
+    LIBS += -LD:/ImDeveloper/Environment/opencv-3.4.10/x64/vc14/lib \
         -lopencv_world3410
     CONFIG += ReleaseBuild
 }

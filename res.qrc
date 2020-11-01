@@ -23,18 +23,18 @@
         <file>res/icon/up.png</file>
         <file>res/icon/video_off.png</file>
         <file>res/icon/video_on.png</file>
-        <file>res/icon/flag/白字_P.png</file>
-        <file>res/icon/flag/白字_变.png</file>
-        <file>res/icon/flag/白字_串.png</file>
-        <file>res/icon/flag/白字_电.png</file>
-        <file>res/icon/flag/白字_动.png</file>
-        <file>res/icon/flag/白字_机.png</file>
-        <file>res/icon/flag/白字_聚.png</file>
-        <file>res/icon/flag/白字_起.png</file>
-        <file>res/icon/flag/白字_深.png</file>
-        <file>res/icon/flag/白字_云.png</file>
-        <file>res/icon/flag/白字_止.png</file>
-        <file>res/icon/flag/白字_指.png</file>
+        <file>res/icon/flag/white_p.png</file>
+        <file>res/icon/flag/white_change.png</file>
+        <file>res/icon/flag/white_com.png</file>
+        <file>res/icon/flag/white_eletric.png</file>
+        <file>res/icon/flag/white_action.png</file>
+        <file>res/icon/flag/white_machine.png</file>
+        <file>res/icon/flag/white_order.png</file>
+        <file>res/icon/flag/white_up.png</file>
+        <file>res/icon/flag/white_deep.png</file>
+        <file>res/icon/flag/white_cloud.png</file>
+        <file>res/icon/flag/white_stop.png</file>
+        <file>res/icon/flag/white_point.png</file>
         <file>res/load.png</file>
     </qresource>
 </RCC>

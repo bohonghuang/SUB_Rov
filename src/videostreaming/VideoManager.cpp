@@ -3,8 +3,6 @@
 #include <QMetaType>
 #include <RovApplication.h>
 
-#include <QMessageBox>
-
 VideoManager::VideoManager(QObject *parent) : QThread(parent)
 {
     this->myThread = new QThread(this);
@@ -39,6 +37,7 @@ VideoManager::~VideoManager()
 {
     this->enable = false;
 }
+#include <QMessageBox>
 
 void VideoManager::startCap1UDP(QString port)
 {

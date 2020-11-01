@@ -2,11 +2,11 @@
 import QtGamepad 1.12
 
 Item {
-    id: padroot
+//    id: padroot
         Gamepad {
-            id: gamepad
-            deviceId: GamepadManager.connectedGamepads.length >0 ?
-                          GamepadManager.connectedGamepads[0] : -1
+//            id: gamepad
+//            deviceId: GamepadManager.connectedGamepads.length >0 ?
+//                          GamepadManager.connectedGamepads[0] : -1
 
 
             //=====================灯控=========================//
@@ -169,4 +169,4 @@ Item {
             }
 
         }
-    }
+}
