@@ -158,6 +158,9 @@ Item {
                 else if( axisRightX < 0 ){
                     rovControl.reduceFocus()
                 }
+                else {
+                    rovControl.normalCamera()
+                }
             }
             onAxisRightYChanged: {
                 if( axisRightY > 0 ){
@@ -165,6 +168,9 @@ Item {
                 }
                 else if( axisRightY < 0 ){
                     rovControl.reduceZoom()
+                }
+                else {
+                    rovControl.normalCamera()
                 }
             }
 

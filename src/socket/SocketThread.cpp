@@ -7,7 +7,7 @@
 SocketThread::SocketThread()
 {
     this->socket = new QTcpSocket(this);
-    this->log = new SocketLogging;
+//    this->log = new SocketLogging;
 
     _socketed = false;
     _connected = false;
@@ -69,8 +69,8 @@ void SocketThread::run(){
         quint8 memdata [26];
         bool isFlag = datacpy(data, 0, memdata);
         qDebug() << memdata[21] << " - " << memdata[22];
-        log->info(QStringLiteral("1: %1, 2: %2, 3: %3, end_check: %4").arg(memdata[0])
-                .arg(memdata[1]).arg(memdata[2]).arg(memdata[25]));
+//        log->info(QStringLiteral("1: %1, 2: %2, 3: %3, end_check: %4").arg(memdata[0])
+//                .arg(memdata[1]).arg(memdata[2]).arg(memdata[25]));
 
 
         if( isFlag ){
@@ -103,13 +103,13 @@ void SocketThread::connectServer()
 void SocketThread::connectServer(QString u, quint16 p){
     socket->abort();
     socket->connectToHost(u, p);
-    log->info("Connecting to " + u + " - " +p);
+//    log->info("Connecting to " + u + " - " +p);
 }
 
 void SocketThread::disconnectServer()
 {
     socket->disconnectFromHost();
-    log->info("Disconnecting from host");
+//    log->info("Disconnecting from host");
 
     this->_socketed = false;
 }

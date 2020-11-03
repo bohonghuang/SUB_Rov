@@ -7,12 +7,12 @@
 
 
 class QTcpSocket;
-class SocketLogging;
+//class SocketLogging;
 class SocketThread : public QThread
 {
 private:
     QTcpSocket* socket;
-    SocketLogging* log;
+//    SocketLogging* log;
     bool _connected;
     bool _socketed;
 
