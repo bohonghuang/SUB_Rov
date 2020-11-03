@@ -18,8 +18,8 @@ class VideoManager : public QThread
 public:
     explicit VideoManager(QObject *parent = nullptr);
     ~VideoManager();
-    void startCap1UDP(QString port);
-    void startCap2UDP(QString port);
+    void startCap1UDP(QString port = "5600");
+    void startCap2UDP(QString port = "5600");
     void startCap1TCP(QString url);
     void startCap2TCP(QString url);
     void stopCap1();
@@ -42,6 +42,8 @@ public:
 
 public slots:
     void grabImage();
+    void startVideo();
+    void stopVideo();
     void restartVideo();
 //    bool isRecording() {return this->recording;}
     void startRecord();
@@ -50,6 +52,7 @@ public slots:
 private:
 
 private:
+    bool threadEnable;
     bool enable;
     bool enableCap1;
     bool enableCap2;

@@ -91,8 +91,19 @@ Item {
         }
         RovToolButton {
             btnImage: "qrc:/res/icon/round.png"
-            btnText: qsTr("视频流重置")
-            onClick: { videoManager.restartVideo()}
+            btnText: qsTr("启动视频")
+            onClick: {
+                videoManager.startVideo()
+//                videoManager.start()
+            }
+        }
+        RovToolButton {
+            btnImage: "qrc:/res/icon/round.png"
+            btnText: qsTr("终止视频")
+            onClick: {
+                videoManager.stopVideo()
+//                videoManager.start()
+            }
         }
         RovToolButton {
             id: btn_record

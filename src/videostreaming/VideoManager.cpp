@@ -11,6 +11,7 @@ VideoManager::VideoManager(QObject *parent) : QThread(parent)
     this->enableCap2 = false;
     this->enableWriter1 = false;
     this->enableWriter2 = false;
+    this->threadEnable = true;
     this->log = new VideoLogging;
 
     connect( this, &VideoManager::workChanged, this, [=](cv::Mat mat){
@@ -24,9 +25,9 @@ VideoManager::VideoManager(QObject *parent) : QThread(parent)
         emit frame2Changed();
     });
 
-    QTimer *timer = new QTimer();
-    connect(timer, &QTimer::timeout, this, &VideoManager::work);
-    timer->start(15);
+//    QTimer *timer = new QTimer();
+//    connect(timer, &QTimer::timeout, this, &VideoManager::work);
+//    timer->start(15);
 
     qmlRegisterUncreatableType<VideoManager>("Rov.VideoManager", 1, 0, "VideoManager", "Reference only");
     qRegisterMetaType<cv::Mat>("cv::Mat");
@@ -62,6 +63,11 @@ void VideoManager::startCap1UDP(QString port)
         this->enableCap1 = false;
         log->warning("Capture1 failed");
     }
+
+//    this->enableCap1 = true;
+//    if(!this->isRunning()){
+//        this->start();
+//    }
 }
 
 void VideoManager::startCap2UDP(QString port)
@@ -121,7 +127,8 @@ void VideoManager::startCap2TCP(QString url)
 
 void VideoManager::stopCap1()
 {
-    capture1.release();
+//    capture1.release();
+    this->enableCap1 = false;
     log->info("Stop Cap 1!");
 }
 
@@ -197,12 +204,23 @@ void VideoManager::stopWriter2()
 
 void VideoManager::startThread()
 {
-    this->myThread->start();
+    this->start();
 }
 
 void VideoManager::run()
 {
-    work();
+//    this->threadEnable  = true;
+    startCap1UDP(rovApp()->getToolbox()->getSettingsManager()->getVideoPort());
+    bool flag = false;
+    if( this->capture1.isOpened() ){
+        qDebug() << "Video Open Success";
+        flag = true;
+    }
+
+    while(flag){
+        work();
+    }
+
     exec();
 }
 
@@ -219,22 +237,36 @@ void VideoManager::grabImage()
     log->info("Grab Image!");
 }
 
+void VideoManager::startVideo()
+{
+//    this->enableCap1 = true;
+    if(!this->isRunning()){
+        this->start();
+    }
+    else{
+        this->enableCap1 = true;
+    }
+}
+
+void VideoManager::stopVideo()
+{
+    this->stopCap1();
+    this->stopCap2();
+}
+
 void VideoManager::restartVideo()
 {
     log->info("Restart Video");
 
-    stopCap1();
-    stopCap2();
-    bool enable1 = rovApp()->getToolbox()->getSettingsManager()->isEnableMainVideo();
-    bool enable2 = rovApp()->getToolbox()->getSettingsManager()->isEnableThermal();
-    QString port1 = rovApp()->getToolbox()->getSettingsManager()->getVideoPort() ;
-    QString port2 = rovApp()->getToolbox()->getSettingsManager()->getThermalVideoPort() ;
-
-    if( enable1 && enable2 && port1.contains(port2) ){
-        rovApp()->getToolbox()->getSettingsManager()->setEnableThermal(false);
+//    this->threadEnable = false;
+    if( !this->isRunning() )
+    {
+        this->start();
     }
-    startCap1UDP( port1);
-    startCap2UDP(  port2);
+        //    this->run();
+
+
+//    this->startThread();
 }
 
 void VideoManager::startRecord()
@@ -263,6 +295,39 @@ void VideoManager::stopRecord()
 
 cv::Mat VideoManager::strongFrame(cv::Mat mat)
 {
+//     线性滤波器
+//    cv::blur(mat,mat, cv::Size(3,3));
+
+    //高斯滤波
+//    cv::GaussianBlur(mat, mat, cv::Size(3, 3), 10);
+    // 1 : X 方向的标准差选为1
+
+
+    //非线性滤波
+//     中值滤波
+//    cv::medianBlur(mat, mat, 3);
+
+    //双边滤波, 会导致程序异常终止
+//    cv::bilateralFilter(mat, mat, -1, 150, 150);
+
+    //
+
+    // 直方图平衡增江
+//    cv::Mat imageRGB[3];
+//    cv::split(mat, imageRGB);
+//    for (int i = 0; i < 3; i++)
+//    {
+//        equalizeHist(imageRGB[i], imageRGB[i]);
+//    }
+//    cv::merge(imageRGB, 3, mat);
+
+    // 拉普拉斯算子 锐化增强算法
+//    cv::Mat imageEnhance;
+//    cv::Mat kernel = (cv::Mat_<float>(3, 3) << 0, -1, 0, 0, 5, 0, 0, -1, 0);
+//    cv::filter2D(mat, imageEnhance, CV_8UC3, kernel);
+
+
+
     return mat;
 }
 

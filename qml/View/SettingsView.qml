@@ -92,7 +92,7 @@ Item {
             }
 
             Label{
-                text: qsTr("在启用视频之前，请务必确认端口的正确性");
+                text: qsTr("在启用视频之前，请务必\n确认端口的正确性");
                 font.underline: true
                 font.italic: true
                 font.pointSize: 15

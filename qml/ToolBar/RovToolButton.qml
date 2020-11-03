@@ -64,31 +64,31 @@ Item {
             target: back_rec
             property: "opacity"
             to: 0.5
-            duration: 125
+            duration: 55
         }
         PropertyAnimation{
             target: btn_img
             property: "height"
             to: 33
-            duration: 144
+            duration: 66
         }
         PropertyAnimation{
             target: btn_img
             property: "y"
             to: 6
-            duration: 144
+            duration: 66
         }
         PropertyAnimation{
             target: btn_text
             property: "opacity"
             to: 1
-            duration: 100
+            duration: 40
         }
         PropertyAnimation{
             target: btn_text
             property: "anchors.topMargin"
             to: 45
-            duration: 144
+            duration: 66
         }
     }
 
@@ -105,31 +105,31 @@ Item {
             target: back_rec
             property: "opacity"
             to: 0
-            duration: 125
+            duration: 55
         }
         PropertyAnimation{
             target: btn_img
             property: "height"
             to: element.height - 10
-            duration: 100
+            duration: 40
         }
         PropertyAnimation{
             target: btn_img
             property: "y"
             to: 0
-            duration: 100
+            duration: 40
         }
         PropertyAnimation{
             target: btn_text
             property: "opacity"
             to: 0
-            duration: 100
+            duration: 40
         }
         PropertyAnimation{
             target: btn_text
             property: "anchors.topMargin"
             to: 33
-            duration: 100
+            duration: 40
         }
     }
 }
