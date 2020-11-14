@@ -86,6 +86,7 @@ public:
     /// \param v：0为默认，表示不改变，<=-1 ：关闭，>=1：启动
     ///
     void DeviceSwitch(int v = 0);
+    void TurnDevice();
 
 
 

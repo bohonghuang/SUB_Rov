@@ -234,12 +234,14 @@ void SendManager::Light(int v)
         emit commandChanged();
 }
 
+//#include <QDebug>
 void SendManager::Camera(quint8 v)
 {
-    int index  =11;
+    int index  = 11;
     quint8 temp = command[index];
+//    qDebug() << v;
     this->command[index] = v;
-    if( temp != command[index])
+//    if( temp != command[index])
         emit commandChanged();
 }
 
@@ -283,4 +285,20 @@ void SendManager::DeviceSwitch(int v)
         this->command[index] = Stop_Value;
     if( temp != command[index])
         emit commandChanged();
+}
+
+void SendManager::TurnDevice()
+{
+    int index = 18;
+    quint8 temp = command[index];
+
+    if ( temp == 0 ){
+        DeviceSwitch(-1);
+    }
+    else if( temp == 0x01 ){
+        DeviceSwitch(-1);
+    }
+    else if( temp == 0x02 ){
+        DeviceSwitch(1);
+    }
 }

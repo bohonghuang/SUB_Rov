@@ -268,6 +268,16 @@ void RovControlCore::stopDevice()
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->DeviceSwitch(-1);
 }
 
+void RovControlCore::normalDevice()
+{
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->DeviceSwitch(0);
+}
+
+void RovControlCore::turnDeivce()
+{
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->TurnDevice();
+}
+
 void RovControlCore::startPi()
 {
 

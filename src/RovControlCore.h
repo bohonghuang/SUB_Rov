@@ -99,6 +99,14 @@ public slots:
     /// \brief 停止设备
     ///
     void stopDevice();
+    ///
+    /// \brief normalDevice 启动停止 默认位
+    ///
+    void normalDevice();
+    ///
+    /// \brief 启动停止
+    ///
+    void turnDeivce();
 
     ///
     /// \brief 启动pi

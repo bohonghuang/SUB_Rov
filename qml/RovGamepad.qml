@@ -3,70 +3,77 @@ import QtGamepad 1.12
 
 Item {
 //    id: padroot
+    property bool gamepadConnected: tgamepad.connected
+    property var gamepadID: tgamepad.deviceId
         Gamepad {
-//            id: gamepad
+            id: tgamepad
 //            deviceId: GamepadManager.connectedGamepads.length >0 ?
 //                          GamepadManager.connectedGamepads[0] : -1
 
+            onButtonStartChanged: {
+                if( buttonStart ){
+                    rovControl.turnDeivce()
+                }
+            }
 
-            //=====================灯控=========================//
+            //===================== Oil =========================//
             onButtonAChanged: {
                 if(buttonA){
                     console.log("A pressed")
-                    rovControl.downLight()
+                    rovControl.subOil()
                 }
-                else
-                    rovControl.normalLight()
             }
             onButtonYChanged:  {
                 if(buttonY){
                     console.log("Y pressed")
-                    rovControl.upLight()
+                    rovControl.addOil()
                 }
-                else
-                    rovControl.normalLight()
             }
 
-            //===================机器手控制======================//
+            //=================== Light ======================//
             onButtonXChanged: {
                 if( buttonX ){
-                    rovControl.closeManipulator()
+                    rovControl.downLight()
                 }
                 else {
-                    rovControl.normalManipulator()
+                    rovControl.normalLight()
                 }
             }
             onButtonBChanged: {
                 if( buttonB )
-                    rovControl.openManipulator()
+                    rovControl.upLight()
                 else{
-                    rovControl.normalManipulator()
+                    rovControl.normalLight()
                 }
             }
 
-            //=====================油控=========================//
+            //===================== Focus =========================//
             onButtonUpChanged: {
                 if(buttonUp)
-                    rovControl.addOil()
+                    rovControl.enlargeFocus()
+                else
+                    rovControl.normalCamera()
             }
             onButtonDownChanged: {
                 if(buttonDown)
-                    rovControl.subOil()
+                    rovControl.reduceFocus()
+                else
+                    rovControl.normalCamera()
             }
 
-            //====================云台控制========================//
+            //==================== Zoom ========================//
             onButtonLeftChanged: {
                 if(buttonLeft)
-                    rovControl.downCloud()
+                    rovControl.enlargeZoom()
                 else{
-                    rovControl.normalCloud()
+                    rovControl.normalCamera()
                 }
             }
             onButtonRightChanged: {
                 if(buttonRight)
-                    rovControl.upCloud()
+                    rovControl.reduceZoom()
                 else{
-                    rovControl.normalCloud()
+                    rovControl.normalCamera()
                 }
             }
 
@@ -77,73 +84,61 @@ Item {
                 }
             }
 
-            //===================深度控制锁定控制=======================//
-            onButtonStartChanged: {
-                if( buttonStart ){
-                    rovControl.lockDeep()
-                }
-
-            }
-
-            onButtonSelectChanged: {
-                console.log("Seleted button")
-                if( buttonStart ){
+            //=================== lock/unlock =======================//
+            onButtonL3Changed: {
+                console.log("Button L3");
+                if( buttonL3 ) {
                     rovControl.lockDirection()
                 }
             }
 
+            onButtonR3Changed:  {
+                console.log("Button R3")
+                if( buttonR3  ){
+                    rovControl.lockDeep()
+                }
+            }
 
-            //=====================水平旋转控制=========================//
+
+            //===================== Cloud =========================//
             onButtonL1Changed: {
                 if(buttonL1){
-                    rovControl.spinLeft()
+                    rovControl.upCloud()
                 }
                 else{
-                    rovControl.stopSpin()
+                    rovControl.normalCloud()
                 }
             }
 
-            onButtonR1Changed: {
-                if(buttonL1){
-                    rovControl.spinRight()
-                }
-                else{
-                    rovControl.stopSpin()
-                }
-            }
-
-            //=====================升降控制=========================//
             onButtonL2Changed: {
                 if(buttonL2){
-                    rovControl.down()
+                    rovControl.downCloud()
                 }
                 else{
-                    rovControl.stopUpDown()
+                    rovControl.normalCloud()
+                }
+            }
+
+            //===================== Manipulator =========================//
+            onButtonR1Changed: {
+                if(buttonR1){
+                    rovControl.openManipulator()
+                }
+                else{
+                    rovControl.normalManipulator()
                 }
             }
 
             onButtonR2Changed: {
-                if(buttonL2){
-                    rovControl.up()
+                if(buttonR2){
+                    rovControl.closeManipulator()
                 }
                 else{
-                    rovControl.stopUpDown()
+                    rovControl.normalManipulator()
                 }
             }
 
             //==============================================//
-            //center
-            onButtonL3Changed: {
-                if(buttonL3) {
-                    videoManager.restartVideo()
-                }
-            }
-
-            //center
-            onButtonR3Changed: {
-                if(buttonR3)
-                    rovControl.grabImage()
-            }
 
             onAxisLeftXChanged: {
                 rovControl.leftRight(axisLeftX)
@@ -153,24 +148,24 @@ Item {
             }
             onAxisRightXChanged: {
                 if( axisRightX > 0 ){
-                    rovControl.enlargeFocus()
+                    rovControl.spinRight()
                 }
                 else if( axisRightX < 0 ){
-                    rovControl.reduceFocus()
+                    rovControl.spinLeft()
                 }
                 else {
-                    rovControl.normalCamera()
+                    rovControl.stopSpin()
                 }
             }
             onAxisRightYChanged: {
                 if( axisRightY > 0 ){
-                    rovControl.enlargeZoom()
+                    rovControl.up()
                 }
                 else if( axisRightY < 0 ){
-                    rovControl.reduceZoom()
+                    rovControl.down()
                 }
                 else {
-                    rovControl.normalCamera()
+                    rovControl.stopUpDown()
                 }
             }
 
