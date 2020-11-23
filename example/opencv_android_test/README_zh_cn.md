@@ -1,0 +1,3 @@
+# Opencv_android_test
+
+这是一个简单的android端的测试小程序
