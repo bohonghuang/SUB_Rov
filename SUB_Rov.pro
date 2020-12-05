@@ -7,8 +7,7 @@ QT += \
 
 CONFIG += c++11 \
     qt \
-    thread \
-    console
+    thread
 
 
 LIBS += $$PWD/libs/users/user_proc.lib

@@ -311,40 +311,6 @@ cv::Mat VideoManager::strongFrame(cv::Mat mat)
         std::cout<<t<<std::endl;
         flag = 1;
     }
-//    GrayWorld(mat, mat);
-
-//     线性滤波器
-//    cv::blur(mat,mat, cv::Size(3,3));
-
-    //高斯滤波
-//    cv::GaussianBlur(mat, mat, cv::Size(3, 3), 10);
-    // 1 : X 方向的标准差选为1
-
-
-    //非线性滤波
-//     中值滤波
-//    cv::medianBlur(mat, mat, 3);
-
-    //双边滤波, 会导致程序异常终止
-//    cv::bilateralFilter(mat, mat, -1, 150, 150);
-
-    //
-
-    // 直方图平衡增江
-//    cv::Mat imageRGB[3];
-//    cv::split(mat, imageRGB);
-//    for (int i = 0; i < 3; i++)
-//    {
-//        equalizeHist(imageRGB[i], imageRGB[i]);
-//    }
-//    cv::merge(imageRGB, 3, mat);
-
-    // 拉普拉斯算子 锐化增强算法
-//    cv::Mat imageEnhance;
-//    cv::Mat kernel = (cv::Mat_<float>(3, 3) << 0, -1, 0, 0, 5, 0, 0, -1, 0);
-//    cv::filter2D(mat, imageEnhance, CV_8UC3, kernel);
-
-
 
     return mat;
 }

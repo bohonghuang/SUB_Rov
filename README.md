@@ -19,8 +19,8 @@
 ==因为opencv高版本对于库的支持出现了修改，所以我们使用的是如下的依赖：==
 
 1. opencv：3.4.10
-
-2. gstreamer：1.16
+（很遗憾，尝试了很多次4.5版本都无法正常open VideoCapture）
+2. gstreamer：1.18.1
 
 	> 尽管在qmake文件里并没有写出对于gstreamer的include、libs依赖路径，但是gstreamer仍然是必须的。
 	>
