@@ -3,6 +3,10 @@
 #include <QMetaType>
 #include <RovApplication.h>
 
+#include "user_proc/user_proc.h"
+
+//#pragma comment(lib, "../user_proc/user_proc.lib")
+
 VideoManager::VideoManager(QObject *parent) : QThread(parent)
 {
     this->myThread = new QThread(this);
@@ -49,6 +53,7 @@ void VideoManager::startCap1UDP(QString port)
             .arg(port);
 
     try {
+//        capture1.open( cmd.toStdString(), cv::CAP_GSTREAMER);
         capture1.open( cmd.toStdString(), cv::CAP_GSTREAMER);
     }  catch (QString exp) {
         QMessageBox::warning(nullptr,"OpenError!","Capture Open failed! Please checkout the port and the stream!");
@@ -145,7 +150,7 @@ void VideoManager::startWriter1()
     log->info("Start writer 1!");
     QString filename = rovApp()->getToolbox()->getSettingsManager()->getVideoPath();
     writer1.open( filename.toStdString(),
-                  CV_FOURCC('A','2','6','4'),
+                  cv::VideoWriter::fourcc('A','2','6','4'),
                   25,
                   cv::Size(1920, 1080));
 
@@ -168,7 +173,7 @@ void VideoManager::startWriter2()
         return ;
     log->info("Start writer 2!");
     QString filename = rovApp()->getToolbox()->getSettingsManager()->getVideoPath();
-    writer1.open( filename.toStdString(), CV_FOURCC('D','I','V','X'), 30, cv::Size(1920, 1080));
+    writer1.open( filename.toStdString(), cv::VideoWriter::fourcc('D','I','V','X'), 30, cv::Size(1920, 1080));
 
     if( writer2.isOpened() ){
         enableWriter2 = true;
@@ -215,6 +220,9 @@ void VideoManager::run()
     if( this->capture1.isOpened() ){
         qDebug() << "Video Open Success";
         flag = true;
+    }
+    else {
+        qDebug() << "Videi Open Failed";
     }
 
     while(flag){
@@ -295,6 +303,16 @@ void VideoManager::stopRecord()
 
 cv::Mat VideoManager::strongFrame(cv::Mat mat)
 {
+    static int flag = 0;
+    int t = -1;
+    t = frameExchange(mat, mat);
+
+    if( flag == 0 ){
+        std::cout<<t<<std::endl;
+        flag = 1;
+    }
+//    GrayWorld(mat, mat);
+
 //     线性滤波器
 //    cv::blur(mat,mat, cv::Size(3,3));
 
@@ -364,7 +382,7 @@ void VideoManager::stopWork()
 QImage VideoManager::mat2QImage(const cv::Mat &mat)
 {
 //    qDebug() << mat.channels();
-    cv::cvtColor(mat,mat,CV_BGR2RGB);
+    cv::cvtColor(mat,mat,cv::COLOR_BGR2RGB);
     switch ( mat.type() ) {
     // 8bits, 4 channel
     case CV_8UC4:{

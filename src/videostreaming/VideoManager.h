@@ -2,7 +2,7 @@
 #define VIDEOMANAGER_H
 
 #include <QObject>
-#include <opencv2/opencv.hpp>
+#include <opencv.hpp>
 #include <QThread>
 
 #include <MyLogging.h>

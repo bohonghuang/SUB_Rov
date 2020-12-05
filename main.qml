@@ -7,7 +7,7 @@ import "qml/View"
 
 MainView{
     visible: true
-    title: qsTr("SubRov v0.20.2")
+    title: qsTr("SubRov v0.21")
 //    Gamepad{
 //        id: gamepad
 

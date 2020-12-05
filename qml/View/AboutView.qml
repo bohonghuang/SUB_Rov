@@ -18,7 +18,7 @@ Window {
         }
         Text {
             id: body
-            text: qsTr("version -- 0.20")
+            text: qsTr("version -- 0.21")
             anchors.left: parent.left
             anchors.leftMargin: 20
             font.pointSize: 20

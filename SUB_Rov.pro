@@ -7,43 +7,38 @@ QT += \
 
 CONFIG += c++11 \
     qt \
-    thread
+    thread \
+    console
 
 
-INCLUDEPATH += D:/ImDeveloper/Environment/opencv-3.4.10/include \
-    D:/ImDeveloper/Environment/opencv-3.4.10/include/opencv
+LIBS += $$PWD/libs/users/user_proc.lib
+#LIBS += -L$$PWD/libs -luser_proc
 
 CONFIG(debug, debug|release ){
-#    message("Debug build" )
-    LIBS += -LD:/ImDeveloper/Environment/opencv-3.4.10/x64/vc14/lib \
-        -lopencv_world3410d
     CONFIG+= DebugBuild
-} else : CONFIG(release, debug| release){
-#    message("Release build" )
-    LIBS += -LD:/ImDeveloper/Environment/opencv-3.4.10/x64/vc14/lib \
-        -lopencv_world3410
-    CONFIG += ReleaseBuild
-}
-DebugBuild{
     DESTDIR  = $${OUT_PWD}/debug
-    CONFIG += DebugBuild
-}
-else{
-    DESTDIR = $${OUT_PWD}/release
+} else : CONFIG(release, debug| release){
     CONFIG += ReleaseBuild
+    DESTDIR = $${OUT_PWD}/release
 }
+
 
 win32{
     CONFIG += WindowsBuild
 }
 
+## Application icon get
 iOSBuild{
     ICON = logo.ico
 }
 WindowsBuild{
     RC_ICONS = "./res/sys/favicon_1.ico"
 }
+unix {
+    CONFIG += LinuxBuild
+}
 
+# set out path
 !iOSBuild {
     OBJECTS_DIR  = $${OUT_PWD}/obj
     MOC_DIR      = $${OUT_PWD}/moc
@@ -89,6 +84,20 @@ ReleaseBuild {
         # Eliminate duplicate COMDATs
         QMAKE_LFLAGS_RELEASE += /OPT:ICF
 #        QMAKE_LFLAGS_RELEASE_WITH_DEBUGINFO += /OPT:ICF
+
+        QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$PWD\\libs\\users\\user_*.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
+
+        # Opencv lib path
+        OPENCV_ROOT = $$PWD/libs/opencv3410 #D:/ImDeveloper/Environment/opencv-3.4.10 #D:/ImDeveloper/Environment/opencv45/build
+        OPENCV_LIB = $$OPENCV_ROOT/x64/vc14/lib
+        LIBS += -L$$OPENCV_LIB \
+            -lopencv_world3410 -lopencv_world3410d
+        INCLUDEPATH += $$OPENCV_ROOT/include \
+            $$OPENCV_ROOT/include/opencv2
+
+        QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$OPENCV_LIB\\..\\bin\\opencv_*.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
+
+        message("copy opencv")
     }
 }
 
@@ -139,10 +148,10 @@ RESOURCES += qml.qrc \
     res.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH = # $$replace("F:\IDE\Qt\5.15.1\msvc2019_64\bin", \, /)
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
-QML_DESIGNER_IMPORT_PATH =
+QML_DESIGNER_IMPORT_PATH = # F:/IDE/Qt/5.15.1/msvc2019_64/qml
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -162,4 +171,5 @@ HEADERS += \
     src/Socket/SocketThread.h \
     src/VideoStreaming/ImageProvider.h \
     src/VideoStreaming/ImageProvider2.h \
-    src/VideoStreaming/VideoManager.h
+    src/VideoStreaming/VideoManager.h \
+    src/user_proc/user_proc.h
