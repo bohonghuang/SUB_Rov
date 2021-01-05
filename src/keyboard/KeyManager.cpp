@@ -64,7 +64,7 @@ void KeyManager::doThings(Qt::Key key)
         break;
     // Space 使上升 Control 使下降
     case Qt::Key_Space:
-        rovc->up();
+        rovc->updown(1);
         break;
 
     case Qt::Key_Control:

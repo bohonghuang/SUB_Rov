@@ -50,11 +50,13 @@ public:
     /// \brief UpDown: 用于控制上下的状态
     /// \param v：0为默认，表示不动。<=-1 ：下降，>=1：上升
     ///
+    void newUpDown(quint8 v = 0x80);
     void UpDown(int v = 0);
     ///
     /// \brief Spin: 用于控制水平左右（旋转）的状态
     /// \param v：0为默认，表示不动。<=-1 ：下降，>=1：上升
     ///
+    void newSpin(quint8 v = 0x80);
     void Spin(int v = 0);
     ///
     /// \brief Oil: 用于油门的控制

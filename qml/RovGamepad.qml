@@ -147,26 +147,10 @@ Item {
                 rovControl.forwardBack(axisLeftY)
             }
             onAxisRightXChanged: {
-                if( axisRightX > 0 ){
-                    rovControl.spinRight()
-                }
-                else if( axisRightX < 0 ){
-                    rovControl.spinLeft()
-                }
-                else {
-                    rovControl.stopSpin()
-                }
+                rovControl.spin(axisRightX)
             }
             onAxisRightYChanged: {
-                if( axisRightY > 0 ){
-                    rovControl.up()
-                }
-                else if( axisRightY < 0 ){
-                    rovControl.down()
-                }
-                else {
-                    rovControl.stopUpDown()
-                }
+                rovControl.updown(axisRightY)
             }
 
         }

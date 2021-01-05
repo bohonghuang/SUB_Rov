@@ -8,6 +8,5 @@ int main(int argc, char *argv[])
 
     RovApplication* app = new RovApplication(argc, argv);
 
-
     return app->exec();
 }

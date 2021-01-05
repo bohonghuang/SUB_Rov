@@ -87,7 +87,7 @@ ReleaseBuild {
         QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$PWD\\libs\\users\\user_*.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
 
         # Opencv lib path
-        OPENCV_ROOT = $$PWD/libs/opencv3410 #D:/ImDeveloper/Environment/opencv-3.4.10 #D:/ImDeveloper/Environment/opencv45/build
+        OPENCV_ROOT = F:/opencv-3.4.10-cv14 # $$PWD/libs/opencv3410 #D:/ImDeveloper/Environment/opencv-3.4.10 #D:/ImDeveloper/Environment/opencv45/build
         OPENCV_LIB = $$OPENCV_ROOT/x64/vc14/lib
         LIBS += -L$$OPENCV_LIB \
             -lopencv_world3410 -lopencv_world3410d

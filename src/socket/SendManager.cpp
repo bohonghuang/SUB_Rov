@@ -167,6 +167,17 @@ void SendManager::LeftRight(quint8 v)
         emit commandChanged();
 }
 
+void SendManager::newUpDown(quint8 v)
+{
+    int index = 7;
+    quint8 temp = command[index];
+
+    this->command[index] = v;
+
+    if( temp != command[index])
+        emit commandChanged();
+}
+
 void SendManager::UpDown(int v)
 {
     int index = 7;
@@ -177,6 +188,17 @@ void SendManager::UpDown(int v)
         this->command[index] = Up_Value;
     if(v <= -1)
         this->command[index] = Down_Value;
+
+    if( temp != command[index])
+        emit commandChanged();
+}
+
+void SendManager::newSpin(quint8 v)
+{
+    int index = 8;
+    quint8 temp = command[index];
+
+    this->command[index] = v;
 
     if( temp != command[index])
         emit commandChanged();

@@ -128,6 +128,19 @@ void RovControlCore::leftRight(double axist)
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->LeftRight(t);
 }
 
+void RovControlCore::updown(double axist)
+{
+    quint8 t = axist * 127 + 127 + 1;
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->newUpDown(t);
+}
+
+void RovControlCore::spin(double axist)
+{
+    quint8 t = axist * 127 + 127 + 1;
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->newSpin(t);
+
+}
+
 void RovControlCore::spinLeft()
 {
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->Spin(-1);

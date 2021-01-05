@@ -23,6 +23,8 @@ public slots:
 
     void forwardBack(double axist);
     void leftRight(double axist);
+    void updown(double axist);
+    void spin(double axist);
 
     void spinLeft();
     void spinRight();
