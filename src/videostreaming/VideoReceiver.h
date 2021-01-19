@@ -9,7 +9,7 @@
 #include "../RovApplication.h"
 #include "ImageProvider.h"
 
-class VideoLogging: public MyLogging
+class VideoLogging : public MyLogging
 {
 public:
     void info(const QString& msg ){ log(msg, INFO, VIDEO_LOGGING); }
@@ -18,6 +18,7 @@ public:
 };
 
 using namespace cv;
+
 
 class VideoReceiver : public QThread
 {

@@ -2,7 +2,7 @@
 
 #include "../RovApplication.h"
 #include "../RovControlCore.h"
-#include <RovToolbox.h>
+#include "../RovToolbox.h"
 #include "../Socket/SocketManager.h"
 #include "../Socket/SendManager.h"
 
@@ -140,7 +140,7 @@ void KeyManager::doRelease(Qt::Key key)
 {
     RovControlCore* rovControl = rovApp()->getToolbox()->getRovControlCore();
 
-    log.info("Do --> Key::" + QString(key) + " Release things");
+    log.info("Do --> Key::" + QStringLiteral("%1").arg( key ) + " Release things");
 
     switch( key ){
     case Qt::Key_W:

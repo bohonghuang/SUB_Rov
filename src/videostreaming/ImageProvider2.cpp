@@ -1,5 +1,5 @@
 ﻿#include "ImageProvider2.h"
-#include <RovApplication.h>
+#include "../RovApplication.h"
 
 ImageProvider2::ImageProvider2(): QQuickImageProvider(QQuickImageProvider::Pixmap)
 {

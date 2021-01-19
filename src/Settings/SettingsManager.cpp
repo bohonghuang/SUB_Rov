@@ -1,7 +1,7 @@
 ﻿#include "SettingsManager.h"
 #include <QDebug>
 
-#include <RovApplication.h>
+#include "../RovApplication.h"
 
 SettingsManager::SettingsManager(){
     //SettingsLog.info("SettingsManager is Creating");
@@ -190,7 +190,7 @@ void SettingsManager::run(){
     //video
     connect(this, &SettingsManager::videoTypeChanged, this, [=](){
         read_write->setValue("video/type", this->stream_type);
-        log->info("video type changed to " + QString(this->stream_type) + " ");
+//        log->info("video type changed to " + QString(this->stream_type) + " ");
     });
     connect(this, &SettingsManager::videoUriChanged, this, [=](){
         read_write->setValue("video/uri", this->video_uri);
@@ -203,7 +203,7 @@ void SettingsManager::run(){
     //themal video
     connect(this, &SettingsManager::thermalVideoTypeChanged, this, [=](){
         read_write->setValue("thermalvideo/type", this->stream_type_2);
-        log->info("thermal video type changed to " + QString(this->stream_type_2));
+//        log->info("thermal video type changed to " + QString(this->stream_type_2));
     });
     connect(this, &SettingsManager::thermalVideoUriChanged, this, [=](){
         read_write->setValue("thermalvideo/uri", this->thermal_video_uri);
@@ -229,11 +229,11 @@ void SettingsManager::run(){
     //宽高
     connect(this, &SettingsManager::winWidthChanged, this, [=](){
         read_write->setValue("width", this->win_w );
-        log->info("height changed to " +QString (this->win_w) );
+//        log->info("height changed to " +QString (this->win_w) );
     });
     connect(this, &SettingsManager::winHeightChanged, this, [=](){
         read_write->setValue("height", this->win_h );
-        log->info("height changed to " +QString (this->win_h) );
+//        log->info("height changed to " +QString (this->win_h) );
     });
     exec();
 }

@@ -8,7 +8,7 @@
 #include <QDir>
 #include <QMutex>
 
-#include <MyLogging.h>
+#include "../Log/MyLogging.h"
 
 class SettingsLoggging;
 class SettingsManager : public QThread

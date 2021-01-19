@@ -1,10 +1,67 @@
 ﻿#include "RovControlCore.h"
 #include "RovApplication.h"
+#include "joystick/joystickmanager.h"
 //#include "RovToolbox.h"
 
 RovControlCore::RovControlCore(QObject *parent) : QObject(parent)
 {
 
+}
+
+int RovControlCore::doThings(SETTING_JOY_DO sdj, bool pressed)
+{
+    switch(sdj) {
+    case ADD_OIL:
+        if(pressed) addOil();
+        break;
+    case SUB_OIL:
+        if(pressed) subOil();
+        break;
+    case UP_CLOUD:
+        if(pressed) upCloud();
+        else normalCloud();
+        break;
+    case DOWN_CLOUD:
+        if(pressed) downCloud();
+        else normalCloud();
+        break;
+    case ENLARGE_FOCUSING:
+        if(pressed) enlargeFocus();
+        else normalCamera();
+        break;
+    case REDUCE_FOCUSING:
+        if(pressed) reduceFocus();
+        else normalCamera();
+        break;
+    case ENLARGE_LIGHT:
+        if(pressed) upLight();
+        else normalLight();
+        break;
+    case REDUCE_LIGHT:
+        if(pressed) downLight();
+        else normalLight();
+        break;
+    case ENLARGE_ZOOMING:
+        if(pressed) enlargeZoom();
+        else normalCamera();
+        break;
+    case REDUCE_ZOOMING:
+        if(pressed) reduceZoom();
+        else normalCamera();
+        break;
+    case LOCK_DEEP:
+        if(pressed) lockDeep();
+        break;
+    case LOCK_DIRECTION:
+        if(pressed) lockDirection();
+        break;
+    default:
+        break;
+    }
+
+//    qDebug() << sdj;
+
+    return 1;
 }
 
 QString RovControlCore::getInfoText(int index)
@@ -116,16 +173,36 @@ void RovControlCore::stopUpDown()
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->UpDown(0);
 }
 
+void RovControlCore::updown(int value)
+{
+
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->UpDown(value);
+}
+
+void RovControlCore::spin(int value)
+{
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->Spin(value);
+}
+
 void RovControlCore::forwardBack(double axist)
 {
     quint8 t = axist * 127 + 127 + 1;
-    rovApp()->getToolbox()->getSocketManager()->getSendManager()->ForwordBack(t);
+    forwardBack(t);
 }
 
+void RovControlCore::forwardBack(int value)
+{
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->ForwordBack(value);
+
+}
+
+void RovControlCore::leftRight(int value) {
+    rovApp()->getToolbox()->getSocketManager()->getSendManager()->LeftRight((quint8)value);
+}
 void RovControlCore::leftRight(double axist)
 {
     quint8 t = axist * 127 + 127 + 1;
-    rovApp()->getToolbox()->getSocketManager()->getSendManager()->LeftRight(t);
+    leftRight(t);
 }
 
 void RovControlCore::spinLeft()
@@ -143,6 +220,9 @@ void RovControlCore::stopSpin()
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->Spin(0);
 }
 
+///
+/// \brief RovControlCore::lockDeep
+///  能解锁和开锁
 void RovControlCore::lockDeep()
 {
     if( rovApp()->getToolbox()->getSocketManager()->getSendManager()->isDeepLocked() )
@@ -151,11 +231,17 @@ void RovControlCore::lockDeep()
         rovApp()->getToolbox()->getSocketManager()->getSendManager()->Deep(1);
 }
 
+///
+/// \brief RovControlCore::unlockDeep
+///
 void RovControlCore::unlockDeep()
 {
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->Deep(2);
 }
 
+///
+/// \brief RovControlCore::lockDirection
+/// 能解锁和开锁
 void RovControlCore::lockDirection()
 {
     if( rovApp()->getToolbox()->getSocketManager()->getSendManager()->isDirectLocked() )

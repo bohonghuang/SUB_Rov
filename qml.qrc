@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>qml/KeyHandler.qml</file>
-        <file>qml/Splash.qml</file>
         <file>qml/Info/RovFlag.qml</file>
         <file>qml/Info/RovInfo.qml</file>
         <file>qml/Info/RovInfoSwitch.qml</file>
@@ -13,6 +11,7 @@
         <file>qml/View/AboutView.qml</file>
         <file>qml/View/MainView.qml</file>
         <file>qml/View/SettingsView.qml</file>
-        <file>qml/RovGamepad.qml</file>
+        <file>qml/KeyHandler.qml</file>
+        <file>qml/Splash.qml</file>
     </qresource>
 </RCC>

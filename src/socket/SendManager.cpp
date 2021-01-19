@@ -171,12 +171,7 @@ void SendManager::UpDown(int v)
 {
     int index = 7;
     quint8 temp = command[index];
-    if(v == 0)
-        this->command[index] = UpDown_Normal_Value;
-    if(v >= 1)
-        this->command[index] = Up_Value;
-    if(v <= -1)
-        this->command[index] = Down_Value;
+        this->command[index] = v;
 
     if( temp != command[index])
         emit commandChanged();
@@ -186,12 +181,7 @@ void SendManager::Spin(int v)
 {
     int index = 8;
     quint8 temp = command[index];
-    if(v == 0)
-        this->command[index] = Spin_Normal_Value;
-    if(v >= 1)
-        this->command[index] = Spin_Left_Value;
-    if(v <= -1)
-        this->command[index] = Spin_Right_Value;
+        this->command[index] = v;
 
     if( temp != command[index])
         emit commandChanged();

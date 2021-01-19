@@ -146,6 +146,7 @@ Item {
             onAxisLeftYChanged: {
                 rovControl.forwardBack(axisLeftY)
             }
+            // 0 - 255
             onAxisRightXChanged: {
                 if( axisRightX > 0 ){
                     rovControl.spinRight()

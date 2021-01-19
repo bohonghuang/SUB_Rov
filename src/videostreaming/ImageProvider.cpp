@@ -1,7 +1,7 @@
 ﻿#include "ImageProvider.h"
 #include "../RovApplication.h"
 #include "../Settings/SettingsManager.h"
-#include <RovToolbox.h>
+#include "../RovToolbox.h"
 
 ImageProvider::ImageProvider() : QQuickImageProvider(QQuickImageProvider::Pixmap)
 {

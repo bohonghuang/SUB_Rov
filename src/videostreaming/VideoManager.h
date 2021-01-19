@@ -5,11 +5,12 @@
 #include <opencv.hpp>
 #include <QThread>
 
-#include <MyLogging.h>
+#include "../Log/MyLogging.h"
 //#include <QImage>
 
-#include <ImageProvider.h>
+#include "ImageProvider.h"
 #include "ImageProvider2.h"
+//#include "VideoReceiver.h"
 
 class VideoLogging;
 class VideoManager : public QThread
@@ -82,12 +83,5 @@ signals:
     void frame2Changed();
     void writer1Changed();
     void writer2Changed();
-};
-class VideoLogging : public MyLogging
-{
-public:
-    void info(const QString& msg ){ log(msg, INFO, VIDEO_LOGGING); }
-    void debug(const QString& msg ){ log(msg, DEBUG, VIDEO_LOGGING); }
-    void warning(const QString& msg ){ log(msg, WARNING, VIDEO_LOGGING); }
 };
 #endif // VIDEOMANAGER_H

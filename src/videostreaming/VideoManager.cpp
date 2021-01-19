@@ -1,10 +1,11 @@
 ﻿#include "VideoManager.h"
-#include<QThread>
+#include <QThread>
 #include <QMetaType>
-#include <RovApplication.h>
+//#include <QMessageBox>
+#include "../RovApplication.h"
 
-#include "user_proc/user_proc.h"
-
+#include "../user_proc/user_proc.h"
+#include "VideoReceiver.h"
 //#pragma comment(lib, "../user_proc/user_proc.lib")
 
 VideoManager::VideoManager(QObject *parent) : QThread(parent)
@@ -42,7 +43,6 @@ VideoManager::~VideoManager()
 {
     this->enable = false;
 }
-#include <QMessageBox>
 
 void VideoManager::startCap1UDP(QString port)
 {
@@ -56,7 +56,7 @@ void VideoManager::startCap1UDP(QString port)
 //        capture1.open( cmd.toStdString(), cv::CAP_GSTREAMER);
         capture1.open( cmd.toStdString(), cv::CAP_GSTREAMER);
     }  catch (QString exp) {
-        QMessageBox::warning(nullptr,"OpenError!","Capture Open failed! Please checkout the port and the stream!");
+//        QMessageBox::warning(nullptr,"OpenError!","Capture Open failed! Please checkout the port and the stream!");
 
     }
 

@@ -1,7 +1,6 @@
 ﻿import QtQuick 2.0
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.5
-import QtGamepad 1.12
 
 import "../Video"
 import "../ToolBar"
@@ -16,16 +15,9 @@ Window {
 
     visible: false
 
-    Label{
-        text: gamepad.gamepadConnected ? qsTr("Connected gamepad: ")+gamepad.gamepadID : qsTr("Don't connected gamepad")
-        y: 100
-    }
     AboutView{
         id: aboutView
         visible: false
-    }
-    RovGamepad{
-        id: gamepad
     }
 
     Item {

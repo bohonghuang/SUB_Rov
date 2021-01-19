@@ -2,6 +2,7 @@
 #define ROVCONTROLCORE_H
 
 #include <QObject>
+#include "Settings/joysticksettings.h"
 
 class RovControlCore : public QObject
 {
@@ -9,6 +10,7 @@ class RovControlCore : public QObject
 public:
     explicit RovControlCore(QObject *parent = nullptr);
 public slots:
+    int doThings(SETTING_JOY_DO sdj, bool pressed);
     QString getInfoText(int index);
     QString getFlagPath(int index);
     bool getFlagShow(int index);
@@ -20,9 +22,12 @@ public slots:
     void down();
     void stopUpDown();
 
-
+    void updown(int value);
+    void spin(int value);
     void forwardBack(double axist);
+    void forwardBack(int);
     void leftRight(double axist);
+    void leftRight(int);
 
     void spinLeft();
     void spinRight();

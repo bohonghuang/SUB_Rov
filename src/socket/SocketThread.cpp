@@ -1,8 +1,9 @@
 ﻿#include "SocketThread.h"
 
 #include <QTcpSocket>
-#include <RovApplication.h>
-#include <RovToolbox.h>
+#include "../RovApplication.h"
+#include "../RovToolbox.h"
+#include <QUdpSocket>
 
 SocketThread::SocketThread()
 {
@@ -35,11 +36,13 @@ void SocketThread::run(){
         emit rovApp()->getToolbox()->getSocketManager()->enableChanged();
     });
 
+
+    QUdpSocket* udp = new QUdpSocket(this);
     //发送
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [=](){
 //        qDebug() << "发送";
-        if(_connected){
+//        if(_connected){
             quint8* data = rovApp()->getToolbox()->getSocketManager()
                                    ->getSendManager()->getCommand();
 
@@ -50,12 +53,13 @@ void SocketThread::run(){
 
             sendData.resize(length);
             memcpy(sendData.data(), data, length);
-//            qDebug() << sendData;
-            socket->write(sendData);
-        }
-        else if( _socketed){
-            connectServer();
-        }
+            qDebug() << sendData;
+//            socket->write(sendData);
+            udp->writeDatagram(sendData, QHostAddress::LocalHost, 12000);
+//        }
+//        else if( _socketed){
+//            connectServer();
+//        }
     });
     timer->start(100);
 

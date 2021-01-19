@@ -3,7 +3,7 @@
 
 #include "../RovApplication.h"
 #include "../Settings/SettingsManager.h"
-#include <RovToolbox.h>
+#include "../RovToolbox.h"
 
 void ReceiveManager::initCommand()
 {
@@ -73,7 +73,7 @@ bool ReceiveManager::checkout(quint8 *nc, int length)
         return false;
     }
     if( length<25 ){
-        log->warning("Length is a error number: " + QString(length));
+//        log->warning("Length is a error number: " + QString(length));
         return false;
     }
     if( nc[0] != 0xAA && nc[1] != 0x55 && nc[2] != 0x16 ){

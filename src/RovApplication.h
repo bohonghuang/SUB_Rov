@@ -5,10 +5,10 @@
 #ifndef ROVCONTROLLER_H
 #define ROVCONTROLLER_H
 
-#include <QApplication>
-#include "RovToolbox.h"
+#include <QGuiApplication>
+#include "RovToolBox.h"
 
-class RovApplication : public QApplication
+class RovApplication : public QGuiApplication
 {
     Q_OBJECT
 public:
@@ -25,6 +25,7 @@ private:
 //    QThread* myThread;
     void initAppBoot();
     void checkSavePath();
+    void listenJoystick();
 };
 
 RovApplication* rovApp(void);

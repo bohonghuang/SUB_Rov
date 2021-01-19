@@ -1,6 +1,6 @@
 ﻿#include "SocketManager.h"
 
-#include <RovApplication.h>
+#include "../RovApplication.h"
 
 SocketManager::SocketManager()
 {
@@ -33,7 +33,7 @@ bool SocketManager::isEnable()
 
 QString SocketManager::getInfoText(SocketManager::INFO_TYPE t)
 {
-    log->info("Get a Info text, the type is: " + QString(t));
+//    log->info("Get a Info text, the type is: " + QString(t));
     QString str = "";
     switch (t) {
     case SocketManager::YAW:
@@ -91,6 +91,7 @@ void SocketManager::disconnectServer()
 
 void SocketManager::connectServer()
 {
+    qDebug() << "Connect to server";
     this->enableSocket(true);
     this->myThread->connectServer();
 
