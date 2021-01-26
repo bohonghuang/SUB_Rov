@@ -81,6 +81,15 @@ public slots:
     int     getThermalWidth(){return this->thermal_w;}
     int     getThermalHeight(){return this->thermal_h;}
 
+    QString getVideoSavePath() {return this->videoSavePath; }
+    void    setVideoSavePath(QString vs) {this->videoSavePath = vs;emit onVideoPathChanged();}
+
+    bool    getEnableBlack() {return this->enableBlack; }
+    void    isEnableBlack( bool eb ) {this->enableBlack = eb; emit onEnableBlackChanged();}
+
+    int     getFrameArea() {return this->frameArea;}
+    void    setFrameArea(int fa) {this->frameArea = fa; emit onFrameAreaChanged(); }
+
 private:
     bool info;
 
@@ -88,6 +97,9 @@ private:
     bool enableThermal;
     bool enableCheck;
     bool lowMode;
+
+    bool enableBlack; // true开启黑白，false彩色，默认彩色
+    int frameArea; // 0全局，1局部（70%），默认全局
 
     QString uri;
     QString port;
@@ -106,6 +118,8 @@ private:
 
     STREAMING_TYPE stream_type;
     STREAMING_TYPE stream_type_2;
+
+//    QString videoSavePath;
 
     int win_x;
     int win_y;
@@ -135,6 +149,10 @@ signals:
 
     void enableMainChanged();
     void enableThermalChanged();
+
+    void onVideoPathChanged();
+    void onEnableBlackChanged();
+    void onFrameAreaChanged();
 };
 
 class SettingsLoggging: public MyLogging

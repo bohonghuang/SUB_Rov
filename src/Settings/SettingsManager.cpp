@@ -8,7 +8,7 @@ SettingsManager::SettingsManager(){
 
     this->log = new SettingsLoggging;
     QString local = QCoreApplication::applicationDirPath();
-    this->read_write = new QSettings(local+"/config/setting.ini", QSettings::IniFormat);
+    this->read_write = new QSettings(QDir::homePath()+".sub/conf"+"/setting.ini", QSettings::IniFormat);
 //    qDebug() << "ini in" << read_write->fileName();
     this->InitSettings();
 
@@ -166,6 +166,31 @@ void SettingsManager::InitSettings()
     }
     this->lowMode = tmp.contains("true")? true: false;
     read_write->endGroup();
+
+
+    read_write->beginGroup("videoSave");
+    tmp = read_write->value("path").toString();
+    if( tmp.isEmpty() ){
+        tmp = QString(this->videoSavePath);
+        read_write->setValue("path", tmp);
+    }
+    this->videoSavePath = tmp;
+    read_write->endGroup();
+
+    read_write->beginGroup("frame");
+    tmp = read_write->value("black").toString();
+    if( tmp.isEmpty() ){
+        tmp = QString(this->enableBlack?"true":"false");
+        read_write->setValue("black", tmp);
+    }
+    this->enableBlack = tmp.contains("true") ? true : false;
+    tmp = read_write->value("area").toString();
+    if( tmp.isEmpty() ){
+        tmp = QString::number(this->frameArea);
+        read_write->setValue("path", tmp);
+    }
+    this->frameArea = tmp.toInt();
+    read_write->endGroup();
 }
 
 QString SettingsManager::getImagePath()
@@ -233,6 +258,20 @@ void SettingsManager::run(){
     });
     connect(this, &SettingsManager::winHeightChanged, this, [=](){
         read_write->setValue("height", this->win_h );
+//        log->info("height changed to " +QString (this->win_h) );
+    });
+
+
+    connect(this, &SettingsManager::onVideoPathChanged, this, [=](){
+        read_write->setValue("videoSave/path", this->videoSavePath );
+//        log->info("height changed to " +QString (this->win_h) );
+    });
+    connect(this, &SettingsManager::onEnableBlackChanged, this, [=](){
+        read_write->setValue("frame/black", this->enableBlack );
+//        log->info("height changed to " +QString (this->win_h) );
+    });
+    connect(this, &SettingsManager::winHeightChanged, this, [=](){
+        read_write->setValue("frame/area", this->frameArea );
 //        log->info("height changed to " +QString (this->win_h) );
     });
     exec();

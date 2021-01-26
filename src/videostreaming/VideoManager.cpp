@@ -301,16 +301,32 @@ void VideoManager::stopRecord()
 //        stopWriter2();
 }
 
+void black_white_frame (const cv::Mat& src, cv::Mat& dst){
+
+}
 cv::Mat VideoManager::strongFrame(cv::Mat mat)
 {
     static int flag = 0;
     int t = -1;
+    cv::Mat tmp = mat;
+    cv::Rect rect(tmp.size().width*0.3/2, tmp.size().height*0.3/2, tmp.size().width*0.7, tmp.size().width*0.7);
+
+
+//    if( rovApp()->getToolbox()->getSettingsManager()->getFrameArea() == 1 ){
+//        mat = mat(rect);
+//    }
+
     t = frameExchange(mat, mat);
 
     if( flag == 0 ){
         std::cout<<t<<std::endl;
         flag = 1;
     }
+
+//    if( rovApp()->getToolbox()->getSettingsManager()->getEnableBlack() ){
+//         cv::cvtColor(mat, mat, CV_RGBA2GRAY);
+//    }
+
 
     return mat;
 }

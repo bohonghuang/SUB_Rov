@@ -15,6 +15,7 @@ private:
 //    SocketLogging* log;
     bool _connected;
     bool _socketed;
+    QTimer *watchdog;
 
     int checkHeader(QByteArray data);
     bool datacpy(QByteArray data, int sindex, quint8*newdata, int length=20);

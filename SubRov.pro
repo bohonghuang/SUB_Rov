@@ -1,5 +1,5 @@
 QT += quick
-
+QT += widgets
 CONFIG += c++11
 
 INCLUDEPATH += libs/opencv3410/include

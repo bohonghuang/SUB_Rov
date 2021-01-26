@@ -9,9 +9,31 @@ SocketThread::SocketThread()
 {
     this->socket = new QTcpSocket(this);
 //    this->log = new SocketLogging;
-
+    this->watchdog = new QTimer();
     _socketed = false;
     _connected = false;
+
+    connect(this->watchdog, &QTimer::timeout, this, [=](){
+        static int socket_cnt = 0;
+        socket_cnt++;
+
+        if( _socketed == false ){
+            socket_cnt = 0;
+        }
+
+        if( _connected ){
+            socket_cnt = 0;
+        }
+
+        if( socket_cnt == 5) {
+            this->socket->close();
+            delete this->socket;
+            this->socket = new QTcpSocket(this);
+            this->connectServer();
+            socket_cnt = 0;
+        }
+        qDebug() << "socket cnt: " << socket_cnt;
+    });
 }
 
 SocketThread::~SocketThread()
@@ -42,7 +64,7 @@ void SocketThread::run(){
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [=](){
 //        qDebug() << "发送";
-//        if(_connected){
+        if(_connected){
             quint8* data = rovApp()->getToolbox()->getSocketManager()
                                    ->getSendManager()->getCommand();
 
@@ -53,13 +75,13 @@ void SocketThread::run(){
 
             sendData.resize(length);
             memcpy(sendData.data(), data, length);
-            qDebug() << sendData;
+//            qDebug() << sendData;
 //            socket->write(sendData);
             udp->writeDatagram(sendData, QHostAddress::LocalHost, 12000);
-//        }
-//        else if( _socketed){
-//            connectServer();
-//        }
+        }
+        else if( _socketed){
+            connectServer();
+        }
     });
     timer->start(100);
 
@@ -105,6 +127,7 @@ void SocketThread::connectServer()
 }
 
 void SocketThread::connectServer(QString u, quint16 p){
+    this->watchdog->start(1000);
     socket->abort();
     socket->connectToHost(u, p);
 //    log->info("Connecting to " + u + " - " +p);

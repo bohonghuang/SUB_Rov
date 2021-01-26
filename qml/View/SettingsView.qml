@@ -3,6 +3,10 @@ import QtQuick.Window 2.3
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
 import QtQml.Models 2.3
+import Qt.labs.platform 1.1
+
+
+
 
 Item {
     width: 450
@@ -59,6 +63,113 @@ Item {
                         }
                     }
                 }
+            }
+
+            ColumnLayout{
+                id: black_color_switch
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    Label{
+                        text: qsTr("彩色模式")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
+                        color: "white"
+                    }
+                    Switch {
+                        text: qsTr("")
+                        autoRepeat: false
+                        display: AbstractButton.TextBesideIcon
+                        checked: settingsManager.getEnableBlack()
+                        onCheckedChanged: {
+                            settingsManager.isEnableBlack(checked)
+                        }
+                    }
+                    Label{
+                        text: qsTr("黑白模式")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
+                        color: "white"
+                    }
+                }
+            }
+            ColumnLayout{
+                id: frame_area_switch
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    Label{
+                        text: qsTr("全部帧区域")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
+                        color: "white"
+                    }
+                    Switch {
+                        text: qsTr("")
+                        autoRepeat: false
+                        display: AbstractButton.TextBesideIcon
+                        checked: settingsManager.getFrameArea()
+                        onCheckedChanged: {
+                            settingsManager.setFrameArea(checked == true ? 1 : 0)
+                        }
+                    }
+                    Label{
+                        text: qsTr("部分帧区域")
+                        leftPadding: 50
+                        topPadding: 10
+                        bottomPadding: 10
+                        font.pointSize: 20
+                        color: "white"
+                    }
+                }
+            }
+
+            ColumnLayout{
+                id: file_dialog_choose
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    TextField {
+                            id: inputBoxInput
+                            text:folderDialog.folder
+                            color: "#707070"
+                            font.pointSize: 16
+//                            selectByMouse: true //是否可以选择文本
+//                            selectedTextColor: "white" //设置选择文本的字体颜色
+//                            selectionColor: "#4A6DBC" //设置选择框的颜色
+                            width: 100
+                            height: 30
+
+                    }
+
+                Button{
+                    text: qsTr("选择路径")
+                    height: 40
+                    width: 120
+
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            folderDialog.open()
+                        }
+                    }
+                }
+                FolderDialog  {
+                    id: folderDialog
+
+                    folder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] //默认打开Pictures文件夹
+
+                }
+                }
+
+
+
             }
 
             ColumnLayout{
