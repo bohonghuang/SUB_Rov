@@ -3,7 +3,9 @@
 JoyStickSettings::JoyStickSettings(QObject *parent) : QObject(parent)
 {
     QString path = QDir::homePath();
-    path += ".sub/conf";
+    path += "/.sub/conf";
+
+
     this->settings = new QSettings(path + "/joy.ini", QSettings::IniFormat);
 
     initMap();

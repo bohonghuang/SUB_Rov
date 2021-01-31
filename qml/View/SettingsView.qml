@@ -9,7 +9,7 @@ import Qt.labs.platform 1.1
 
 
 Item {
-    width: 450
+    width: 600
     height: parent.height - 66
     focus: visible
 
@@ -146,6 +146,10 @@ Item {
                             width: 100
                             height: 30
 
+                            onTextChanged: {
+                                settingsManager.setVideoSavePath(text);
+                            }
+
                     }
 
                 Button{
@@ -171,6 +175,53 @@ Item {
 
 
             }
+
+            ColumnLayout{
+                id: file_dialog_choose_img
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+                RowLayout{
+                    TextField {
+                            id: inputBoxInput2
+                            text:folderDialog.folder
+                            color: "#707070"
+                            font.pointSize: 16
+//                            selectByMouse: true //是否可以选择文本
+//                            selectedTextColor: "white" //设置选择文本的字体颜色
+//                            selectionColor: "#4A6DBC" //设置选择框的颜色
+                            width: 100
+                            height: 30
+
+                            onTextChanged: {
+                                settingsManager.setImagePath(text);
+                            }
+
+                    }
+
+                Button{
+                    text: qsTr("选择图片路径")
+                    height: 40
+                    width: 120
+
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            folderDialog2.open()
+                        }
+                    }
+                }
+                FolderDialog  {
+                    id: folderDialog2
+
+                    folder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] //默认打开Pictures文件夹
+
+                }
+                }
+
+
+
+            }
+
 
             ColumnLayout{
                 id: pi_enable

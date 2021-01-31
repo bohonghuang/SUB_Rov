@@ -13,5 +13,6 @@
         <file>qml/View/SettingsView.qml</file>
         <file>qml/KeyHandler.qml</file>
         <file>qml/Splash.qml</file>
+        <file>qml/ControllWindow.qml</file>
     </qresource>
 </RCC>

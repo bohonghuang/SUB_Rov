@@ -8,9 +8,17 @@ SettingsManager::SettingsManager(){
 
     this->log = new SettingsLoggging;
     QString local = QCoreApplication::applicationDirPath();
-    this->read_write = new QSettings(QDir::homePath()+".sub/conf"+"/setting.ini", QSettings::IniFormat);
+
+    // 保存配置文件于用户目录下
+    QString iniPath = QDir::homePath()+"/.sub/conf";
+    QDir dir(iniPath);
+    if( !dir.exists() ) {
+        dir.mkpath(iniPath);
+    }
+    qDebug() << iniPath;
+    this->read_write = new QSettings(iniPath+"/setting.ini", QSettings::IniFormat);
 //    qDebug() << "ini in" << read_write->fileName();
-    this->InitSettings();
+    
 
     QString localPath = QCoreApplication::applicationDirPath();
 
@@ -20,7 +28,7 @@ SettingsManager::SettingsManager(){
     this->enableThermal = false;
 
     this->thermal_w = 480;
-
+    this->InitSettings();
 
     qmlRegisterUncreatableType<SettingsManager>("Rov.SettingsManager", 1, 0, "SettingsManager", "Reference only");
 
@@ -202,6 +210,19 @@ QString SettingsManager::getImagePath()
     return imageFile;
 }
 
+void SettingsManager::setVideoSavePath(QString vs)
+{
+    QString t = vs;
+
+    if( t.startsWith("file")  || t.startsWith("File") ){
+        t = t.mid(8); // 删除 'file://'
+    }
+
+    this->videoSavePath = t;
+
+    emit onVideoPathChanged();
+}
+
 void SettingsManager::run(){
     //server
     connect(this, &SettingsManager::serverUriChanged, this, [=](){
@@ -347,6 +368,19 @@ QString SettingsManager::getVideoPath()
             + ".mp4";
     count ++;
     return videoFile;
+}
+
+void SettingsManager::setImagePath(QString is)
+{
+    QString t = is;
+
+    if( t.startsWith("file")  || t.startsWith("File") ){
+        t = t.mid(8); // 删除 'file://'
+    }
+    this->grapImageSavePath = t;
+
+
+    emit onImagePathChanged();
 }
 
 void SettingsManager::setServerUri(QString u)

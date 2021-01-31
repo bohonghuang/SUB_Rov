@@ -301,34 +301,57 @@ void VideoManager::stopRecord()
 //        stopWriter2();
 }
 
-void black_white_frame (const cv::Mat& src, cv::Mat& dst){
-
-}
 cv::Mat VideoManager::strongFrame(cv::Mat mat)
 {
     static int flag = 0;
     int t = -1;
+
+
+
+    cv::cvtColor(mat,mat,cv::COLOR_BGR2RGB);
     cv::Mat tmp = mat;
-    cv::Rect rect(tmp.size().width*0.3/2, tmp.size().height*0.3/2, tmp.size().width*0.7, tmp.size().width*0.7);
 
+    int x, y, w, h;
+    x = tmp.size().width * 0.3/2;
+    y = tmp.size().height *0.3/2;
+    w = tmp.size().width * 0.7;
+    h = tmp.size().height * 0.7;
 
-//    if( rovApp()->getToolbox()->getSettingsManager()->getFrameArea() == 1 ){
-//        mat = mat(rect);
-//    }
+    cv::Rect rect (x, y, w, h);
 
-    t = frameExchange(mat, mat);
+//    t = frameExchange(mat, mat);
 
     if( flag == 0 ){
         std::cout<<t<<std::endl;
         flag = 1;
     }
 
-//    if( rovApp()->getToolbox()->getSettingsManager()->getEnableBlack() ){
-//         cv::cvtColor(mat, mat, CV_RGBA2GRAY);
-//    }
+//    qDebug() << mat.channels();
+    if( rovApp()->getToolbox()->getSettingsManager()->getEnableBlack() ){
+        // 先将rgb转为灰度，再转为3通道，方便进行像素点的赋值
+         cv::cvtColor(mat, mat, COLOR_RGB2GRAY);
+         cv::cvtColor(mat, mat, COLOR_GRAY2RGB);
+    }
+
+    if( rovApp()->getToolbox()->getSettingsManager()->getFrameArea() == 1 ){
+        // 将mat的像素点赋予tmp
+        for ( int i=y; i<h+y; i++){
+            for( int j=x; j<w+x; j++ ){
+                tmp.at<Vec3b>(i, j)  = mat.at<Vec3b>(i, j);
+//                tmp.at<Vec3b>(i, j)[1]  = mat.at<Vec3b>(i-y, j-x)[1];
+            }
+        }
+    }
+    else {
+        tmp = mat;
+    }
+//    用于输出一些信息
+//    qDebug() << "x: " << x << " y: "<< y << " width: " << w << " height: "<< h;
+//    qDebug() << mat.type() << " channel: " << mat.channels();
 
 
-    return mat;
+
+    return tmp;
 }
 
 void VideoManager::work()
@@ -364,7 +387,6 @@ void VideoManager::stopWork()
 QImage VideoManager::mat2QImage(const cv::Mat &mat)
 {
 //    qDebug() << mat.channels();
-    cv::cvtColor(mat,mat,cv::COLOR_BGR2RGB);
     switch ( mat.type() ) {
     // 8bits, 4 channel
     case CV_8UC4:{

@@ -1,1 +1,3 @@
 libs/[^user]*
+
+*.user

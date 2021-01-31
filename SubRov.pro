@@ -1,5 +1,5 @@
 QT += quick
-QT += widgets
+QT += widgets qml
 CONFIG += c++11
 
 INCLUDEPATH += libs/opencv3410/include
@@ -36,10 +36,10 @@ TRANSLATIONS += \
     SubRov_qt6_zh_CN.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH = C:/Qt/6.0.1/msvc2019_64/qml
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
-QML_DESIGNER_IMPORT_PATH =
+QML_DESIGNER_IMPORT_PATH =  C:/Qt/Tools/QtCreator/bin
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

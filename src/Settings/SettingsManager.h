@@ -70,6 +70,8 @@ public slots:
     int     getStreamType() {return this->stream_type; };
     int     getStreamType_2() {return this->stream_type_2; };
     QString getVideoPath();
+
+    void    setImagePath(QString is);
     QString getImagePath();
     bool    isEnableCheckout() {return this->enableCheck;}
     bool    isLowMode(){    return this->lowMode;   }
@@ -82,7 +84,7 @@ public slots:
     int     getThermalHeight(){return this->thermal_h;}
 
     QString getVideoSavePath() {return this->videoSavePath; }
-    void    setVideoSavePath(QString vs) {this->videoSavePath = vs;emit onVideoPathChanged();}
+    void    setVideoSavePath(QString vs) ;
 
     bool    getEnableBlack() {return this->enableBlack; }
     void    isEnableBlack( bool eb ) {this->enableBlack = eb; emit onEnableBlackChanged();}
@@ -153,6 +155,7 @@ signals:
     void onVideoPathChanged();
     void onEnableBlackChanged();
     void onFrameAreaChanged();
+    void onImagePathChanged();
 };
 
 class SettingsLoggging: public MyLogging

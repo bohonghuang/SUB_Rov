@@ -12,7 +12,7 @@ Window {
     id: window
     width: 1600
     height: 900+66
-    title: "Sub Rov v0.20"
+    title: "Sub Rov v0.22"
 
     visible: false
 
