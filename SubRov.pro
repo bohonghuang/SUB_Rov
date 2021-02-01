@@ -1,6 +1,7 @@
 QT += quick
 QT += widgets qml
 CONFIG += c++11
+#CONFIG += console
 
 INCLUDEPATH += libs/opencv3410/include
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -127,7 +128,6 @@ ReleaseBuild {
         QMAKE_LFLAGS_RELEASE += /OPT:ICF
 #        QMAKE_LFLAGS_RELEASE_WITH_DEBUGINFO += /OPT:ICF
 
-        QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$PWD\\libs\\users\\user_*.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
 
         # Opencv lib path
         OPENCV_ROOT = $$PWD/libs/opencv3410 #D:/ImDeveloper/Environment/opencv-3.4.10 #D:/ImDeveloper/Environment/opencv45/build
@@ -137,7 +137,36 @@ ReleaseBuild {
         INCLUDEPATH += $$OPENCV_ROOT/include \
             $$OPENCV_ROOT/include/opencv2
 
+        QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$PWD\\libs\\users\\user_*.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
+        QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$PWD\\libs\\gstreamer\\*\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
+#        QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$PWD\\libs\\gstreamer\\*.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
         QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$OPENCV_LIB\\..\\bin\\opencv_*.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
+
+#        GST_ROOT = c:/gstreamer/1.0/msvc_x86_64
+#        exists($$GST_ROOT) {
+#            CONFIG      += VideoEnabled
+
+#            LIBS        += -L$$GST_ROOT/lib -lgstreamer-1.0 -lgstgl-1.0 -lgstvideo-1.0 -lgstbase-1.0
+#            LIBS        += -lglib-2.0 -lintl -lgobject-2.0
+
+#            INCLUDEPATH += \
+#                $$GST_ROOT/include \
+#                $$GST_ROOT/include/gstreamer-1.0 \
+#                $$GST_ROOT/include/glib-2.0 \
+#                $$GST_ROOT/lib/gstreamer-1.0/include \
+#                $$GST_ROOT/lib/glib-2.0/include
+
+#            DESTDIR_WIN = $$replace(DESTDIR, "/", "\\")
+#            GST_ROOT_WIN = $$replace(GST_ROOT, "/", "\\")
+
+#            # Copy main GStreamer runtime files
+#            QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$GST_ROOT_WIN\\bin\*.dll\" \"$$DESTDIR_WIN\" /S/Y $$escape_expand(\\n)
+#            QMAKE_POST_LINK += xcopy \"$$GST_ROOT_WIN\\bin\*.\" \"$$DESTDIR_WIN\" /S/Y $$escape_expand(\\n)
+
+#            # Copy GStreamer plugins
+#            QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$GST_ROOT_WIN\\lib\\gstreamer-1.0\\*.dll\" \"$$DESTDIR_WIN\\gstreamer-plugins\\\" /Y $$escape_expand(\\n)
+#            QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$GST_ROOT_WIN\\lib\\gstreamer-1.0\\validate\\*.dll\" \"$$DESTDIR_WIN\\gstreamer-plugins\\validate\\\" /Y $$escape_expand(\\n)
+#        }
 #        QMAKE_POST_LINK += $$escape_expand(\\n) xcopy \"$$PWD/libs/joystick/winmm.dll\" \"$$DESTDIR\" /S/Y $$escape_expand(\\n)
 
         message("copy opencv")

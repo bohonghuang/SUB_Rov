@@ -20,10 +20,12 @@ SettingsManager::SettingsManager(){
 //    qDebug() << "ini in" << read_write->fileName();
     
 
-    QString localPath = QCoreApplication::applicationDirPath();
-
-    this->videoSavePath = localPath + "/resource/videos";
-    this->grapImageSavePath = localPath + "/resource/images";
+//    QString localPath = QCoreApplication::applicationDirPath();
+    QDir localPath(local);
+    localPath.cdUp();
+    this->videoSavePath = localPath.path() + "/resource/videos";
+    this->grapImageSavePath = localPath.path() + "/resource/images";
+    qDebug() << this->videoSavePath;
     this->enableMainVideo = true;
     this->enableThermal = false;
 

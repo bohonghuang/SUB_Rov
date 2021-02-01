@@ -5,6 +5,6 @@ import "qml/View"
 
 MainView{
     visible: true
-    title: qsTr("SubRov v0.21")
+    title: qsTr("SubRov v0.22")
 
 }

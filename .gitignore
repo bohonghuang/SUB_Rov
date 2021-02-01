@@ -1,3 +1,4 @@
 libs/[^user]*
 
 *.user
+*.qmake*
