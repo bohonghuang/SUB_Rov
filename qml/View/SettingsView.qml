@@ -40,6 +40,52 @@ Item {
             width: 400
             spacing: 20
 
+            ColumnLayout {
+                id: fun_combox
+                width: 400
+                height: 180
+                Layout.topMargin: 20
+                Layout.leftMargin: 20
+
+                Label{
+                    text: qsTr("算法选择")
+                    font.italic: true
+                    font.bold: true
+                    font.underline: false
+                    bottomPadding: 10
+                    font.pointSize: 15
+                    color: "white"
+                }
+                ComboBox {
+                    font.pointSize: 15
+                    model: ListModel {
+                        ListElement{
+                            text: qsTr("算法1")
+                        }
+                        ListElement{
+                            text: qsTr("算法2")
+                        }
+                        ListElement{
+                            text: qsTr("算法3")
+                        }
+                        ListElement{
+                            text: qsTr("算法4")
+                        }
+                        ListElement{
+                            text: qsTr("算法5")
+                        }
+                        ListElement{
+                            text: qsTr("算法6")
+                        }
+                    }
+                    currentIndex: 0
+                    onCurrentIndexChanged: {
+                        videoManager.setFunction(currentIndex)
+                    }
+
+                }
+            }
+
             ColumnLayout{
                 id: check_out_enable
                 Layout.topMargin: 20

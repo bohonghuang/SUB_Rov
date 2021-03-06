@@ -93,6 +93,26 @@ Window {
         }
     }
 
+
+    ControllWindow{
+        id: ctrlWindow
+        visible: false
+    }
+
+    Window {
+        id: window_joy
+        width: 800
+        height: 500
+        visible: false
+
+        Rectangle {
+            anchors.fill: parent
+            Image {
+                source: "qrc:/res/img/joyhelp.png"
+            }
+        }
+    }
+
     RovToolbar {
         id: toolbar
         width: parent.width
@@ -110,6 +130,12 @@ Window {
         }
         onAbout: {
             aboutView.visible = true;
+        }
+        onCtrl: {
+            ctrlWindow.visible = true;
+        }
+        onHelp: {
+            window_joy.visible = true
         }
     }
     RovInfo{

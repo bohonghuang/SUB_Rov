@@ -158,6 +158,165 @@ double RovControlCore::getPointerAngle()
     return rovApp()->getToolbox()->getSocketManager()->getReceiveManager()->getYaw();
 }
 
+int RovControlCore::getRovStateX(int i)
+{
+    return getRovState(i).x;
+}
+
+int RovControlCore::getRovStateY(int i)
+{
+    return getRovState(i).y;
+}
+
+QString RovControlCore::getRovStateSource(int i)
+{
+    return getRovState(i).source;
+}
+
+QString RovControlCore::getRovStateLightSource(int i)
+{
+    rov_body_Image_show_info info;
+    switch (i) {
+    case 1 :
+        // 左旋暗
+        info.x = 94;
+        info.y = 1;
+        info.source = "qrc:/res/icon/rov/left_spin_light.png";
+        break;
+    case 2 :
+        // 右旋暗
+        info.x =133;
+        info.y = 1;
+        info.source = "qrc:/res/icon/rov/right_spin_light.png";
+        break;
+    case 3 :
+        // 俯视角机身
+        info.x = 106;
+        info.y = 12;
+        info.source = "qrc:/res/icon/rov/body1.png";
+        break;
+
+    case 4 :
+        // 主视角机身
+        info.x = 27;
+        info.y = 1;
+        info.source = "qrc:/res/icon/rov/body2.png";
+        break;
+    case 5 :
+        // 上暗
+        info.x = 44;
+        info.y = 1;
+        info.source = "qrc:/res/icon/rov/up_light.png";
+
+        break;
+    case 6 :
+        // 左暗
+        info.x = 13;
+        info.y = 39;
+        info.source = "qrc:/res/icon/rov/left_light.png";
+        break;
+    case 7 :
+        // 右暗
+        info.x = 65;
+        info.y = 0;
+        info.source = "qrc:/res/icon/rov/right_light.png";
+        break;
+    case 8 :
+        // 下暗
+        info.x = 44;
+        info.y = 42;
+        info.source = "qrc:/res/icon/rov/down_light.png";
+        break;
+    case 9 :
+        info.x = 4;
+        info.y = 22;
+        info.source = "qrc:/res/icon/rov/forward_light.png";
+        break;
+    case 10 :
+        // 后暗
+        info.x = 68;
+        info.y = 22;
+        info.source = "qrc:/res/icon/rov/back_light.png";
+        break;
+        break;
+    }
+
+
+    return info.source;
+}
+
+rov_body_Image_show_info RovControlCore::getRovState(int i)
+{
+    rov_body_Image_show_info info;
+    switch (i) {
+    case 1 :
+        // 左旋暗
+        info.x = 94;
+        info.y = 1;
+        info.source = "qrc:/res/icon/rov/left_spin_dark.png";
+        break;
+    case 2 :
+        // 右旋暗
+        info.x =133;
+        info.y = 1;
+        info.source = "qrc:/res/icon/rov/right_spin_dark.png";
+        break;
+    case 3 :
+        // 俯视角机身
+        info.x = 106;
+        info.y = 12;
+        info.source = "qrc:/res/icon/rov/body2.png";
+        break;
+
+    case 4 :
+        // 主视角机身
+        info.x = 27;
+        info.y = 12;
+        info.source = "qrc:/res/icon/rov/body1.png";
+        break;
+    case 5 :
+        // 上暗
+        info.x = 44;
+        info.y = 1;
+        info.source = "qrc:/res/icon/rov/up_dark.png";
+
+        break;
+    case 6 :
+        // 左暗
+        info.x = 13;
+        info.y = 39;
+        info.source = "qrc:/res/icon/rov/left_dark.png";
+        break;
+    case 7 :
+        // 右暗
+        info.x = 65;
+        info.y = 0;
+        info.source = "qrc:/res/icon/rov/right_dark.png";
+        break;
+    case 8 :
+        // 下暗
+        info.x = 44;
+        info.y = 42;
+        info.source = "qrc:/res/icon/rov/down_dark.png";
+        break;
+    case 9 :
+        info.x = 4;
+        info.y = 22;
+        info.source = "qrc:/res/icon/rov/forward_dark.png";
+        break;
+    case 10 :
+        // 后暗
+        info.x = 68;
+        info.y = 22;
+        info.source = "qrc:/res/icon/rov/back_dark.png";
+        break;
+        break;
+    }
+
+
+    return info;
+}
+
 void RovControlCore::up()
 {
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->UpDown(1);
@@ -177,27 +336,55 @@ void RovControlCore::updown(int value)
 {
 
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->UpDown(value);
+
+    if(value > 200)
+        emit onDown();
+    else if(value < 50 )
+        emit onUp();
+    else emit onUDN();
 }
 
 void RovControlCore::spin(int value)
 {
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->Spin(value);
+
+
+    if(value > 200)
+        emit onRSpin();
+    else if(value < 50 )
+        emit onLSpin();
+    else emit onSN();
 }
 
 void RovControlCore::forwardBack(double axist)
 {
     quint8 t = axist * 127 + 127 + 1;
     forwardBack(t);
+
+
 }
 
 void RovControlCore::forwardBack(int value)
 {
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->ForwordBack(value);
 
+
+    if(value > 200)
+        emit onBack();
+    else if(value < 50 )
+        emit onForward();
+    else emit onFBN();
+
 }
 
 void RovControlCore::leftRight(int value) {
     rovApp()->getToolbox()->getSocketManager()->getSendManager()->LeftRight((quint8)value);
+
+    if(value > 200)
+        emit onRight();
+    else if(value < 50 )
+        emit onLeft();
+    else emit onLRN();
 }
 void RovControlCore::leftRight(double axist)
 {

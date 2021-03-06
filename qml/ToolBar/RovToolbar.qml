@@ -7,6 +7,8 @@ Item {
     signal about
     signal settings
     signal socket
+    signal ctrl
+    signal help
 
     onSettings: {
         if(btn_settings.btnText === "设置"){
@@ -120,6 +122,17 @@ Item {
             btnImage: "qrc:/res/icon/image.png"
             btnText: qsTr("拍照")
             onClick: { rovControl.grabImage()}
+        }
+
+        RovToolButton {
+            btnImage: "qrc:/res/icon/joy.png"
+            btnText: qsTr("控制台")
+            onClick: { ctrl() }
+        }
+        RovToolButton {
+            btnImage: "qrc:/res/icon/joy_help.png"
+            btnText: qsTr("手柄指南")
+            onClick: { help() }
         }
 
     }

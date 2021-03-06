@@ -5,7 +5,7 @@ import QtQuick.Controls 2.5
 Item {
     id: infoElement
     width: 160
-    height: 600
+    height: 700
 
     signal opening
     signal closing
@@ -16,6 +16,7 @@ Item {
     onClosing: {
         info_close.start()
     }
+
 
 
     Rectangle{
@@ -128,6 +129,28 @@ Item {
                 pointer.rotation = rovControl.getPointerAngle()
             }
         }
+        BodyDir{
+            id: body_dir_body
+
+            isUp: false
+            z: 100
+        }
+//        Column {
+//            Rectangle {
+//                Image {
+//                    id: rov_up
+//                    x: 33
+//                    y: 0
+//                    source: "/res/icon/rov/up_light.png" //rovControl.getRovDirPath(index)
+//                }
+//                Image {
+//                    id: rov_body_1
+//                    x: 27
+//                    y: 12
+//                    source: ":/res/icon/rov/body1.png"
+//                }
+//            }
+//        }
 
         Column {
             spacing: 5
@@ -198,7 +221,7 @@ Item {
         PropertyAnimation {
             target: infoElement
             properties: "height"
-            to: 600
+            to: 700
             duration: 200
         }
         PropertyAnimation {

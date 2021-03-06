@@ -23,6 +23,7 @@ JoyStickManager::JoyStickManager(QObject *parent) : QObject(parent)
 
             if( (state.dwButtons & 0x01 << 0) ){
                 emit onButtonAChanged(true);
+//                qDebug("123");
             } else {
                 emit onButtonAChanged(false);
             }

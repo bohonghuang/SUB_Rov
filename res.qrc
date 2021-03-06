@@ -36,5 +36,26 @@
         <file>res/icon/flag/white_stop.png</file>
         <file>res/icon/flag/white_point.png</file>
         <file>res/load.png</file>
+        <file>res/icon/rov/body1.png</file>
+        <file>res/icon/rov/back_dark.png</file>
+        <file>res/icon/rov/back_light.png</file>
+        <file>res/icon/rov/forward_dark.png</file>
+        <file>res/icon/rov/forward_light.png</file>
+        <file>res/icon/rov/up_dark.png</file>
+        <file>res/icon/rov/body2.png</file>
+        <file>res/icon/rov/up_light.png</file>
+        <file>res/icon/rov/down_dark.png</file>
+        <file>res/icon/rov/down_light.png</file>
+        <file>res/icon/rov/right_dark.png</file>
+        <file>res/icon/rov/right_light.png</file>
+        <file>res/icon/rov/right_spin_dark.png</file>
+        <file>res/icon/rov/right_spin_light.png</file>
+        <file>res/icon/rov/left_dark.png</file>
+        <file>res/icon/rov/left_light.png</file>
+        <file>res/icon/rov/left_spin_dark.png</file>
+        <file>res/icon/rov/left_spin_light.png</file>
+        <file>res/img/joyhelp.png</file>
+        <file>res/icon/joy.png</file>
+        <file>res/icon/joy_help.png</file>
     </qresource>
 </RCC>

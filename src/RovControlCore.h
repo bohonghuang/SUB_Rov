@@ -4,6 +4,13 @@
 #include <QObject>
 #include "Settings/joysticksettings.h"
 
+
+struct rov_body_Image_show_info {
+    int x;
+    int y;
+    QString source;
+};
+
 class RovControlCore : public QObject
 {
     Q_OBJECT
@@ -15,6 +22,12 @@ public slots:
     QString getFlagPath(int index);
     bool getFlagShow(int index);
     double getPointerAngle();
+
+    int getRovStateX(int i);
+    int getRovStateY(int i);
+    QString getRovStateSource(int i);
+    QString getRovStateLightSource(int i);
+    rov_body_Image_show_info getRovState(int i);
     ///
     /// \brief 上升
     ///
@@ -131,6 +144,20 @@ public slots:
     ///
     void stopRecording();
 signals:
+    void onUp();
+    void onDown();
+    void onForward();
+    void onBack();
+    void onLeft();
+    void onRight();
+    void onLSpin();
+    void onRSpin();
+
+    void onUDN();
+    void onFBN();
+    void onSN();
+    void onLRN();
+
 
 };
 

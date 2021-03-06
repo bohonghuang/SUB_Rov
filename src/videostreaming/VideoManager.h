@@ -31,6 +31,7 @@ public:
     void stopWriter2();
     void startThread() ;
 
+
     void run() override;
 
     ImageProvider* getProvider1(){return &this->provider1; }
@@ -42,6 +43,7 @@ public:
 
 
 public slots:
+    void setFunction(int i);
     void grabImage();
     void startVideo();
     void stopVideo();
@@ -53,6 +55,7 @@ public slots:
 private:
 
 private:
+    int functionNum;
     bool threadEnable;
     bool enable;
     bool enableCap1;

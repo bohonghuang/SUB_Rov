@@ -14,5 +14,6 @@
         <file>qml/KeyHandler.qml</file>
         <file>qml/Splash.qml</file>
         <file>qml/ControllWindow.qml</file>
+        <file>qml/Info/BodyDir.qml</file>
     </qresource>
 </RCC>

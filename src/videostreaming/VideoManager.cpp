@@ -18,6 +18,7 @@ VideoManager::VideoManager(QObject *parent) : QThread(parent)
     this->enableWriter2 = false;
     this->threadEnable = true;
     this->log = new VideoLogging;
+    this->functionNum = 0;
 
     connect( this, &VideoManager::workChanged, this, [=](cv::Mat mat){
         mat = strongFrame(mat);
@@ -212,6 +213,12 @@ void VideoManager::startThread()
     this->start();
 }
 
+void VideoManager::setFunction(int i)
+{
+    this->functionNum = i;
+    qDebug("Set function num");
+}
+
 void VideoManager::run()
 {
 //    this->threadEnable  = true;
@@ -326,11 +333,24 @@ cv::Mat VideoManager::strongFrame(cv::Mat mat)
         flag = 1;
     }
 
+    if( this->functionNum == 0 ) {
 //    qDebug() << mat.channels();
-    if( rovApp()->getToolbox()->getSettingsManager()->getEnableBlack() ){
-        // 先将rgb转为灰度，再转为3通道，方便进行像素点的赋值
-         cv::cvtColor(mat, mat, COLOR_RGB2GRAY);
-         cv::cvtColor(mat, mat, COLOR_GRAY2RGB);
+        if( rovApp()->getToolbox()->getSettingsManager()->getEnableBlack() ){
+            // 先将rgb转为灰度，再转为3通道，方便进行像素点的赋值
+             cv::cvtColor(mat, mat, COLOR_RGB2GRAY);
+             cv::cvtColor(mat, mat, COLOR_GRAY2RGB);
+        }
+    }
+    else if (this->functionNum == 1) {
+
+    }else if (this->functionNum == 2) {
+
+    }else if (this->functionNum == 3) {
+
+    }else if (this->functionNum == 4) {
+
+    }else if (this->functionNum == 5) {
+
     }
 
     if( rovApp()->getToolbox()->getSettingsManager()->getFrameArea() == 1 ){
