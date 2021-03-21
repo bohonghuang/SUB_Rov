@@ -99,7 +99,7 @@ void VideoReceiver::startRecording()
     QString filename = filePath + "/"
             + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh_mm_ss")
             + ".mp4";
-    writer.open(filename.toStdString(), CV_FOURCC('D','I','V','X'), 25.0, cv::Size(1920, 1080), true);
+    writer.open(filename.toStdString(), VideoWriter::fourcc('D','I','V','X'), 25.0, cv::Size(1920, 1080), true);
 
     if( !writer.isOpened()){
         qDebug() << "Record open failed";
